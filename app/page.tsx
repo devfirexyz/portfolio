@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react"
 import { motion, useScroll, useTransform, useInView, useSpring, AnimatePresence } from "framer-motion"
-import { ArrowDown, Code, Github, Mail, User, X } from "lucide-react"
+import { ArrowDown, Code, Github, Mail, User, X, Terminal, Gamepad2, Trophy, Target, Sword, Zap, Crown, Sparkles, Cpu, Rocket } from "lucide-react"
 import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import TextReveal from "@/components/text-reveal"
 import ParticleBackground from "@/components/particle-background"
 import ProjectCard from "@/components/project-card"
 import HorizontalScroll from "@/components/horizontal-scroll"
+import PlayerCard from "@/components/player-card"
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("home")
@@ -24,12 +25,14 @@ export default function Portfolio() {
   const projectsRef = useRef(null)
   const contactRef = useRef(null)
   const heroRef = useRef(null)
+  const journeyRef = useRef(null)
 
   const aboutInView = useInView(aboutRef, { once: false, amount: 0.3 })
   const skillsInView = useInView(skillsRef, { once: false, amount: 0.3 })
   const projectsInView = useInView(projectsRef, { once: false, amount: 0.3 })
   const contactInView = useInView(contactRef, { once: false, amount: 0.3 })
   const heroInView = useInView(heroRef, { once: false, amount: 0.3 })
+  const journeyInView = useInView(journeyRef, { once: false, amount: 0.3 })
 
   const { scrollYProgress } = useScroll()
   const scrollProgress = useTransform(scrollYProgress, [0, 1], [0, 100])
@@ -50,7 +53,8 @@ export default function Portfolio() {
     else if (skillsInView) setActiveSection("skills")
     else if (projectsInView) setActiveSection("projects")
     else if (contactInView) setActiveSection("contact")
-  }, [heroInView, aboutInView, skillsInView, projectsInView, contactInView])
+    else if (journeyInView) setActiveSection("journey")
+  }, [heroInView, aboutInView, skillsInView, projectsInView, contactInView, journeyInView])
 
   const projects = [
     {
@@ -117,8 +121,8 @@ export default function Portfolio() {
               transition={{ duration: 0.5 }}
               className="text-xl font-bold"
             >
-              <span className="text-white">John</span>
-              <span className="text-purple-500">Doe</span>
+              <span className="text-white">Piyush</span>
+              <span className="text-purple-500">Raj</span>
             </motion.div>
 
             <motion.ul
@@ -127,7 +131,7 @@ export default function Portfolio() {
               transition={{ duration: 0.5, staggerChildren: 0.1, delayChildren: 0.2 }}
               className="hidden md:flex space-x-8"
             >
-              {["home", "about", "skills", "projects", "contact"].map((item) => (
+              {["home", "about", "journey", "skills", "projects", "contact"].map((item) => (
                 <motion.li key={item} whileHover={{ y: -2 }} className="relative">
                   <a
                     href={`#${item === "home" ? "" : item}`}
@@ -177,12 +181,12 @@ export default function Portfolio() {
               </div>
 
               <div className="flex flex-col items-center justify-center flex-1 gap-8">
-                {["home", "about", "skills", "projects", "contact"].map((item) => (
+                {["home", "about", "journey", "skills", "projects", "contact"].map((item) => (
                   <motion.div
                     key={item}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * ["home", "about", "skills", "projects", "contact"].indexOf(item) }}
+                    transition={{ delay: 0.1 * ["home", "about", "journey", "skills", "projects", "contact"].indexOf(item) }}
                   >
                     <a
                       href={`#${item === "home" ? "" : item}`}
@@ -213,14 +217,77 @@ export default function Portfolio() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="mb-6 relative w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500 shadow-lg shadow-purple-500/20"
+                className="mb-6 relative w-32 h-32 group"
               >
-                <Image src="/confident-professional.png" alt="Profile" fill className="object-cover" />
+                {/* Base glow effect */}
+                <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-xl" />
+                
+                {/* Sphere Container */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {/* X-axis rings */}
+                  <div className="absolute w-full h-full animate-spin-slow">
+                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-0" />
+                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-45" />
+                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-90" />
+                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-135" />
+                  </div>
+                  
+                  {/* Y-axis rings */}
+                  <div className="absolute w-full h-full animate-spin-reverse">
+                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-0" />
+                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-45" />
+                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-90" />
+                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-135" />
+                  </div>
+                  
+                  {/* Z-axis rings */}
+                  <div className="absolute w-full h-full animate-spin-slow-reverse">
+                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-0" />
+                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-45" />
+                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-90" />
+                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-135" />
+                  </div>
+                  
+                  {/* Core */}
+                  <div className="relative text-2xl font-bold text-purple-400/80 flex items-center">
+                    <span className="animate-float-slow mr-0.5">P</span>
+                    <span className="animate-float-delayed ml-0.5">R</span>
+                    
+                    {/* Glowing effect behind letters */}
+                    <div className="absolute inset-0 blur-sm bg-purple-500/30 -z-10" />
+                    
+                    {/* Rotating dots around letters */}
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-0.5 h-0.5 rounded-full bg-purple-300"
+                        style={{
+                          transform: `rotate(${i * 60}deg) translateY(-10px)`,
+                          animation: `micro-orbit ${2 + i * 0.5}s infinite linear`
+                        }}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Particles */}
+                  {[...Array(12)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 rounded-full bg-purple-400"
+                      style={{
+                        top: `${50 + Math.cos(i * 30) * 40}%`,
+                        left: `${50 + Math.sin(i * 30) * 40}%`,
+                        animation: `particle-orbit ${3 + Math.random() * 2}s infinite linear`,
+                        opacity: 0.6,
+                      }}
+                    />
+                  ))}
+                </div>
               </motion.div>
 
               <div className="overflow-hidden">
                 <TextReveal
-                  text="Hi, I'm John Doe"
+                  text="Player One: Piyush Raj"
                   className="text-4xl md:text-6xl font-bold mb-4"
                   highlightColor="text-purple-500"
                 />
@@ -232,33 +299,40 @@ export default function Portfolio() {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="text-xl md:text-2xl text-gray-300 mb-8"
               >
-                <span className="text-purple-400">Full Stack Developer</span> &{" "}
-                <span className="text-purple-400">UI/UX Designer</span>
+                <span className="text-purple-400">Level 80</span>{" "}
+                <span className="text-gray-400">|</span>{" "}
+                <span className="text-purple-400">Software Engineer</span>{" "}
+                <span className="text-gray-400">|</span>{" "}
+                <span className="text-purple-400">AngelOne Guild</span>
               </motion.h2>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="flex flex-wrap gap-4 justify-center"
-              >
-                <Button className="bg-purple-600 hover:bg-purple-700 relative overflow-hidden group" asChild>
-                  <a href="#projects">
-                    <span className="relative z-10">View Projects</span>
-                    <span className="absolute inset-0 bg-purple-800 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                  </a>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-purple-500 text-purple-500 hover:bg-purple-500/10 relative overflow-hidden group"
-                  asChild
+              <div className="flex flex-col md:flex-row items-center gap-8 mt-12">
+                <PlayerCard />
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                  className="flex flex-wrap gap-4 justify-center"
                 >
-                  <a href="#contact">
-                    <span className="relative z-10">Contact Me</span>
-                    <span className="absolute inset-0 bg-purple-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                  </a>
-                </Button>
-              </motion.div>
+                  <Button className="bg-purple-600 hover:bg-purple-700 relative overflow-hidden group" asChild>
+                    <a href="#projects">
+                      <Sword className="w-4 h-4 mr-2 inline-block" />
+                      <span className="relative z-10">View Quests</span>
+                      <span className="absolute inset-0 bg-purple-800 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    </a>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-purple-500 text-purple-500 hover:bg-purple-500/10 relative overflow-hidden group"
+                    asChild
+                  >
+                    <a href="#contact">
+                      <span className="relative z-10">Contact Me</span>
+                      <span className="absolute inset-0 bg-purple-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    </a>
+                  </Button>
+                </motion.div>
+              </div>
             </div>
           </div>
 
@@ -293,8 +367,9 @@ export default function Portfolio() {
             >
               <div className="flex flex-col items-center mb-12">
                 <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center">
-                    <span className="text-purple-500">About</span> Me
+                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
+                    <Crown className="w-8 h-8 text-purple-500" />
+                    Character <span className="text-purple-500">Stats</span>
                   </h2>
                   <motion.div
                     className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
@@ -327,12 +402,10 @@ export default function Portfolio() {
                 >
                   <h3 className="text-2xl font-semibold mb-4 text-purple-400">Who I Am</h3>
                   <p className="text-gray-300 mb-4 leading-relaxed">
-                    I'm a passionate <span className="text-purple-400 font-medium">Full Stack Developer</span> with 5+
-                    years of experience creating beautiful, functional, and user-centered digital experiences.
+                    I'm a passionate <span className="text-purple-400 font-medium">Senior Software Engineer</span> currently working at AngelOne. With extensive experience in web development, I bring a unique perspective to every project.
                   </p>
                   <p className="text-gray-300 mb-6 leading-relaxed">
-                    With a background in both design and development, I bring a unique perspective to every project. I
-                    believe in clean code, thoughtful UI, and creating solutions that solve real problems.
+                    My journey from a Frontend Developer intern to an SDE-2 (soon to be SDE-3) has been marked by rapid growth, continuous learning, and a deep commitment to creating impactful solutions. I believe in clean code, thoughtful UI, and building products that make a difference.
                   </p>
 
                   <div className="flex flex-wrap gap-3">
@@ -351,10 +424,167 @@ export default function Portfolio() {
           </div>
         </section>
 
+        {/* Journey Section */}
+        <section id="journey" ref={journeyRef} className="py-20 bg-gray-950 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-transparent z-10" />
+          
+          {/* Gaming-inspired background effects */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(120,50,255,0.15),transparent_70%)]" />
+          <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
+          <div className="absolute inset-0 bg-black/50" />
+          
+          {/* Animated particles or lines (optional) */}
+          <div className="absolute inset-0">
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute h-px w-[100px] bg-gradient-to-r from-transparent via-purple-500 to-transparent"
+                style={{
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                  rotate: `${Math.random() * 360}deg`,
+                }}
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.1,
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="container mx-auto px-4 relative z-20">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={journeyInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7 }}
+              className="max-w-4xl mx-auto"
+            >
+              <div className="flex flex-col items-center mb-12">
+                <div className="inline-block relative">
+                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
+                    <Gamepad2 className="w-8 h-8 text-purple-500" />
+                    Quest <span className="text-purple-500">Progress</span>
+                  </h2>
+                  <motion.div
+                    className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
+                    initial={{ width: 0 }}
+                    animate={journeyInView ? { width: "100%" } : { width: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-12">
+                {[
+                  {
+                    year: "2021",
+                    level: "Level 1",
+                    title: "Beginner's Quest",
+                    description: "Started my journey as a Frontend Developer intern during my final year at LPU.",
+                    icon: Terminal,
+                    achievement: "First Code Deployment 🎯",
+                  },
+                  {
+                    year: "2021-2023",
+                    level: "Level 2",
+                    title: "Code Warrior",
+                    description: "Worked as SDE-1 at an early-stage startup for 1 year and 10 months, gaining hands-on experience in web development.",
+                    icon: Rocket,
+                    achievement: "Startup Survivor 🚀",
+                  },
+                  {
+                    year: "2023",
+                    level: "Level 3",
+                    title: "New Adventure",
+                    description: "Transitioned to AngelOne through an acquihire, continuing as SDE-1.",
+                    icon: Target,
+                    achievement: "Team Transition Master 🎯",
+                  },
+                  {
+                    year: "2024",
+                    level: "Level 4",
+                    title: "Power Level Up",
+                    description: "Promoted to SDE-2 within 10 months at AngelOne.",
+                    icon: Trophy,
+                    achievement: "Quick Promotion Unlocked 🏆",
+                  },
+                  {
+                    year: "2025",
+                    level: "Level 5",
+                    title: "Boss Battle",
+                    description: "On track for promotion to SDE-3 by April 2025.",
+                    icon: Target,
+                    achievement: "Next Challenge Loading... ⚔️",
+                  },
+                ].map((milestone, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                    animate={journeyInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.7, delay: 0.2 * index }}
+                    className="relative"
+                  >
+                    {/* Connection Line */}
+                    {index !== 4 && (
+                      <div className="absolute left-[27px] top-[64px] w-1 h-[calc(100%+48px)] bg-gradient-to-b from-purple-500 to-transparent" />
+                    )}
+
+                    <div className="flex gap-6">
+                      {/* Level Indicator */}
+                      <div className="relative">
+                        <motion.div
+                          className="w-14 h-14 rounded-full bg-purple-500/20 border-2 border-purple-500 flex items-center justify-center"
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          <milestone.icon className="w-6 h-6 text-purple-400" />
+                        </motion.div>
+                      </div>
+
+                      {/* Content Card */}
+                      <div className="flex-1">
+                        <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 relative group">
+                          {/* Gaming-inspired hover effect */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/5 to-purple-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <span className="text-purple-400 font-semibold">{milestone.year}</span>
+                              <h3 className="text-xl font-bold mt-1 text-white group-hover:text-purple-400 transition-colors">
+                                {milestone.title}
+                              </h3>
+                            </div>
+                            <span className="text-sm font-mono text-purple-400/80">{milestone.level}</span>
+                          </div>
+                          
+                          <p className="text-gray-300 mb-4">{milestone.description}</p>
+                          
+                          <div className="flex items-center gap-2 text-sm">
+                            <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                              {milestone.achievement}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
         {/* Skills Section */}
         <section id="skills" ref={skillsRef} className="py-20 bg-black relative">
           <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-gray-950 to-transparent z-10" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(120,50,255,0.15),transparent_70%)]" />
+          
+          {/* Add gaming grid background */}
+          <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
 
           <div className="container mx-auto px-4 relative z-20">
             <motion.div
@@ -365,8 +595,9 @@ export default function Portfolio() {
             >
               <div className="flex flex-col items-center mb-12">
                 <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center">
-                    My <span className="text-purple-500">Skills</span>
+                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
+                    <Cpu className="w-8 h-8 text-purple-500" />
+                    Skill <span className="text-purple-500">Tree</span>
                   </h2>
                   <motion.div
                     className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
@@ -379,12 +610,12 @@ export default function Portfolio() {
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
                 {[
-                  { name: "Frontend Development", icon: Code, value: 90 },
-                  { name: "Backend Development", icon: Code, value: 85 },
-                  { name: "UI/UX Design", icon: Code, value: 80 },
-                  { name: "React & Next.js", icon: Code, value: 95 },
-                  { name: "Node.js", icon: Code, value: 85 },
-                  { name: "Database Design", icon: Code, value: 75 },
+                  { name: "Frontend Magic", icon: Sparkles, value: 90, xp: "90,000 XP" },
+                  { name: "Backend Powers", icon: Zap, value: 85, xp: "85,000 XP" },
+                  { name: "UI/UX Mastery", icon: Crown, value: 80, xp: "80,000 XP" },
+                  { name: "React Wizardry", icon: Cpu, value: 95, xp: "95,000 XP" },
+                  { name: "Node.js Craft", icon: Terminal, value: 85, xp: "85,000 XP" },
+                  { name: "Database Arts", icon: Trophy, value: 75, xp: "75,000 XP" },
                 ].map((skill, index) => (
                   <motion.div
                     key={index}
@@ -424,13 +655,10 @@ export default function Portfolio() {
                             initial={{ width: 0 }}
                             animate={skillsInView ? { width: `${skill.value}%` } : {}}
                             transition={{ duration: 1, delay: 0.2 + 0.1 * index }}
-                            className="h-full rounded-full"
-                            style={{
-                              background: `linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%)`,
-                            }}
+                            className="h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400"
                           />
                         </div>
-                        <span className="text-sm text-gray-400">{skill.value}%</span>
+                        <span className="text-sm text-purple-400 font-mono">{skill.xp}</span>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -452,8 +680,9 @@ export default function Portfolio() {
             >
               <div className="flex flex-col items-center mb-12">
                 <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center">
-                    My <span className="text-purple-500">Projects</span>
+                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
+                    <Trophy className="w-8 h-8 text-purple-500" />
+                    Quest <span className="text-purple-500">Log</span>
                   </h2>
                   <motion.div
                     className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
@@ -497,8 +726,9 @@ export default function Portfolio() {
             >
               <div className="flex flex-col items-center mb-12">
                 <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center">
-                    Get In <span className="text-purple-500">Touch</span>
+                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
+                    <Gamepad2 className="w-8 h-8 text-purple-500" />
+                    Player <span className="text-purple-500">Connect</span>
                   </h2>
                   <motion.div
                     className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
@@ -531,7 +761,7 @@ export default function Portfolio() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Email</p>
-                        <p className="text-white group-hover:text-purple-400 transition-colors">hello@johndoe.com</p>
+                        <p className="text-white group-hover:text-purple-400 transition-colors">piyushraj888s@gmail.com</p>
                       </div>
                     </motion.div>
 
@@ -541,7 +771,7 @@ export default function Portfolio() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">GitHub</p>
-                        <p className="text-white group-hover:text-purple-400 transition-colors">github.com/johndoe</p>
+                        <p className="text-white group-hover:text-purple-400 transition-colors">github.com/devfirexyz</p>
                       </div>
                     </motion.div>
                   </div>
@@ -635,10 +865,8 @@ export default function Portfolio() {
         {/* Footer */}
         <footer className="py-8 bg-gray-950 border-t border-gray-800/50 relative z-20">
           <div className="container mx-auto px-4 text-center">
-            <p className="text-gray-400">© {new Date().getFullYear()} John Doe. All rights reserved.</p>
-            <p className="text-gray-500 text-sm mt-2">
-              Designed and built with <span className="text-purple-500">❤️</span>
-            </p>
+            <p className="text-gray-400">© {new Date().getFullYear()} devfirexyz. All rights reserved.</p>
+          
           </div>
         </footer>
       </div>

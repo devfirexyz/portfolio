@@ -387,12 +387,68 @@ export default function Portfolio() {
                   transition={{ duration: 0.7, delay: 0.2 }}
                   className="relative"
                 >
-                  <div className="relative h-80 rounded-lg overflow-hidden shadow-xl shadow-purple-500/10 border border-purple-500/20">
-                    <Image src="/focused-coder.png" alt="About Me" fill className="object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/40 to-transparent" />
+                  {/* Character Stats Card */}
+                  <div className="relative p-6 rounded-lg bg-gray-900/50 backdrop-blur-sm border border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
+                    {/* Character Level Banner */}
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-purple-500 px-4 py-1 rounded-full text-sm font-bold">
+                      Level 80
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="space-y-6 mt-4">
+                      {[
+                        { label: "Class", value: "Software Engineer", icon: Code, color: "text-blue-400" },
+                        { label: "Guild", value: "AngelOne", icon: Trophy, color: "text-yellow-400" },
+                        { label: "Experience", value: "4+ Years", icon: Target, color: "text-green-400" },
+                        { label: "Specialization", value: "Full Stack", icon: Cpu, color: "text-red-400" },
+                      ].map((stat, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={aboutInView ? { opacity: 1, x: 0 } : {}}
+                          transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                          className="flex items-center gap-4"
+                        >
+                          <div className={`w-10 h-10 rounded-lg bg-gray-800/50 flex items-center justify-center ${stat.color}`}>
+                            <stat.icon className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-sm text-gray-400">{stat.label}</div>
+                            <div className="text-white font-medium">{stat.value}</div>
+                          </div>
+                          {/* Progress Bar */}
+                          <div className="w-24 h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={aboutInView ? { width: "85%" } : { width: 0 }}
+                              transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
+                              className="h-full bg-gradient-to-r from-purple-500 to-purple-300"
+                            />
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Achievement Badges */}
+                    <div className="mt-8 grid grid-cols-3 gap-3">
+                      {[
+                        { icon: Zap, label: "Fast Learner" },
+                        { icon: Crown, label: "Team Leader" },
+                        { icon: Sparkles, label: "Problem Solver" },
+                      ].map((badge, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={aboutInView ? { opacity: 1, scale: 1 } : {}}
+                          transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
+                          className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-800/30 border border-purple-500/20"
+                        >
+                          <badge.icon className="w-5 h-5 text-purple-400" />
+                          <span className="text-xs text-gray-400">{badge.label}</span>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="absolute -bottom-4 -right-4 w-40 h-40 border-2 border-purple-500 rounded-lg z-[-1]" />
-                  <div className="absolute -top-4 -left-4 w-20 h-20 border-2 border-purple-500 rounded-lg z-[-1]" />
                 </motion.div>
 
                 <motion.div

@@ -1,6 +1,12 @@
 {
-  "name": "my-v0-project",
+  "name": "devfire.xyz-portfolio",
   "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "Piyush Raj",
+    "email": "piyushraj888s@gmail.com",
+    "url": "https://devfire.xyz"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

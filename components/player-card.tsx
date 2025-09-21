@@ -13,7 +13,7 @@ const PlayerCard = () => {
 
   const badges = [
     { name: "Full Stack Master", icon: Cpu, level: "Legendary" },
-    { name: "Code Architect", icon: Rocket, level: "Epic" },
+    { name: "Code Architect", icon: Rocket, level: "Epic" },  
   ]
 
   return (

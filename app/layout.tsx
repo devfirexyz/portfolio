@@ -6,9 +6,27 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "John Doe | Portfolio",
-  description: "Full Stack Developer & UI/UX Designer",
-    generator: 'v0.dev'
+  title: "Piyush Raj | Software Development Engineer III",
+  description: "Senior Software Engineer specializing in scalable web applications, AI integration, and frontend architecture at Angel One.",
+  keywords: "Piyush Raj, Software Engineer, Full Stack Developer, React, TypeScript, Node.js, AI, SvelteKit",
+  authors: [{ name: "Piyush Raj" }],
+  openGraph: {
+    title: "Piyush Raj - Software Development Engineer III",
+    description: "Building scalable financial tech solutions with AI-powered automation",
+    url: "https://piyushraj.dev",
+    siteName: "Piyush Raj Portfolio",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Piyush Raj - Software Development Engineer III",
+    description: "Building scalable financial tech solutions with AI-powered automation",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function RootLayout({

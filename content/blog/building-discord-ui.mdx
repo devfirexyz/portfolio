@@ -1,0 +1,76 @@
+---
+title: "Building a Discord-Inspired Portfolio UI"
+description: "Deep dive into creating a Discord-themed portfolio website using React, TypeScript, and Tailwind CSS."
+publishedAt: "2024-01-20"
+tags: ["react", "ui", "discord", "design"]
+category: "Technical"
+featured: false
+---
+
+# Building a Discord-Inspired Portfolio UI
+
+Creating a unique portfolio that stands out in the sea of developer websites is challenging. I decided to build mine with a Discord-inspired theme, combining familiar UI patterns with portfolio functionality.
+
+## Design Decisions
+
+### Color Palette
+Discord's dark theme creates an immersive experience:
+- Primary: `#5865F2` (Discord Blurple)
+- Background: `#36393f` (Dark Gray)
+- Secondary: `#2f3136` (Darker Gray)
+- Text: `#dcddde` (Light Gray)
+
+### Component Architecture
+I structured the portfolio like a Discord server:
+- **Channels** represent different sections (About, Experience, Projects)
+- **Chat messages** display resume information
+- **Server list** shows navigation options
+
+## Technical Implementation
+
+### React Components
+```typescript
+interface DiscordChannelProps {
+  name: string
+  icon: React.ReactNode
+  active?: boolean
+  onClick: () => void
+}
+
+const DiscordChannel = ({ name, icon, active, onClick }: DiscordChannelProps) => {
+  return (
+    <button
+      className={cn(
+        "w-full flex items-center gap-2 px-2 py-1 rounded text-left",
+        active ? "bg-[#5865F2] text-white" : "text-[#8e9297] hover:text-[#dcddde]"
+      )}
+      onClick={onClick}
+    >
+      {icon}
+      <span className="text-sm">{name}</span>
+    </button>
+  )
+}
+```
+
+### Performance Optimizations
+- **Lazy loading** for components
+- **Memoization** for expensive calculations
+- **Dynamic imports** to reduce bundle size
+
+## Challenges & Solutions
+
+1. **Text Contrast**: Discord's dark theme made text hard to read
+   - Solution: Adjusted contrast ratios and used lighter text colors
+
+2. **Mobile Responsiveness**: Discord UI isn't naturally mobile-friendly
+   - Solution: Created adaptive layouts with collapsed sidebars
+
+3. **Animation Performance**: Heavy animations caused lag
+   - Solution: Used `transform` properties and reduced particle counts
+
+## Results
+
+The Discord theme creates a memorable experience that reflects my personality while maintaining professional presentation of my skills and experience.
+
+Want to see the code? Check out the [GitHub repository](https://github.com/piyushraj) for the full implementation!

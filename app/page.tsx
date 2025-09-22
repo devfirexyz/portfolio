@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
   const copyEmail = async () => {
     await navigator.clipboard.writeText("piyushraj888s@gmail.com");
@@ -51,7 +52,7 @@ export default function Portfolio() {
 
             {/* Additional cosmic depth */}
             <div
-              className="absolute top-[60%] left-[60%] w-[500px] h-[500px] bg-gradient-to-r from-[#A855F7]/15 to-transparent rounded-full blur-[120px] animate-pulse"
+              className="absolute w-screen h-screen bg-gradient-to-r from-[#A855F7]/15 to-transparent rounded-full blur-[120px] animate-pulse"
               style={{ animationDuration: "9s", animationDelay: "3s" }}
             />
           </div>
@@ -220,7 +221,7 @@ export default function Portfolio() {
           ].map((item, i) => (
             <motion.div
               key={`space-${i}`}
-              className={`absolute ${item.size} select-none pointer-events-none filter blur-[1px]`}
+              className={`absolute ${item.size} select-none pointer-events-none filter blur-[1px] w-screen h-screen`}
               style={{ top: item.top, left: item.left }}
               animate={{
                 y:
@@ -292,48 +293,10 @@ export default function Portfolio() {
             </motion.div>
           ))}
 
-          {/* Floating Code Symbols with Blur */}
-          {[
-            { symbol: "</>", top: "12%", left: "40%", delay: 0, duration: 20 },
-            { symbol: "{ }", top: "22%", left: "75%", delay: 2, duration: 25 },
-            { symbol: "++", top: "55%", left: "90%", delay: 4, duration: 22 },
-            { symbol: "==", top: "65%", left: "5%", delay: 1, duration: 28 },
-            { symbol: "( )", top: "45%", left: "30%", delay: 3, duration: 24 },
-            { symbol: "[ ]", top: "85%", left: "55%", delay: 5, duration: 26 },
-            { symbol: "&&", top: "30%", left: "10%", delay: 2.5, duration: 23 },
-            { symbol: "||", top: "18%", left: "60%", delay: 1.5, duration: 27 },
-            { symbol: "=>", top: "50%", left: "75%", delay: 3.5, duration: 21 },
-            {
-              symbol: "/**/",
-              top: "38%",
-              left: "85%",
-              delay: 4.5,
-              duration: 29,
-            },
-          ].map((item, i) => (
-            <motion.div
-              key={`code-${i}`}
-              className="absolute text-white/15 text-2xl lg:text-3xl font-mono font-bold select-none pointer-events-none filter blur-[2px]"
-              style={{ top: item.top, left: item.left }}
-              animate={{
-                y: [-25, 25, -25],
-                x: [-12, 12, -12],
-                rotate: [-8, 8, -8],
-                opacity: [0.1, 0.2, 0.1],
-              }}
-              transition={{
-                duration: item.duration,
-                delay: item.delay,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              {item.symbol}
-            </motion.div>
-          ))}
+
 
           {/* Enhanced Twinkling Star Field */}
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 w-screen h-screen">
             {Array.from({ length: 150 }).map((_, i) => {
               const seed = i * 9876543;
               const left = seed % 100;
@@ -381,7 +344,7 @@ export default function Portfolio() {
           </div>
 
           {/* Bright Shooting Stars - Fixed deterministic positions */}
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 w-screen h-screen">
             {Array.from({ length: 8 }).map((_, i) => {
               // Use deterministic values based on index to avoid hydration mismatch
               const seed = i * 1234567;
@@ -421,7 +384,7 @@ export default function Portfolio() {
           </div>
 
           {/* Constellation Patterns */}
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 w-screen h-screen">
             {[
               // Big Dipper pattern
               { x: 20, y: 25, size: 2 },
@@ -470,7 +433,7 @@ export default function Portfolio() {
         </div>
 
         {/* Navigation */}
-        <nav className="fixed top-0 z-50 w-full backdrop-blur-sm bg-black/10">
+        <nav className="fixed top-0 bottom-0  w-full bg-black/10">
           <div className="px-6 lg:px-10">
             <div className="flex items-center justify-between h-20">
               {/* Personal Brand */}
@@ -488,56 +451,6 @@ export default function Portfolio() {
                 </span>
               </Link>
 
-              {/* Center Navigation */}
-              <div className="hidden lg:flex items-center gap-10">
-                <Link
-                  href="#about"
-                  className="text-white hover:underline font-semibold"
-                >
-                  About
-                </Link>
-                <Link
-                  href="#experience"
-                  className="text-white hover:underline font-semibold"
-                >
-                  Experience
-                </Link>
-                <Link
-                  href="#projects"
-                  className="text-white hover:underline font-semibold"
-                >
-                  Projects
-                </Link>
-                <Link
-                  href="#skills"
-                  className="text-white hover:underline font-semibold"
-                >
-                  Skills
-                </Link>
-                <Link
-                  href="#education"
-                  className="text-white hover:underline font-semibold"
-                >
-                  Education
-                </Link>
-                <Link
-                  href="#contact"
-                  className="text-white hover:underline font-semibold"
-                >
-                  Contact
-                </Link>
-              </div>
-
-              {/* Right side - Resume button */}
-              <Button
-                className="bg-white hover:bg-[#dcddde] text-black text-sm font-medium px-6 py-2.5 rounded-full transition-all hover:shadow-lg hover:scale-105 hidden md:block"
-                onClick={() =>
-                  window.open("https://github.com/devfirexyz", "_blank")
-                }
-              >
-                View Resume
-              </Button>
-
               {/* Mobile Menu Button */}
               <button
                 className="md:hidden text-white p-2"
@@ -552,65 +465,15 @@ export default function Portfolio() {
             </div>
           </div>
 
-          {/* Mobile Menu */}
-          <AnimatePresence>
-            {isMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="md:hidden bg-[#2C2F33] border-t border-black/20"
-              >
-                <div className="container mx-auto px-4 py-4 space-y-2">
-                  <Link
-                    href="#about"
-                    className="block py-2 text-gray-300 hover:text-white"
-                  >
-                    About
-                  </Link>
-                  <Link
-                    href="#experience"
-                    className="block py-2 text-gray-300 hover:text-white"
-                  >
-                    Experience
-                  </Link>
-                  <Link
-                    href="#projects"
-                    className="block py-2 text-gray-300 hover:text-white"
-                  >
-                    Projects
-                  </Link>
-                  <Link
-                    href="#skills"
-                    className="block py-2 text-gray-300 hover:text-white"
-                  >
-                    Skills
-                  </Link>
-                  <Link
-                    href="#education"
-                    className="block py-2 text-gray-300 hover:text-white"
-                  >
-                    Education
-                  </Link>
-                  <Button
-                    className="w-full bg-[#5865f2] hover:bg-[#4752c4] text-white font-semibold rounded-full"
-                    onClick={copyEmail}
-                  >
-                    <Mail className="w-4 h-4 mr-2" />
-                    Contact Me
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+         
         </nav>
 
         {/* Hero Section - Split Layout */}
-        <section className="relative flex items-center pt-16 sm:pt-20 md:pt-24 lg:pt-32 overflow-hidden">
-          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-0 relative z-20">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12 xl:gap-16 items-center">
+        <section className="relative flex items-center pt-16 sm:pt-20 md:pt-24 lg:pt-32  overflow-hidden">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-20 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12 xl:gap-16 2xl:gap-20 items-center">
               {/* Left Side - Portfolio Content */}
-              <div className="text-left order-2 lg:order-1 max-w-none lg:max-w-2xl">
+              <div className="text-left order-2 lg:order-1 w-full max-w-none lg:max-w-2xl xl:max-w-3xl">
                 {/* Animated heading with stagger effect */}
                 <div className="mb-6 sm:mb-8 overflow-hidden">
                   <motion.h1
@@ -711,12 +574,12 @@ export default function Portfolio() {
                     <Button
                       size="lg"
                       className="w-full sm:w-auto bg-white hover:bg-[#f2f3f5] text-black px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-full flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-2xl hover:shadow-white/20 group"
-                      onClick={() =>
-                        window.open("https://github.com/devfirexyz", "_blank")
-                      }
+                      onClick={() => setIsResumeModalOpen(true)}
                     >
-                      <Github className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
-                      View Projects
+                      <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                      </svg>
+                      View Resume
                     </Button>
                   </motion.div>
                   <motion.div
@@ -738,7 +601,7 @@ export default function Portfolio() {
               </div>
 
               {/* Right Side - Discord UI Elements */}
-              <div className="relative order-1 lg:order-2 h-[350px] sm:h-[400px] md:h-[450px] lg:h-[550px] xl:h-[650px]">
+              <div className="relative order-1 lg:order-2 w-full h-[300px] xs:h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] xl:h-[550px] 2xl:h-[600px]">
                 {/* Main Discord Desktop Window */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9, rotateY: 5 }}
@@ -755,7 +618,7 @@ export default function Portfolio() {
                     rotateY: -2,
                     transition: { duration: 0.3 },
                   }}
-                  className="absolute left-0 top-0 w-full h-[300px] sm:h-[350px] md:h-[400px] lg:h-[450px] xl:h-[600px]"
+                  className="absolute left-0 top-0 w-full h-full"
                 >
                   <div className="bg-[#36393f] rounded-lg shadow-2xl overflow-hidden h-full backdrop-blur-sm">
                     {/* Discord window header */}
@@ -1083,7 +946,7 @@ export default function Portfolio() {
       </div>
 
       {/*  Footer */}
-      <footer className="relative bg-[#5865F2] text-white bg-gradient-to-b from-[#31338b] to-[#5865F2]">
+      <footer className="relative bg-[#5865F2] text-white mt-0 bg-gradient-to-b from-[#31338b] to-[#5865F2]">
         <div className="relative w-full flex justify-center">
           <img
             src="/characters_side.webp"
@@ -1104,13 +967,8 @@ export default function Portfolio() {
             alt="main character"
             width={350}
             height={150}
-            className="absolute -mt-[265px]"
+            className="absolute -mt-[265px] animate-bounce"
           />
-        </div>
-
-        {/* Background decorative elements - subtle */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 via-transparent to-transparent"></div>
         </div>
 
         <div className="relative w-full py-16 lg:pt-96">
@@ -1134,6 +992,72 @@ export default function Portfolio() {
           </div>
         </div>
       </footer>
+
+      {/* Resume Modal */}
+      <AnimatePresence mode="wait">
+        {isResumeModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-2 sm:p-4"
+            onClick={() => setIsResumeModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-6xl h-[95vh] sm:h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-3 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-[#5865F2] to-[#4752c4]">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg className="w-3 h-3 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-sm sm:text-xl font-bold text-white">Resume - Piyush Raj</h2>
+                </div>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <button
+                    className="px-2 py-1 sm:px-4 sm:py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
+                    onClick={() => window.open("/resume.pdf", "_blank")}
+                  >
+                    Download
+                  </button>
+                  <button
+                    className="w-6 h-6 sm:w-10 sm:h-10 bg-white/20 hover:bg-white/30 text-white rounded-lg flex items-center justify-center transition-colors"
+                    onClick={() => setIsResumeModalOpen(false)}
+                  >
+                    <X className="w-3 h-3 sm:w-5 sm:h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* PDF Viewer - Optimized */}
+              <div className="h-[calc(100%-3.5rem)] sm:h-[calc(100%-5rem)] bg-gray-50">
+                {isResumeModalOpen && (
+                  <iframe
+                    src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
+                    className="w-full h-full border-0"
+                    title="Resume PDF"
+                    loading="eager"
+                    style={{
+                      background: 'white',
+                      WebkitTransform: 'translateZ(0)',
+                      transform: 'translateZ(0)'
+                    }}
+                  />
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

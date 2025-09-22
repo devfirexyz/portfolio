@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   Github, Mail, Menu, X
 } from "lucide-react"
@@ -13,8 +13,6 @@ import { resumeData } from "@/lib/data/resume-data"
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [copiedEmail, setCopiedEmail] = useState(false)
-
-  const { scrollYProgress } = useScroll()
 
   const copyEmail = async () => {
     await navigator.clipboard.writeText(resumeData.personal.email)
@@ -30,129 +28,250 @@ export default function Portfolio() {
       {/* Additional gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-radial from-[#5865F2]/10 via-transparent to-[#202225]/50" />
 
-      {/* Floating blur elements - Enhanced for Discord look */}
+      {/* Galaxy Space Background with Floating Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Top left purple blob */}
-        <div className="absolute top-[-15%] left-[-10%] w-[800px] h-[800px] bg-[#5865F2]/25 rounded-full blur-[140px] animate-pulse" style={{ animationDuration: '8s' }} />
-
-        {/* Top right pink blob */}
-        <div className="absolute top-[10%] right-[-15%] w-[600px] h-[600px] bg-[#EB459E]/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
-
-        {/* Bottom center large purple blob */}
-        <div className="absolute bottom-[-25%] left-[20%] w-[900px] h-[900px] bg-[#5865F2]/20 rounded-full blur-[160px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
-
-        {/* Mid-right green accent */}
-        <div className="absolute top-[40%] right-[10%] w-[400px] h-[400px] bg-[#57F287]/15 rounded-full blur-[100px] animate-pulse" style={{ animationDuration: '9s', animationDelay: '1s' }} />
-
-        {/* Bottom left yellow accent */}
-        <div className="absolute bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-[#FEE75C]/15 rounded-full blur-[110px] animate-pulse" style={{ animationDuration: '11s', animationDelay: '3s' }} />
-      </div>
-
-      {/* Discord-style floating UI elements */}
-      <div className="absolute inset-0">
-        {/* Large floating Discord-style mockup card - hidden on mobile */}
-        <div className="absolute top-32 -left-40 w-[400px] md:w-[500px] lg:w-[600px] h-[300px] md:h-[350px] lg:h-[400px] float-3d hidden lg:block" style={{ animationDelay: "0s" }}>
-          <div className="discord-floating-card rounded-2xl md:rounded-3xl p-4 md:p-6 lg:p-8 transform rotate-12 hover:rotate-6 transition-transform duration-1000">
-            <div className="discord-bright-overlay absolute inset-0 opacity-60" />
-            <div className="relative z-10 space-y-3 md:space-y-4">
-              <div className="bg-[#36393f] rounded-xl md:rounded-2xl p-4 md:p-6">
-                <div className="flex items-center gap-2 md:gap-3 mb-3 md:mb-4">
-                  <div className="w-6 h-6 md:w-8 md:h-8 bg-[#5865F2] rounded-full" />
-                  <div className="text-white font-semibold text-sm md:text-base">Piyush Raj</div>
-                  <div className="ml-auto text-xs text-gray-400">Developer</div>
-                </div>
-                <div className="text-[#dcddde] text-xs md:text-sm leading-relaxed">
-                  Building scalable applications with modern tech stack...
-                </div>
-                <div className="flex gap-2 mt-3 md:mt-4">
-                  <div className="bg-[#5865F2] text-white text-xs px-2 md:px-3 py-1 rounded-full">React</div>
-                  <div className="bg-[#ED4245] text-white text-xs px-2 md:px-3 py-1 rounded-full">Node.js</div>
-                  <div className="bg-[#57F287] text-[#2C2F33] text-xs px-2 md:px-3 py-1 rounded-full">TypeScript</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Floating code editor mockup - hidden on smaller screens */}
-        <div className="absolute top-20 -right-32 w-[350px] md:w-[450px] lg:w-[500px] h-[250px] md:h-[300px] lg:h-[350px] float-3d hidden md:block" style={{ animationDelay: "2s" }}>
-          <div className="discord-floating-card rounded-xl md:rounded-2xl p-4 md:p-6 transform -rotate-6 hover:rotate-0 transition-transform duration-1000">
-            <div className="bg-gradient-to-br from-[#EB459E]/80 to-[#5865F2]/60 absolute inset-0 rounded-xl md:rounded-2xl opacity-70" />
-            <div className="relative z-10">
-              <div className="bg-[#1e1f22] rounded-lg md:rounded-xl p-3 md:p-4">
-                <div className="flex gap-2 mb-2 md:mb-3">
-                  <div className="w-2 h-2 md:w-3 md:h-3 bg-[#ff5f56] rounded-full" />
-                  <div className="w-2 h-2 md:w-3 md:h-3 bg-[#ffbd2e] rounded-full" />
-                  <div className="w-2 h-2 md:w-3 md:h-3 bg-[#27c93f] rounded-full" />
-                </div>
-                <div className="text-xs font-mono space-y-1">
-                  <div className="text-[#ff7b72]">const skills = [</div>
-                  <div className="text-[#79c0ff] ml-4">"Full Stack Development",</div>
-                  <div className="text-[#79c0ff] ml-4">"Modern JavaScript",</div>
-                  <div className="text-[#79c0ff] ml-4">"Cloud Architecture"</div>
-                  <div className="text-[#ff7b72]">];</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom floating stats card - hidden on mobile */}
-        <div className="absolute bottom-32 left-20 w-[300px] md:w-[350px] lg:w-[400px] h-[150px] md:h-[180px] lg:h-[200px] float-3d hidden lg:block" style={{ animationDelay: "4s" }}>
-          <div className="discord-floating-card rounded-xl md:rounded-2xl p-4 md:p-6 transform rotate-3 hover:-rotate-1 transition-transform duration-1000">
-            <div className="bg-gradient-to-r from-[#FEE75C]/70 to-[#57F287]/80 absolute inset-0 rounded-xl md:rounded-2xl opacity-60" />
-            <div className="relative z-10 grid grid-cols-2 gap-2 md:gap-4 text-center">
-              <div>
-                <div className="text-lg md:text-xl lg:text-2xl font-black text-white">4+</div>
-                <div className="text-xs text-gray-300">Years Exp</div>
-              </div>
-              <div>
-                <div className="text-lg md:text-xl lg:text-2xl font-black text-white">20+</div>
-                <div className="text-xs text-gray-300">Projects</div>
-              </div>
-              <div>
-                <div className="text-lg md:text-xl lg:text-2xl font-black text-white">2M+</div>
-                <div className="text-xs text-gray-300">Users</div>
-              </div>
-              <div>
-                <div className="text-lg md:text-xl lg:text-2xl font-black text-white">99%</div>
-                <div className="text-xs text-gray-300">Uptime</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Scattered cosmic stars - Fixed positions for SSR */}
+        {/* Enhanced Galaxy Gradient Orbs */}
         <div className="absolute inset-0">
-          {Array.from({ length: 50 }).map((_, i) => {
-            // Use deterministic positions based on index
-            const seed = i * 1234567; // Large prime-like number for distribution
+          {/* Primary galaxy nebulas */}
+          <div className="absolute top-[-15%] left-[-10%] w-[800px] h-[800px] bg-gradient-to-r from-[#5865F2]/30 via-[#8B5CF6]/20 to-transparent rounded-full blur-[140px] animate-pulse" style={{ animationDuration: '8s' }} />
+          <div className="absolute bottom-[-15%] right-[-10%] w-[900px] h-[900px] bg-gradient-to-l from-[#EB459E]/25 via-[#F472B6]/15 to-transparent rounded-full blur-[160px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
+          <div className="absolute top-[30%] right-[20%] w-[600px] h-[600px] bg-gradient-to-br from-[#57F287]/20 via-[#34D399]/15 to-transparent rounded-full blur-[130px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '4s' }} />
+          <div className="absolute bottom-[20%] left-[10%] w-[700px] h-[700px] bg-gradient-to-tr from-[#FEE75C]/15 via-[#FBBF24]/10 to-transparent rounded-full blur-[150px] animate-pulse" style={{ animationDuration: '14s', animationDelay: '1s' }} />
+
+          {/* Additional cosmic depth */}
+          <div className="absolute top-[60%] left-[60%] w-[500px] h-[500px] bg-gradient-to-r from-[#A855F7]/15 to-transparent rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '9s', animationDelay: '3s' }} />
+        </div>
+
+        {/* Floating Space Illustrations */}
+        {[
+          // Rockets
+          { type: 'rocket', top: '15%', left: '20%', delay: 0, duration: 25, size: 'text-4xl' },
+          { type: 'rocket', top: '70%', left: '80%', delay: 8, duration: 30, size: 'text-3xl' },
+
+          // Planets - More diverse planets
+          { type: 'saturn', top: '25%', left: '70%', delay: 2, duration: 35, size: 'text-5xl' },
+          { type: 'earth', top: '60%', left: '15%', delay: 12, duration: 28, size: 'text-4xl' },
+          { type: 'mars', top: '10%', left: '85%', delay: 15, duration: 32, size: 'text-3xl' },
+          { type: 'neptune', top: '75%', left: '10%', delay: 20, duration: 40, size: 'text-4xl' },
+          { type: 'venus', top: '45%', left: '90%', delay: 6, duration: 26, size: 'text-3xl' },
+          { type: 'jupiter', top: '85%', left: '75%', delay: 18, duration: 38, size: 'text-5xl' },
+
+          // Blinking Stars - More variety
+          { type: 'star', top: '10%', left: '50%', delay: 1, duration: 20, size: 'text-2xl' },
+          { type: 'star', top: '40%', left: '85%', delay: 5, duration: 22, size: 'text-xl' },
+          { type: 'star', top: '80%', left: '45%', delay: 7, duration: 18, size: 'text-2xl' },
+          { type: 'sparkle', top: '20%', left: '30%', delay: 3, duration: 15, size: 'text-lg' },
+          { type: 'sparkle', top: '65%', left: '60%', delay: 9, duration: 17, size: 'text-xl' },
+          { type: 'sparkle', top: '35%', left: '5%', delay: 11, duration: 19, size: 'text-lg' },
+          { type: 'twinkle', top: '50%', left: '40%', delay: 4, duration: 14, size: 'text-sm' },
+          { type: 'twinkle', top: '30%', left: '95%', delay: 13, duration: 16, size: 'text-sm' },
+          { type: 'twinkle', top: '90%', left: '30%', delay: 2, duration: 21, size: 'text-sm' },
+
+          // Satellites
+          { type: 'satellite', top: '35%', left: '25%', delay: 3, duration: 32, size: 'text-3xl' },
+          { type: 'satellite', top: '75%', left: '65%', delay: 10, duration: 26, size: 'text-2xl' }
+        ].map((item, i) => (
+          <motion.div
+            key={`space-${i}`}
+            className={`absolute ${item.size} select-none pointer-events-none filter blur-[1px]`}
+            style={{ top: item.top, left: item.left }}
+            animate={{
+              y: item.type.includes('star') || item.type.includes('sparkle') || item.type.includes('twinkle') ?
+                [-10, 10, -10] : [-30, 30, -30],
+              x: item.type.includes('star') || item.type.includes('sparkle') || item.type.includes('twinkle') ?
+                [-5, 5, -5] : [-15, 15, -15],
+              rotate: item.type === 'rocket' ? [0, 360] : [-10, 10, -10],
+              scale: item.type.includes('star') || item.type.includes('sparkle') || item.type.includes('twinkle') ?
+                [0.5, 1.5, 0.5] : [0.8, 1.2, 0.8],
+              opacity: item.type.includes('star') || item.type.includes('sparkle') || item.type.includes('twinkle') ?
+                [0.3, 1, 0.3] : [0.2, 0.3, 0.2]
+            }}
+            transition={{
+              duration: item.duration,
+              delay: item.delay,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            {item.type === 'rocket' && <span className="text-white/20">🚀</span>}
+            {item.type === 'saturn' && <span className="text-white/25">🪐</span>}
+            {item.type === 'earth' && <span className="text-blue-300/30">🌍</span>}
+            {item.type === 'mars' && <span className="text-red-300/30">🔴</span>}
+            {item.type === 'neptune' && <span className="text-blue-400/30">🔵</span>}
+            {item.type === 'venus' && <span className="text-yellow-300/30">🟡</span>}
+            {item.type === 'jupiter' && <span className="text-orange-300/30">🟠</span>}
+            {item.type === 'star' && <span className="text-white/40">⭐</span>}
+            {item.type === 'sparkle' && <span className="text-white/50">✨</span>}
+            {item.type === 'twinkle' && <span className="text-white/60">💫</span>}
+            {item.type === 'satellite' && <span className="text-white/20">🛰️</span>}
+          </motion.div>
+        ))}
+
+        {/* Floating Code Symbols with Blur */}
+        {[
+          { symbol: "</>", top: "12%", left: "40%", delay: 0, duration: 20 },
+          { symbol: "{ }", top: "22%", left: "75%", delay: 2, duration: 25 },
+          { symbol: "++", top: "55%", left: "90%", delay: 4, duration: 22 },
+          { symbol: "==", top: "65%", left: "5%", delay: 1, duration: 28 },
+          { symbol: "( )", top: "45%", left: "30%", delay: 3, duration: 24 },
+          { symbol: "[ ]", top: "85%", left: "55%", delay: 5, duration: 26 },
+          { symbol: "&&", top: "30%", left: "10%", delay: 2.5, duration: 23 },
+          { symbol: "||", top: "18%", left: "60%", delay: 1.5, duration: 27 },
+          { symbol: "=>", top: "50%", left: "75%", delay: 3.5, duration: 21 },
+          { symbol: "/**/", top: "38%", left: "85%", delay: 4.5, duration: 29 }
+        ].map((item, i) => (
+          <motion.div
+            key={`code-${i}`}
+            className="absolute text-white/15 text-2xl lg:text-3xl font-mono font-bold select-none pointer-events-none filter blur-[2px]"
+            style={{ top: item.top, left: item.left }}
+            animate={{
+              y: [-25, 25, -25],
+              x: [-12, 12, -12],
+              rotate: [-8, 8, -8],
+              opacity: [0.1, 0.2, 0.1]
+            }}
+            transition={{
+              duration: item.duration,
+              delay: item.delay,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            {item.symbol}
+          </motion.div>
+        ))}
+
+        {/* Enhanced Twinkling Star Field */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 150 }).map((_, i) => {
+            const seed = i * 9876543;
             const left = (seed % 100);
             const top = ((seed * 7) % 100);
-            const delay = ((seed * 3) % 5000) / 1000;
+            const delay = ((seed * 3) % 12000) / 1000;
+            const size = (seed % 4) + 1;
+            const brightness = (seed % 5) + 3; // 3-7 for varied brightness
+            const blinkSpeed = (seed % 3) + 2; // 2-4 second blink cycles
 
             return (
-              <div
-                key={i}
+              <motion.div
+                key={`star-${i}`}
                 className="absolute"
                 style={{
                   left: `${left}%`,
                   top: `${top}%`,
-                  animationDelay: `${delay}s`,
+                }}
+                animate={{
+                  opacity: [0.1, 1, 0.1],
+                  scale: [0.3, 1.8, 0.3],
+                  rotate: [0, 180, 360]
+                }}
+                transition={{
+                  duration: blinkSpeed + (i % 3),
+                  delay: delay,
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
               >
-                {i % 4 === 0 ? (
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse opacity-60" />
-                ) : (
-                  <svg className="w-3 h-3 text-white/40 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                )}
-              </div>
+                <div
+                  className={`bg-white rounded-full`}
+                  style={{
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    filter: 'blur(0.5px)',
+                    opacity: brightness / 10,
+                    boxShadow: `0 0 ${size * 2}px rgba(255, 255, 255, ${brightness / 10})`
+                  }}
+                />
+              </motion.div>
             );
           })}
         </div>
+
+        {/* Bright Shooting Stars */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 8 }).map((_, i) => {
+            const startLeft = Math.random() * 100;
+            const startTop = Math.random() * 100;
+            const endLeft = startLeft + (Math.random() * 40 - 20);
+            const endTop = startTop + (Math.random() * 40 - 20);
+            const delay = i * 8 + Math.random() * 5;
+
+            return (
+              <motion.div
+                key={`shooting-star-${i}`}
+                className="absolute w-1 h-1 bg-white rounded-full"
+                style={{
+                  left: `${startLeft}%`,
+                  top: `${startTop}%`,
+                  filter: 'blur(0.5px)',
+                  boxShadow: '0 0 8px rgba(255, 255, 255, 0.8), 0 0 16px rgba(255, 255, 255, 0.4)'
+                }}
+                animate={{
+                  x: [`0%`, `${endLeft - startLeft}vw`],
+                  y: [`0%`, `${endTop - startTop}vh`],
+                  opacity: [0, 1, 1, 0],
+                  scale: [0, 1, 1, 0]
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 2,
+                  delay: delay,
+                  repeat: Infinity,
+                  ease: "easeOut"
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* Constellation Patterns */}
+        <div className="absolute inset-0">
+          {[
+            // Big Dipper pattern
+            { x: 20, y: 25, size: 2 },
+            { x: 25, y: 28, size: 2 },
+            { x: 30, y: 30, size: 2 },
+            { x: 35, y: 29, size: 2 },
+            { x: 40, y: 27, size: 2 },
+            { x: 44, y: 32, size: 2 },
+            { x: 48, y: 35, size: 2 },
+
+            // Orion Belt
+            { x: 70, y: 60, size: 3 },
+            { x: 74, y: 62, size: 3 },
+            { x: 78, y: 64, size: 3 },
+
+            // Small cluster
+            { x: 85, y: 20, size: 1 },
+            { x: 87, y: 22, size: 1 },
+            { x: 89, y: 19, size: 1 },
+            { x: 91, y: 24, size: 1 }
+          ].map((star, i) => (
+            <motion.div
+              key={`constellation-${i}`}
+              className="absolute bg-white rounded-full"
+              style={{
+                left: `${star.x}%`,
+                top: `${star.y}%`,
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                filter: 'blur(0.3px)',
+                boxShadow: `0 0 ${star.size * 3}px rgba(255, 255, 255, 0.6)`
+              }}
+              animate={{
+                opacity: [0.4, 1, 0.4],
+                scale: [0.8, 1.2, 0.8]
+              }}
+              transition={{
+                duration: 4 + (i % 3),
+                delay: i * 0.5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </div>
       </div>
+
 
       {/* Navigation */}
       <nav className="fixed top-0 z-50 w-full backdrop-blur-sm bg-black/10">

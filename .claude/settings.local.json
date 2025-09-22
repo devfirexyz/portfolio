@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:discord.com)"
+      "WebFetch(domain:discord.com)",
+      "Bash(npm run build:*)",
+      "Bash(npx eslint:*)",
+      "Bash(cat:*)",
+      "Bash(xxd:*)",
+      "Bash(npx typescript:*)",
+      "Bash(npx tsc:*)",
+      "Bash(pkill:*)",
+      "Bash(npx next build:*)"
     ],
     "deny": [],
     "ask": []

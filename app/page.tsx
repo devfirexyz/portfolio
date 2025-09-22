@@ -1,29 +1,20 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import {
-  Github, Linkedin, Mail, Menu, X,
-  ChevronRight, ExternalLink, Code2, Briefcase,
-  Zap, Trophy, Copy, Check
+  Github, Mail, Menu, X
 } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { resumeData } from "@/lib/data/resume-data"
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [resumeUnlocked, setResumeUnlocked] = useState(false)
   const [copiedEmail, setCopiedEmail] = useState(false)
-  const [activeSection, setActiveSection] = useState("home")
 
   const { scrollYProgress } = useScroll()
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95])
 
   const copyEmail = async () => {
     await navigator.clipboard.writeText(resumeData.personal.email)
@@ -163,65 +154,43 @@ export default function Portfolio() {
         </div>
       </div>
 
-      {/* Navigation - Discord Exact Replica */}
+      {/* Navigation */}
       <nav className="fixed top-0 z-50 w-full backdrop-blur-sm bg-black/10">
         <div className="px-6 lg:px-10">
           <div className="flex items-center justify-between h-20">
-            {/* Discord Logo */}
+            {/* Personal Brand */}
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <svg className="w-[32px] h-[24px] mr-2" viewBox="0 0 71 55" fill="none">
-                <g clipPath="url(#clip0)">
-                  <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z" fill="white"/>
-                </g>
-                <defs>
-                  <clipPath id="clip0">
-                    <rect width="71" height="55" fill="white"/>
-                  </clipPath>
-                </defs>
-              </svg>
-              <span className="text-white font-bold text-xl tracking-tight">Discord</span>
+              <span className="text-white font-bold text-xl tracking-tight">Piyush Raj</span>
             </Link>
 
             {/* Center Navigation */}
             <div className="hidden lg:flex items-center gap-10">
-              <Link href="/download" className="text-white hover:underline font-semibold">
-                Download
+              <Link href="#about" className="text-white hover:underline font-semibold">
+                About
               </Link>
-              <Link href="/nitro" className="text-white hover:underline font-semibold">
-                Nitro
+              <Link href="#experience" className="text-white hover:underline font-semibold">
+                Experience
               </Link>
-              <Link href="/discover" className="text-white hover:underline font-semibold">
-                Discover
+              <Link href="#projects" className="text-white hover:underline font-semibold">
+                Projects
               </Link>
-              <button className="text-white hover:underline font-semibold flex items-center gap-1">
-                Safety
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <button className="text-white hover:underline font-semibold flex items-center gap-1">
-                Support
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <button className="text-white hover:underline font-semibold flex items-center gap-1">
-                Blog
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <Link href="/careers" className="text-white hover:underline font-semibold">
-                Careers
+              <Link href="#skills" className="text-white hover:underline font-semibold">
+                Skills
+              </Link>
+              <Link href="#education" className="text-white hover:underline font-semibold">
+                Education
+              </Link>
+              <Link href="#contact" className="text-white hover:underline font-semibold">
+                Contact
               </Link>
             </div>
 
-            {/* Right side - Login button */}
+            {/* Right side - Resume button */}
             <Button
-              className="bg-white hover:bg-[#dcddde] text-black text-sm font-medium px-6 py-2.5 rounded-full transition-all hover:shadow-lg hover:scale-105"
-              onClick={() => setResumeUnlocked(true)}
+              className="bg-white hover:bg-[#dcddde] text-black text-sm font-medium px-6 py-2.5 rounded-full transition-all hover:shadow-lg hover:scale-105 hidden md:block"
+              onClick={() => window.open('https://github.com/piyush-fs-dev', '_blank')}
             >
-              Log In
+              View Resume
             </Button>
 
             {/* Mobile Menu Button */}
@@ -256,9 +225,12 @@ export default function Portfolio() {
                 <Link href="#skills" className="block py-2 text-gray-300 hover:text-white">
                   Skills
                 </Link>
+                <Link href="#education" className="block py-2 text-gray-300 hover:text-white">
+                  Education
+                </Link>
                 <Button
                   className="w-full bg-[#5865f2] hover:bg-[#4752c4] text-white font-semibold rounded-full"
-                  onClick={() => setResumeUnlocked(true)}
+                  onClick={copyEmail}
                 >
                   <Mail className="w-4 h-4 mr-2" />
                   Contact Me
@@ -379,20 +351,20 @@ export default function Portfolio() {
                   {/* Channel sidebar - Hidden on very small screens */}
                   <div className="hidden sm:block w-[180px] lg:w-[240px] bg-[#2f3136]">
                     <div className="p-3 lg:p-4">
-                      <div className="text-white font-semibold mb-4 text-sm lg:text-base">Discord Portfolio</div>
-                      <div className="text-white/60 text-xs font-semibold uppercase mb-2">Text Channels</div>
+                      <div className="text-white font-semibold mb-4 text-sm lg:text-base">Portfolio Server</div>
+                      <div className="text-white/60 text-xs font-semibold uppercase mb-2">Channels</div>
                       <div className="space-y-1">
                         <div className="px-2 py-1 bg-[#42464d] rounded text-[#dcddde] text-sm flex items-center gap-2">
                           <span className="text-[#72767d]">#</span>
-                          <span>showcase</span>
+                          <span>introductions</span>
                         </div>
                         <div className="px-2 py-1 hover:bg-[#42464d] rounded text-[#96989d] text-sm flex items-center gap-2">
                           <span className="text-[#72767d]">#</span>
-                          <span>projects</span>
+                          <span>tech-stack</span>
                         </div>
                         <div className="px-2 py-1 hover:bg-[#42464d] rounded text-[#96989d] text-sm flex items-center gap-2">
                           <span className="text-[#72767d]">#</span>
-                          <span>feedback</span>
+                          <span>achievements</span>
                         </div>
                       </div>
                     </div>
@@ -403,10 +375,10 @@ export default function Portfolio() {
                     {/* Chat header */}
                     <div className="h-10 lg:h-12 border-b border-[#202225] px-3 lg:px-4 flex items-center">
                       <span className="text-[#72767d] text-lg">#</span>
-                      <span className="ml-2 text-white font-semibold text-sm lg:text-base">showcase</span>
+                      <span className="ml-2 text-white font-semibold text-sm lg:text-base">introductions</span>
                       <div className="ml-auto flex items-center gap-2">
                         <div className="w-2 h-2 bg-[#3ba55d] rounded-full" />
-                        <span className="text-[#b5bac1] text-xs hidden lg:inline">24 online</span>
+                        <span className="text-[#b5bac1] text-xs hidden lg:inline">Active Now</span>
                       </div>
                     </div>
 
@@ -417,20 +389,33 @@ export default function Portfolio() {
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-white font-medium text-xs lg:text-sm">Piyush Raj</span>
-                            <span className="text-[#72767d] text-xs">now</span>
+                            <span className="bg-[#5865F2] text-white text-xs px-1 py-0.5 rounded text-[10px]">SDE III</span>
+                            <span className="text-[#72767d] text-xs">2 mins ago</span>
                           </div>
-                          <div className="text-[#dcddde] text-xs lg:text-sm">Just deployed an AI-powered financial platform serving 1.67Cr+ users! 🚀</div>
+                          <div className="text-[#dcddde] text-xs lg:text-sm">Hey! I'm a Software Development Engineer III at Angel One. Built AI-powered financial platforms from scratch, processing 720+ articles daily with 70% effort reduction!</div>
                         </div>
                       </div>
 
                       <div className="flex gap-2 lg:gap-3">
-                        <div className="w-6 h-6 lg:w-8 lg:h-8 bg-[#57F287] rounded-full flex items-center justify-center text-[#2c2f33] text-xs lg:text-sm font-bold flex-shrink-0">T</div>
+                        <div className="w-6 h-6 lg:w-8 lg:h-8 bg-[#57F287] rounded-full flex items-center justify-center text-[#2c2f33] text-xs lg:text-sm font-bold flex-shrink-0">R</div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-white font-medium text-xs lg:text-sm">Tech Recruiter</span>
-                            <span className="bg-[#5865F2] text-white text-xs px-1 py-0.5 rounded text-[10px]">HR</span>
+                            <span className="text-white font-medium text-xs lg:text-sm">Recruiter</span>
+                            <span className="bg-[#EB459E] text-white text-xs px-1 py-0.5 rounded text-[10px]">HIRING</span>
+                            <span className="text-[#72767d] text-xs">just now</span>
                           </div>
-                          <div className="text-[#dcddde] text-xs lg:text-sm">97% on-time delivery rate is outstanding! Let's connect 💯</div>
+                          <div className="text-[#dcddde] text-xs lg:text-sm">Impressive! Tell me about your experience with scalable systems 🤔</div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 lg:gap-3">
+                        <div className="w-6 h-6 lg:w-8 lg:h-8 bg-[#5865F2] rounded-full flex items-center justify-center text-white text-xs lg:text-sm font-bold flex-shrink-0">P</div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-white font-medium text-xs lg:text-sm">Piyush Raj</span>
+                            <span className="text-[#72767d] text-xs">now</span>
+                          </div>
+                          <div className="text-[#dcddde] text-xs lg:text-sm">Led composable-SDK integration serving 1.67Cr+ B2C and 5.3L+ B2B users with zero failures. Optimized app performance: 40% smaller bundles, FCP under 1.5s, LCP under 2.5s 💪</div>
                         </div>
                       </div>
                     </div>

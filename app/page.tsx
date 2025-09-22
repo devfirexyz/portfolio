@@ -269,63 +269,86 @@ export default function Portfolio() {
         </AnimatePresence>
       </nav>
 
-      {/* Hero Section - Discord Exact Replica */}
-      <section className="relative min-h-screen flex flex-col items-center pt-24 lg:pt-32 overflow-hidden">
+      {/* Hero Section - Split Layout */}
+      <section className="relative min-h-screen flex items-center pt-24 lg:pt-32 overflow-hidden">
         <div className="container mx-auto px-6 lg:px-20 relative z-20">
-          {/* Main Hero Content */}
-          <div className="text-center max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h1 className="font-black text-white mb-6 uppercase tracking-tight">
-                <span className="block text-[48px] sm:text-[64px] lg:text-[80px] xl:text-[88px] leading-[0.9] font-extrabold">GROUP CHAT</span>
-                <span className="block text-[48px] sm:text-[64px] lg:text-[80px] xl:text-[88px] leading-[0.9] font-extrabold">THAT'S ALL</span>
-                <span className="block text-[48px] sm:text-[64px] lg:text-[80px] xl:text-[88px] leading-[0.9] font-extrabold">FUN & GAMES</span>
-              </h1>
-              <p className="text-lg lg:text-xl text-white/90 max-w-3xl mx-auto leading-[1.6] mb-8 px-4">
-                Discord is great for playing games and chilling with friends, or even building a worldwide community.
-                Customise your own space to talk, play, and hang out.
-              </p>
-            </motion.div>
-
-            {/* Discord CTA Buttons - Exact Replica */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16"
-            >
-              <Button
-                size="lg"
-                className="bg-white hover:bg-[#f2f3f5] text-black px-8 py-4 text-lg font-medium rounded-full flex items-center gap-3 transition-all hover:shadow-lg hover:scale-105"
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Side - Portfolio Content */}
+            <div className="text-left order-2 lg:order-1">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                </svg>
-                Download for Mac
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-[#23272a] hover:bg-[#36393f] text-white border-0 px-8 py-4 text-lg font-medium rounded-full transition-all hover:scale-105"
-                onClick={() => setResumeUnlocked(true)}
-              >
-                Open Discord in your browser
-              </Button>
-            </motion.div>
-          </div>
+                <h1 className="font-black text-white mb-6 uppercase tracking-tight">
+                  <span className="block text-[32px] sm:text-[48px] lg:text-[56px] xl:text-[64px] leading-[0.95] font-extrabold">SOFTWARE</span>
+                  <span className="block text-[32px] sm:text-[48px] lg:text-[56px] xl:text-[64px] leading-[0.95] font-extrabold">DEVELOPMENT</span>
+                  <span className="block text-[32px] sm:text-[48px] lg:text-[56px] xl:text-[64px] leading-[0.95] font-extrabold bg-gradient-to-r from-[#5865F2] to-[#EB459E] bg-clip-text text-transparent">ENGINEER III</span>
+                </h1>
+                <p className="text-lg lg:text-xl text-white/90 leading-[1.6] mb-8">
+                  Building scalable applications at <span className="text-[#5865F2] font-semibold">Angel One</span> with
+                  modern tech stack. Specialized in AI-powered platforms, micro-frontends, and high-performance web applications
+                  serving millions of users.
+                </p>
+              </motion.div>
 
-          {/* Discord UI Mockups and Characters Section */}
-          <div className="relative w-full max-w-7xl mx-auto h-[600px] lg:h-[700px]">
-            {/* Main Discord Desktop Window */}
-            <motion.div
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="absolute left-1/2 top-0 -translate-x-1/2 w-[320px] sm:w-[600px] lg:w-[800px] xl:w-[900px] h-[280px] sm:h-[400px] lg:h-[500px] xl:h-[550px]"
-            >
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="flex flex-col sm:flex-row gap-4 mb-12"
+              >
+                <Button
+                  size="lg"
+                  className="bg-white hover:bg-[#f2f3f5] text-black px-8 py-4 text-lg font-medium rounded-full flex items-center gap-3 transition-all hover:shadow-lg hover:scale-105"
+                  onClick={() => window.open('https://github.com/piyush-fs-dev', '_blank')}
+                >
+                  <Github className="w-5 h-5" />
+                  View Projects
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-[#23272a] hover:bg-[#36393f] text-white border-0 px-8 py-4 text-lg font-medium rounded-full transition-all hover:scale-105"
+                  onClick={copyEmail}
+                >
+                  <Mail className="w-5 h-5 mr-2" />
+                  {copiedEmail ? 'Email Copied!' : 'Get In Touch'}
+                </Button>
+              </motion.div>
+
+              {/* Quick Stats */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="grid grid-cols-3 gap-4"
+              >
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-2xl lg:text-3xl font-black text-white">2.5+</div>
+                  <div className="text-xs lg:text-sm text-white/80">Years Experience</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-2xl lg:text-3xl font-black text-white">1.67Cr+</div>
+                  <div className="text-xs lg:text-sm text-white/80">Users Served</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <div className="text-2xl lg:text-3xl font-black text-white">97%</div>
+                  <div className="text-xs lg:text-sm text-white/80">On-time Delivery</div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right Side - Discord UI Elements */}
+            <div className="relative order-1 lg:order-2 h-[400px] lg:h-[600px]">
+              {/* Main Discord Desktop Window */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="absolute left-0 top-0 w-full h-[350px] lg:h-[450px]"
+              >
               <div className="bg-[#36393f] rounded-lg shadow-2xl overflow-hidden h-full backdrop-blur-sm">
                 {/* Discord window header */}
                 <div className="h-8 bg-[#202225] flex items-center justify-between px-4">
@@ -396,7 +419,7 @@ export default function Portfolio() {
                             <span className="text-white font-medium text-xs lg:text-sm">Piyush Raj</span>
                             <span className="text-[#72767d] text-xs">now</span>
                           </div>
-                          <div className="text-[#dcddde] text-xs lg:text-sm">Check out my latest full-stack project! 🚀</div>
+                          <div className="text-[#dcddde] text-xs lg:text-sm">Just deployed an AI-powered financial platform serving 1.67Cr+ users! 🚀</div>
                         </div>
                       </div>
 
@@ -404,10 +427,10 @@ export default function Portfolio() {
                         <div className="w-6 h-6 lg:w-8 lg:h-8 bg-[#57F287] rounded-full flex items-center justify-center text-[#2c2f33] text-xs lg:text-sm font-bold flex-shrink-0">T</div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-white font-medium text-xs lg:text-sm">TechLead</span>
-                            <span className="bg-[#5865F2] text-white text-xs px-1 py-0.5 rounded text-[10px]">DEV</span>
+                            <span className="text-white font-medium text-xs lg:text-sm">Tech Recruiter</span>
+                            <span className="bg-[#5865F2] text-white text-xs px-1 py-0.5 rounded text-[10px]">HR</span>
                           </div>
-                          <div className="text-[#dcddde] text-xs lg:text-sm">Impressive architecture! 💯</div>
+                          <div className="text-[#dcddde] text-xs lg:text-sm">97% on-time delivery rate is outstanding! Let's connect 💯</div>
                         </div>
                       </div>
                     </div>
@@ -490,8 +513,8 @@ export default function Portfolio() {
                 <div className="absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#202225] rounded-full" />
               </div>
             </motion.div>
+            </div>
           </div>
-
         </div>
 
         {/* Scroll Indicator */}

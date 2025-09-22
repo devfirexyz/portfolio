@@ -379,26 +379,26 @@ export default function Portfolio() {
                 >
                   <motion.span
                     className="block text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold"
-                    initial={{ y: 100, opacity: 0 }}
+                    initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
                   >
                     SOFTWARE
                   </motion.span>
                   <motion.span
                     className="block text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold"
-                    initial={{ y: 100, opacity: 0 }}
+                    initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                    transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
                   >
                     DEVELOPMENT
                   </motion.span>
                   <motion.span
                     className="block text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold bg-gradient-to-r from-[#5865F2] via-[#8B5CF6] to-[#EB459E] bg-clip-text text-transparent animate-pulse"
                     style={{ animationDuration: '3s' }}
-                    initial={{ y: 100, opacity: 0 }}
+                    initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                    transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
                   >
                     ENGINEER III
                   </motion.span>
@@ -407,9 +407,9 @@ export default function Portfolio() {
 
               {/* Animated description */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
                 className="mb-8 sm:mb-10 lg:mb-12"
               >
                 <div className="text-base sm:text-lg lg:text-xl xl:text-2xl text-white/90 leading-relaxed max-w-2xl">
@@ -424,7 +424,7 @@ export default function Portfolio() {
                       className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5865F2]"
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
-                      transition={{ duration: 0.6, delay: 1.2 }}
+                      transition={{ duration: 0.4, delay: 0.6 }}
                     />
                   </motion.span>{' '}
                   with modern tech stack. Specialized in AI-powered platforms, micro-frontends, and high-performance web applications serving millions of users.
@@ -433,9 +433,9 @@ export default function Portfolio() {
 
               {/* CTA Buttons with enhanced animations */}
               <motion.div
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.0, duration: 0.8, ease: "easeOut" }}
+                transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
                 className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 sm:mb-12"
               >
                 <motion.div
@@ -474,14 +474,14 @@ export default function Portfolio() {
             <div className="relative order-1 lg:order-2 h-[350px] sm:h-[400px] md:h-[450px] lg:h-[550px] xl:h-[650px]">
               {/* Main Discord Desktop Window */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.8, rotateY: 10 }}
+                initial={{ opacity: 0, scale: 0.9, rotateY: 5 }}
                 animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                 transition={{
-                  delay: 2.0,
-                  duration: 1.0,
+                  delay: 0.6,
+                  duration: 0.6,
                   ease: "easeOut",
                   type: "spring",
-                  stiffness: 100
+                  stiffness: 200
                 }}
                 whileHover={{
                   scale: 1.02,
@@ -576,7 +576,7 @@ export default function Portfolio() {
                           className="text-white font-semibold mb-4 text-sm lg:text-base"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 2.5, duration: 0.6 }}
+                          transition={{ delay: 0.8, duration: 0.4 }}
                         >
                           Portfolio Server
                         </motion.div>
@@ -584,15 +584,15 @@ export default function Portfolio() {
                           className="text-white/60 text-xs font-semibold uppercase mb-2"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          transition={{ delay: 2.7, duration: 0.6 }}
+                          transition={{ delay: 0.9, duration: 0.4 }}
                         >
                           Text Channels
                         </motion.div>
                         <div className="space-y-1">
                           {[
-                            { name: "introductions", active: true, delay: 2.8 },
-                            { name: "tech-stack", active: false, delay: 3.0 },
-                            { name: "achievements", active: false, delay: 3.2 }
+                            { name: "introductions", active: true, delay: 1.0 },
+                            { name: "tech-stack", active: false, delay: 1.1 },
+                            { name: "achievements", active: false, delay: 1.2 }
                           ].map((channel, index) => (
                             <motion.div
                               key={channel.name}
@@ -603,7 +603,7 @@ export default function Portfolio() {
                               }`}
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: channel.delay, duration: 0.4 }}
+                              transition={{ delay: channel.delay, duration: 0.3 }}
                               whileHover={{
                                 x: 4,
                                 backgroundColor: channel.active ? "#42464d" : "#42464d"
@@ -622,7 +622,7 @@ export default function Portfolio() {
                                   className="w-1 h-4 bg-white rounded-full ml-auto"
                                   initial={{ scaleY: 0 }}
                                   animate={{ scaleY: 1 }}
-                                  transition={{ delay: channel.delay + 0.3, duration: 0.3 }}
+                                  transition={{ delay: channel.delay + 0.2, duration: 0.2 }}
                                 />
                               )}
                             </motion.div>
@@ -653,7 +653,7 @@ export default function Portfolio() {
                             time: "2 mins ago",
                             message: "Hey! I'm a Software Development Engineer III at Angel One. Built AI-powered financial platforms from scratch, processing 720+ articles daily with 70% effort reduction!",
                             avatarColors: "from-[#5865F2] to-[#4752c4]",
-                            delay: 3.5
+                            delay: 1.2
                           },
                           {
                             user: "Tech Recruiter",
@@ -663,7 +663,7 @@ export default function Portfolio() {
                             message: "Impressive! Tell me about your experience with scalable systems 🤔",
                             avatarColors: "from-[#57F287] to-[#3ba55d]",
                             roleColor: "bg-[#EB459E]",
-                            delay: 4.0
+                            delay: 1.4
                           },
                           {
                             user: "Piyush Raj",
@@ -671,7 +671,7 @@ export default function Portfolio() {
                             time: "just now",
                             message: "Led composable-SDK integration serving 1.67Cr+ B2C and 5.3L+ B2B users with zero failures. Optimized performance: 40% smaller bundles, FCP under 1.5s 💪",
                             avatarColors: "from-[#5865F2] to-[#4752c4]",
-                            delay: 4.5
+                            delay: 1.6
                           }
                         ].map((msg, msgIndex) => (
                           <motion.div
@@ -681,9 +681,9 @@ export default function Portfolio() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             transition={{
                               delay: msg.delay,
-                              duration: 0.6,
+                              duration: 0.4,
                               type: "spring",
-                              stiffness: 200
+                              stiffness: 300
                             }}
                             whileHover={{ scale: 1.01 }}
                           >
@@ -703,7 +703,7 @@ export default function Portfolio() {
                                 className="flex items-center gap-2 mb-1"
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: msg.delay + 0.1, duration: 0.4 }}
+                                transition={{ delay: msg.delay + 0.05, duration: 0.3 }}
                               >
                                 <span className="text-[#f2f3f5] font-bold text-sm hover:text-white transition-colors cursor-pointer">
                                   {msg.user}
@@ -725,7 +725,7 @@ export default function Portfolio() {
                                 className="text-[#dcddde] text-sm leading-relaxed bg-[#4f545c]/60 p-3 rounded-lg border border-[#5c6370]/50 shadow-sm backdrop-blur-sm hover:bg-[#4f545c]/80 hover:border-[#5c6370]/70 transition-all duration-300 cursor-pointer group-hover:shadow-md"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: msg.delay + 0.2, duration: 0.5 }}
+                                transition={{ delay: msg.delay + 0.1, duration: 0.3 }}
                                 whileHover={{ y: -1 }}
                               >
                                 {msg.message.split(/(Angel One|720\+ articles daily|70% effort reduction|1\.67Cr\+ B2C|5\.3L\+ B2B users|zero failures|40% smaller bundles|scalable systems)/).map((part, i) => {

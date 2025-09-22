@@ -7,10 +7,8 @@ interface BlogLayoutProps {
   showBackButton?: boolean;
 }
 
-const dottedBackgroundStyle = {
-  backgroundImage: `radial-gradient(circle, rgba(168, 85, 247, 0.4) 1px, transparent 1px)`,
-  backgroundSize: "60px 60px",
-  backgroundPosition: "center center",
+const modernBackgroundStyle = {
+  background: `linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)`,
 };
 
 export function BlogLayout({
@@ -18,15 +16,29 @@ export function BlogLayout({
   showBackButton = false,
 }: BlogLayoutProps) {
   return (
-    <div className="min-h-screen bg-background text-gray-900 dark:text-white flex flex-col" style={dottedBackgroundStyle}>
-      {/* Clean Minimal Header */}
-      <header>
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
+    <div className="min-h-screen text-white flex flex-col relative overflow-hidden" style={modernBackgroundStyle}>
+      {/* Modern Gradient Background */}
+      <div className="absolute inset-0">
+        {/* Subtle gradient orbs for depth */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-[10%] left-[10%] w-[600px] h-[600px] bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent rounded-full blur-[120px]" />
+          <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-gradient-to-tl from-cyan-500/10 via-blue-500/5 to-transparent rounded-full blur-[100px]" />
+          <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/8 to-pink-500/8 rounded-full blur-[80px]" />
+        </div>
+        {/* Subtle dot pattern */}
+        <div className="absolute inset-0 opacity-[0.02]" style={{
+          backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }} />
+      </div>
+      {/* Modern Glass Header */}
+      <header className="relative z-10 border-b border-white/[0.08] bg-white/[0.02] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-5">
           <div className="flex items-center gap-4">
             {showBackButton ? (
               <Link
                 href="/blog"
-                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.08] rounded-lg transition-all duration-200"
               >
                 <svg
                   className="w-4 h-4"
@@ -48,7 +60,7 @@ export function BlogLayout({
                 href="/"
                 className="flex shrink-0 items-center justify-center gap-3"
               >
-                <span className="text-xl font-bold">Piyush Raj</span>
+                <span className="text-xl font-semibold text-white tracking-tight">Piyush Raj</span>
               </Link>
             )}
           </div>
@@ -62,6 +74,7 @@ export function BlogLayout({
               variant="outline"
               size="sm"
               asChild
+              className="bg-white/[0.08] hover:bg-white/[0.12] text-white border-white/[0.12] hover:border-white/[0.2] backdrop-blur-sm transition-all duration-200"
             >
               <Link href="/">
                 Portfolio
@@ -72,12 +85,12 @@ export function BlogLayout({
       </header>
 
       {/* Main content */}
-      <main className="relative flex-1">{children}</main>
+      <main className="relative flex-1 z-10">{children}</main>
 
-      {/* Minimal Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-800 mt-auto">
-        <div className="max-w-3xl mx-auto px-4 py-8">
-          <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+      {/* Modern Glass Footer */}
+      <footer className="border-t border-white/[0.08] mt-auto relative z-10 bg-white/[0.02] backdrop-blur-xl">
+        <div className="max-w-5xl mx-auto px-6 py-8">
+          <div className="text-center text-sm text-white/50">
             © 2024 Piyush Raj. All rights reserved.
           </div>
         </div>

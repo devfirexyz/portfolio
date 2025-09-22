@@ -1,931 +1,882 @@
-"use client"
+"use client";
 
-import { useRef, useState, useEffect } from "react"
-import { motion, useScroll, useTransform, useInView, useSpring, AnimatePresence } from "framer-motion"
-import { ArrowDown, Code, Github, Mail, User, X, Terminal, Gamepad2, Trophy, Target, Sword, Zap, Crown, Sparkles, Cpu, Rocket } from "lucide-react"
-import Image from "next/image"
+import { useState, useCallback, useMemo } from "react";
+import { motion, LazyMotion, domAnimation } from "framer-motion";
+import { Mail, Menu, X } from "lucide-react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import CustomCursor from "@/components/custom-cursor"
-import TextReveal from "@/components/text-reveal"
-import ParticleBackground from "@/components/particle-background"
-import ProjectCard from "@/components/project-card"
-import HorizontalScroll from "@/components/horizontal-scroll"
-import PlayerCard from "@/components/player-card"
+import { Button } from "@/components/ui/button";
+
+// Lazy load heavy components
+const ResumeModal = dynamic(() => import("@/components/ResumeModal").then(mod => ({ default: mod.default })), {
+  ssr: false,
+});
 
 export default function Portfolio() {
-  const [activeSection, setActiveSection] = useState("home")
-  const [showMobileMenu, setShowMobileMenu] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
-  const aboutRef = useRef(null)
-  const skillsRef = useRef(null)
-  const projectsRef = useRef(null)
-  const contactRef = useRef(null)
-  const heroRef = useRef(null)
-  const journeyRef = useRef(null)
+  const copyEmail = useCallback(async () => {
+    await navigator.clipboard.writeText("piyushraj888s@gmail.com");
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
+  }, []);
 
-  const aboutInView = useInView(aboutRef, { once: false, amount: 0.3 })
-  const skillsInView = useInView(skillsRef, { once: false, amount: 0.3 })
-  const projectsInView = useInView(projectsRef, { once: false, amount: 0.3 })
-  const contactInView = useInView(contactRef, { once: false, amount: 0.3 })
-  const heroInView = useInView(heroRef, { once: false, amount: 0.3 })
-  const journeyInView = useInView(journeyRef, { once: false, amount: 0.3 })
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
 
-  const { scrollYProgress } = useScroll()
-  const scrollProgress = useTransform(scrollYProgress, [0, 1], [0, 100])
-  const smoothScrollProgress = useSpring(scrollProgress, { stiffness: 100, damping: 30 })
+  const openResumeModal = useCallback(() => {
+    setIsResumeModalOpen(true);
+  }, []);
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
+  const closeResumeModal = useCallback(() => {
+    setIsResumeModalOpen(false);
+  }, []);
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+  // Memoize heavy animations data
+  const spaceElements = useMemo(() => [
+    // Rockets
+    { type: "rocket", top: "15%", left: "20%", delay: 0, duration: 25, size: "text-4xl" },
+    { type: "rocket", top: "70%", left: "80%", delay: 8, duration: 30, size: "text-3xl" },
+    // Planets
+    { type: "saturn", top: "25%", left: "70%", delay: 2, duration: 35, size: "text-5xl" },
+    { type: "earth", top: "60%", left: "15%", delay: 12, duration: 28, size: "text-4xl" },
+    { type: "mars", top: "10%", left: "85%", delay: 15, duration: 32, size: "text-3xl" },
+    { type: "neptune", top: "75%", left: "10%", delay: 20, duration: 40, size: "text-4xl" },
+    { type: "venus", top: "45%", left: "90%", delay: 6, duration: 26, size: "text-3xl" },
+    { type: "jupiter", top: "85%", left: "75%", delay: 18, duration: 38, size: "text-5xl" },
+    // Stars
+    { type: "star", top: "10%", left: "50%", delay: 1, duration: 20, size: "text-2xl" },
+    { type: "star", top: "40%", left: "85%", delay: 5, duration: 22, size: "text-xl" },
+    { type: "star", top: "80%", left: "45%", delay: 7, duration: 18, size: "text-2xl" },
+    // Sparkles
+    { type: "sparkle", top: "20%", left: "30%", delay: 3, duration: 15, size: "text-lg" },
+    { type: "sparkle", top: "65%", left: "60%", delay: 9, duration: 17, size: "text-xl" },
+    { type: "sparkle", top: "35%", left: "5%", delay: 11, duration: 19, size: "text-lg" },
+    // Twinkles
+    { type: "twinkle", top: "50%", left: "40%", delay: 4, duration: 14, size: "text-sm" },
+    { type: "twinkle", top: "30%", left: "95%", delay: 13, duration: 16, size: "text-sm" },
+    { type: "twinkle", top: "90%", left: "30%", delay: 2, duration: 21, size: "text-sm" },
+    // Satellites
+    { type: "satellite", top: "35%", left: "25%", delay: 3, duration: 32, size: "text-3xl" },
+    { type: "satellite", top: "75%", left: "65%", delay: 10, duration: 26, size: "text-2xl" },
+  ], []);
 
-  useEffect(() => {
-    if (heroInView) setActiveSection("home")
-    else if (aboutInView) setActiveSection("about")
-    else if (skillsInView) setActiveSection("skills")
-    else if (projectsInView) setActiveSection("projects")
-    else if (contactInView) setActiveSection("contact")
-    else if (journeyInView) setActiveSection("journey")
-  }, [heroInView, aboutInView, skillsInView, projectsInView, contactInView, journeyInView])
-
-  const projects = [
+  const chatMessages = useMemo(() => [
     {
-      title: "E-Commerce Platform",
-      description: "A full-featured online store with payment integration and admin dashboard.",
-      image: "/ecommerce-dashboard-dark.png",
-      tags: ["Next.js", "Stripe", "Tailwind CSS"],
-      color: "#7c3aed",
+      user: "Piyush Raj",
+      avatar: "P",
+      role: "SDE III",
+      time: "2 mins ago",
+      message: "Hey! I'm a Software Development Engineer III at Angel One. Built AI-powered financial platforms from scratch, processing 720+ articles daily with 70% effort reduction!",
+      avatarColors: "from-[#5865F2] to-[#4752c4]",
+      delay: 1.2,
     },
     {
-      title: "Social Media App",
-      description: "A real-time social platform with messaging and content sharing.",
-      image: "/social-media-dark-mode.png",
-      tags: ["React", "Firebase", "Socket.io"],
-      color: "#8b5cf6",
+      user: "Tech Recruiter",
+      avatar: "R",
+      role: "HIRING",
+      time: "1 min ago",
+      message: "Impressive! Tell me about your experience with scalable systems 🤔",
+      avatarColors: "from-[#57F287] to-[#3ba55d]",
+      roleColor: "bg-[#EB459E]",
+      delay: 1.4,
     },
     {
-      title: "Portfolio Website",
-      description: "A custom portfolio site with animations and interactive elements.",
-      image: "/dark-portfolio-showcase.png",
-      tags: ["Next.js", "Framer Motion", "Three.js"],
-      color: "#6d28d9",
+      user: "Piyush Raj",
+      avatar: "P",
+      time: "just now",
+      message: "Led composable-SDK integration serving 1.67Cr+ B2C and 5.3L+ B2B users with zero failures. Optimized performance: 40% smaller bundles, FCP under 1.5s 💪",
+      avatarColors: "from-[#5865F2] to-[#4752c4]",
+      delay: 1.6,
     },
-    {
-      title: "Task Management",
-      description: "A productivity app for managing tasks and team collaboration.",
-      image: "/task-management-dark.png",
-      tags: ["React", "Redux", "Node.js"],
-      color: "#9333ea",
-    },
-    {
-      title: "Fitness Tracker",
-      description: "An app to track workouts, nutrition, and fitness progress.",
-      image: "/fitness-tracker-dark.png",
-      tags: ["React Native", "GraphQL", "MongoDB"],
-      color: "#a855f7",
-    },
-    {
-      title: "Weather Dashboard",
-      description: "Real-time weather forecasting with interactive maps and alerts.",
-      image: "/weather-dashboard-dark.png",
-      tags: ["JavaScript", "Weather API", "D3.js"],
-      color: "#c084fc",
-    },
-  ]
+  ], []);
+
+  const constellationStars = useMemo(() => [
+    // Big Dipper pattern
+    { x: 20, y: 25, size: 2 }, { x: 25, y: 28, size: 2 }, { x: 30, y: 30, size: 2 },
+    { x: 35, y: 29, size: 2 }, { x: 40, y: 27, size: 2 }, { x: 44, y: 32, size: 2 },
+    { x: 48, y: 35, size: 2 },
+    // Orion Belt
+    { x: 70, y: 60, size: 3 }, { x: 74, y: 62, size: 3 }, { x: 78, y: 64, size: 3 },
+    // Small cluster
+    { x: 85, y: 20, size: 1 }, { x: 87, y: 22, size: 1 }, { x: 89, y: 19, size: 1 },
+    { x: 91, y: 24, size: 1 },
+  ], []);
 
   return (
-    <>
-      <CustomCursor mousePosition={mousePosition} />
+    <LazyMotion features={domAnimation}>
+      <div className="relative">
+        {/* Hero Section with Background */}
+        <div className="relative h-screen overflow-hidden">
+        {/* Discord exact gradient background - matches reference images */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#404EED] via-[#36367c] to-[#1e1f22]" />
 
-      {/* Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-purple-600 z-50 origin-left"
-        style={{ scaleX: scrollYProgress }}
-      />
+        {/* Additional gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-radial from-[#5865F2]/10 via-transparent to-[#202225]/50" />
 
-      <div className="min-h-screen bg-black text-white overflow-hidden">
-        {/* Navigation */}
-        <nav className="fixed top-0 z-40 w-full backdrop-blur-lg bg-black/50 border-b border-gray-800/50">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-xl font-bold"
-            >
-              <span className="text-white">Piyush</span>
-              <span className="text-purple-500">Raj</span>
-            </motion.div>
-
-            <motion.ul
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, staggerChildren: 0.1, delayChildren: 0.2 }}
-              className="hidden md:flex space-x-8"
-            >
-              {["home", "about", "journey", "skills", "projects", "contact"].map((item) => (
-                <motion.li key={item} whileHover={{ y: -2 }} className="relative">
-                  <a
-                    href={`#${item === "home" ? "" : item}`}
-                    className={`hover:text-purple-500 transition-colors capitalize ${
-                      activeSection === item ? "text-purple-500" : "text-gray-300"
-                    }`}
-                  >
-                    {item}
-                  </a>
-                  {activeSection === item && (
-                    <motion.div
-                      layoutId="activeSection"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-purple-500"
-                    />
-                  )}
-                </motion.li>
-              ))}
-            </motion.ul>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="md:hidden"
-            >
-              <Button variant="ghost" size="icon" className="text-white" onClick={() => setShowMobileMenu(true)}>
-                <User className="h-6 w-6" />
-              </Button>
-            </motion.div>
-          </div>
-        </nav>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {showMobileMenu && (
-            <motion.div
-              initial={{ opacity: 0, x: "100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed inset-0 bg-black z-50 flex flex-col p-6"
-            >
-              <div className="flex justify-end">
-                <Button variant="ghost" size="icon" onClick={() => setShowMobileMenu(false)} className="text-white">
-                  <X className="h-6 w-6" />
-                </Button>
-              </div>
-
-              <div className="flex flex-col items-center justify-center flex-1 gap-8">
-                {["home", "about", "journey", "skills", "projects", "contact"].map((item) => (
-                  <motion.div
-                    key={item}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 * ["home", "about", "journey", "skills", "projects", "contact"].indexOf(item) }}
-                  >
-                    <a
-                      href={`#${item === "home" ? "" : item}`}
-                      className="text-3xl font-bold hover:text-purple-500 transition-colors capitalize"
-                      onClick={() => setShowMobileMenu(false)}
-                    >
-                      {item}
-                    </a>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Hero Section */}
-        <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
-          <ParticleBackground />
-
-          <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-black/80" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(120,50,255,0.15),transparent_70%)]" />
-          </div>
-
-          <div className="container mx-auto px-4 z-10">
-            <div className="flex flex-col items-center text-center">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="mb-6 relative w-32 h-32 group"
-              >
-                {/* Base glow effect */}
-                <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-xl" />
-                
-                {/* Sphere Container */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {/* X-axis rings */}
-                  <div className="absolute w-full h-full animate-spin-slow">
-                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-0" />
-                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-45" />
-                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-90" />
-                    <div className="absolute inset-0 border-2 border-purple-500/30 rounded-full transform rotate-135" />
-                  </div>
-                  
-                  {/* Y-axis rings */}
-                  <div className="absolute w-full h-full animate-spin-reverse">
-                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-0" />
-                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-45" />
-                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-90" />
-                    <div className="absolute inset-0 border-2 border-purple-400/30 rounded-full transform rotateY-135" />
-                  </div>
-                  
-                  {/* Z-axis rings */}
-                  <div className="absolute w-full h-full animate-spin-slow-reverse">
-                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-0" />
-                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-45" />
-                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-90" />
-                    <div className="absolute inset-0 border-2 border-purple-300/30 rounded-full transform rotateZ-135" />
-                  </div>
-                  
-                  {/* Core */}
-                  <div className="relative text-2xl font-bold text-purple-400/80 flex items-center">
-                    <span className="animate-float-slow mr-0.5">P</span>
-                    <span className="animate-float-delayed ml-0.5">R</span>
-                    
-                    {/* Glowing effect behind letters */}
-                    <div className="absolute inset-0 blur-sm bg-purple-500/30 -z-10" />
-                    
-                    {/* Rotating dots around letters */}
-                    {[...Array(6)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-0.5 h-0.5 rounded-full bg-purple-300"
-                        style={{
-                          transform: `rotate(${i * 60}deg) translateY(-10px)`,
-                          animation: `micro-orbit ${2 + i * 0.5}s infinite linear`
-                        }}
-                      />
-                    ))}
-                  </div>
-                  
-                  {/* Particles */}
-                  {[...Array(12)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-1 h-1 rounded-full bg-purple-400"
-                      style={{
-                        top: `${50 + Math.cos(i * 30) * 40}%`,
-                        left: `${50 + Math.sin(i * 30) * 40}%`,
-                        animation: `particle-orbit ${3 + Math.random() * 2}s infinite linear`,
-                        opacity: 0.6,
-                      }}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-
-              <div className="overflow-hidden">
-                <TextReveal
-                  text="Player One: Piyush Raj"
-                  className="text-4xl md:text-6xl font-bold mb-4"
-                  highlightColor="text-purple-500"
-                />
-              </div>
-
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="text-xl md:text-2xl text-gray-300 mb-8"
-              >
-                <span className="text-purple-400">Level 80</span>{" "}
-                <span className="text-gray-400">|</span>{" "}
-                <span className="text-purple-400">Software Engineer</span>{" "}
-                <span className="text-gray-400">|</span>{" "}
-                <span className="text-purple-400">AngelOne Guild</span>
-              </motion.h2>
-
-              <div className="flex flex-col md:flex-row items-center gap-8 mt-12">
-                <PlayerCard />
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
-                  className="flex flex-wrap gap-4 justify-center"
-                >
-                  <Button className="bg-purple-600 hover:bg-purple-700 relative overflow-hidden group" asChild>
-                    <a href="#projects">
-                      <Sword className="w-4 h-4 mr-2 inline-block" />
-                      <span className="relative z-10">View Quests</span>
-                      <span className="absolute inset-0 bg-purple-800 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    </a>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="border-purple-500 text-purple-500 hover:bg-purple-500/10 relative overflow-hidden group"
-                    asChild
-                  >
-                    <a href="#contact">
-                      <span className="relative z-10">Contact Me</span>
-                      <span className="absolute inset-0 bg-purple-500/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    </a>
-                  </Button>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 1,
-              delay: 1.2,
-              repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
-            }}
-            className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-          >
-            <a href="#about" className="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
-              <span className="text-sm mb-2">Scroll Down</span>
-              <ArrowDown className="h-5 w-5" />
-            </a>
-          </motion.div>
-        </section>
-
-        {/* About Section */}
-        <section id="about" ref={aboutRef} className="py-20 bg-gray-950 relative">
-          <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-transparent z-10" />
-
-          <div className="container mx-auto px-4 relative z-20">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={aboutInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7 }}
-              className="max-w-4xl mx-auto"
-            >
-              <div className="flex flex-col items-center mb-12">
-                <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
-                    <Crown className="w-8 h-8 text-purple-500" />
-                    Character <span className="text-purple-500">Stats</span>
-                  </h2>
-                  <motion.div
-                    className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
-                    initial={{ width: 0 }}
-                    animate={aboutInView ? { width: "100%" } : { width: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-10 items-center">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={aboutInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  className="relative"
-                >
-                  {/* Character Stats Card */}
-                  <div className="relative p-6 rounded-lg bg-gray-900/50 backdrop-blur-sm border border-purple-500/20 hover:border-purple-500/50 transition-all duration-300">
-                    {/* Character Level Banner */}
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-purple-500 px-4 py-1 rounded-full text-sm font-bold">
-                      Level 80
-                    </div>
-
-                    {/* Stats Grid */}
-                    <div className="space-y-6 mt-4">
-                      {[
-                        { label: "Class", value: "Software Engineer", icon: Code, color: "text-blue-400" },
-                        { label: "Guild", value: "AngelOne", icon: Trophy, color: "text-yellow-400" },
-                        { label: "Experience", value: "4+ Years", icon: Target, color: "text-green-400" },
-                        { label: "Specialization", value: "Full Stack", icon: Cpu, color: "text-red-400" },
-                      ].map((stat, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={aboutInView ? { opacity: 1, x: 0 } : {}}
-                          transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                          className="flex items-center gap-4"
-                        >
-                          <div className={`w-10 h-10 rounded-lg bg-gray-800/50 flex items-center justify-center ${stat.color}`}>
-                            <stat.icon className="w-5 h-5" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-sm text-gray-400">{stat.label}</div>
-                            <div className="text-white font-medium">{stat.value}</div>
-                          </div>
-                          {/* Progress Bar */}
-                          <div className="w-24 h-2 bg-gray-800 rounded-full overflow-hidden">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={aboutInView ? { width: "85%" } : { width: 0 }}
-                              transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-                              className="h-full bg-gradient-to-r from-purple-500 to-purple-300"
-                            />
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    {/* Achievement Badges */}
-                    <div className="mt-8 grid grid-cols-3 gap-3">
-                      {[
-                        { icon: Zap, label: "Fast Learner" },
-                        { icon: Crown, label: "Team Leader" },
-                        { icon: Sparkles, label: "Problem Solver" },
-                      ].map((badge, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={aboutInView ? { opacity: 1, scale: 1 } : {}}
-                          transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                          className="flex flex-col items-center gap-2 p-2 rounded-lg bg-gray-800/30 border border-purple-500/20"
-                        >
-                          <badge.icon className="w-5 h-5 text-purple-400" />
-                          <span className="text-xs text-gray-400">{badge.label}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={aboutInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.7, delay: 0.4 }}
-                >
-                  <h3 className="text-2xl font-semibold mb-4 text-purple-400">Who I Am</h3>
-                  <p className="text-gray-300 mb-4 leading-relaxed">
-                    I'm a passionate <span className="text-purple-400 font-medium">Senior Software Engineer</span> currently working at AngelOne. With extensive experience in web development, I bring a unique perspective to every project.
-                  </p>
-                  <p className="text-gray-300 mb-6 leading-relaxed">
-                    My journey from a Frontend Developer intern to an SDE-2 (soon to be SDE-3) has been marked by rapid growth, continuous learning, and a deep commitment to creating impactful solutions. I believe in clean code, thoughtful UI, and building products that make a difference.
-                  </p>
-
-                  <div className="flex flex-wrap gap-3">
-                    {["React", "Next.js", "TypeScript", "Node.js", "UI/UX"].map((skill, index) => (
-                      <Badge
-                        key={index}
-                        className="bg-purple-600/10 text-purple-400 border border-purple-500/30 hover:bg-purple-600/20 transition-colors duration-300"
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Journey Section */}
-        <section id="journey" ref={journeyRef} className="py-20 bg-gray-950 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-transparent z-10" />
-          
-          {/* Gaming-inspired background effects */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(120,50,255,0.15),transparent_70%)]" />
-          <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-          <div className="absolute inset-0 bg-black/50" />
-          
-          {/* Animated particles or lines (optional) */}
+        {/* Galaxy Space Background with Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Enhanced Galaxy Gradient Orbs */}
           <div className="absolute inset-0">
-            {[...Array(20)].map((_, i) => (
+            {/* Primary galaxy nebulas */}
+            <div
+              className="absolute top-[-15%] left-[-10%] w-[800px] h-[800px] bg-gradient-to-r from-[#5865F2]/30 via-[#8B5CF6]/20 to-transparent rounded-full blur-[140px] animate-pulse"
+              style={{ animationDuration: "8s" }}
+            />
+            <div
+              className="absolute bottom-[-15%] right-[-10%] w-[900px] h-[900px] bg-gradient-to-l from-[#EB459E]/25 via-[#F472B6]/15 to-transparent rounded-full blur-[160px] animate-pulse"
+              style={{ animationDuration: "12s", animationDelay: "2s" }}
+            />
+            <div
+              className="absolute top-[30%] right-[20%] w-[600px] h-[600px] bg-gradient-to-br from-[#57F287]/20 via-[#34D399]/15 to-transparent rounded-full blur-[130px] animate-pulse"
+              style={{ animationDuration: "10s", animationDelay: "4s" }}
+            />
+            <div
+              className="absolute bottom-[20%] left-[10%] w-[700px] h-[700px] bg-gradient-to-tr from-[#FEE75C]/15 via-[#FBBF24]/10 to-transparent rounded-full blur-[150px] animate-pulse"
+              style={{ animationDuration: "14s", animationDelay: "1s" }}
+            />
+
+            {/* Additional cosmic depth */}
+            <div
+              className="absolute w-screen h-screen bg-gradient-to-r from-[#A855F7]/15 to-transparent rounded-full blur-[120px] animate-pulse"
+              style={{ animationDuration: "9s", animationDelay: "3s" }}
+            />
+          </div>
+
+          {/* Optimized Floating Space Illustrations */}
+          {spaceElements.map((item, i) => (
+            <motion.div
+              key={`space-${i}`}
+              className={`absolute ${item.size} select-none pointer-events-none filter blur-[1px] w-screen h-screen`}
+              style={{ top: item.top, left: item.left }}
+              animate={{
+                y:
+                  item.type.includes("star") ||
+                  item.type.includes("sparkle") ||
+                  item.type.includes("twinkle")
+                    ? [-10, 10, -10]
+                    : [-30, 30, -30],
+                x:
+                  item.type.includes("star") ||
+                  item.type.includes("sparkle") ||
+                  item.type.includes("twinkle")
+                    ? [-5, 5, -5]
+                    : [-15, 15, -15],
+                rotate: item.type === "rocket" ? [0, 360] : [-10, 10, -10],
+                scale:
+                  item.type.includes("star") ||
+                  item.type.includes("sparkle") ||
+                  item.type.includes("twinkle")
+                    ? [0.5, 1.5, 0.5]
+                    : [0.8, 1.2, 0.8],
+                opacity:
+                  item.type.includes("star") ||
+                  item.type.includes("sparkle") ||
+                  item.type.includes("twinkle")
+                    ? [0.3, 1, 0.3]
+                    : [0.2, 0.3, 0.2],
+              }}
+              transition={{
+                duration: item.duration,
+                delay: item.delay,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              {item.type === "rocket" && (
+                <span className="text-white/20">🚀</span>
+              )}
+              {item.type === "saturn" && (
+                <span className="text-white/25">🪐</span>
+              )}
+              {item.type === "earth" && (
+                <span className="text-blue-300/30">🌍</span>
+              )}
+              {item.type === "mars" && (
+                <span className="text-red-300/30">🔴</span>
+              )}
+              {item.type === "neptune" && (
+                <span className="text-blue-400/30">🔵</span>
+              )}
+              {item.type === "venus" && (
+                <span className="text-yellow-300/30">🟡</span>
+              )}
+              {item.type === "jupiter" && (
+                <span className="text-orange-300/30">🟠</span>
+              )}
+              {item.type === "star" && (
+                <span className="text-white/40">⭐</span>
+              )}
+              {item.type === "sparkle" && (
+                <span className="text-white/50">✨</span>
+              )}
+              {item.type === "twinkle" && (
+                <span className="text-white/60">💫</span>
+              )}
+              {item.type === "satellite" && (
+                <span className="text-white/20">🛰️</span>
+              )}
+            </motion.div>
+          ))}
+
+
+
+          {/* Optimized Twinkling Star Field */}
+          <div className="absolute inset-0 w-screen h-screen">
+            {Array.from({ length: 75 }).map((_, i) => {
+              const seed = i * 9876543;
+              const left = seed % 100;
+              const top = (seed * 7) % 100;
+              const delay = ((seed * 3) % 12000) / 1000;
+              const size = (seed % 4) + 1;
+              const brightness = (seed % 5) + 3; // 3-7 for varied brightness
+              const blinkSpeed = (seed % 3) + 2; // 2-4 second blink cycles
+
+              return (
+                <motion.div
+                  key={`star-${i}`}
+                  className="absolute"
+                  style={{
+                    left: `${left}%`,
+                    top: `${top}%`,
+                  }}
+                  animate={{
+                    opacity: [0.1, 1, 0.1],
+                    scale: [0.3, 1.8, 0.3],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: blinkSpeed + (i % 3),
+                    delay: delay,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <div
+                    className={`bg-white rounded-full`}
+                    style={{
+                      width: `${size}px`,
+                      height: `${size}px`,
+                      filter: "blur(0.5px)",
+                      opacity: brightness / 10,
+                      boxShadow: `0 0 ${size * 2}px rgba(255, 255, 255, ${
+                        brightness / 10
+                      })`,
+                    }}
+                  />
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Optimized Shooting Stars */}
+          <div className="absolute inset-0 w-screen h-screen">
+            {Array.from({ length: 4 }).map((_, i) => {
+              // Use deterministic values based on index to avoid hydration mismatch
+              const seed = i * 1234567;
+              const startLeft = (seed % 8000) / 100 + 10;
+              const startTop = ((seed * 7) % 8000) / 100 + 10;
+              const endLeft = startLeft + ((seed * 3) % 4000) / 100 - 20;
+              const endTop = startTop + ((seed * 5) % 4000) / 100 - 20;
+              const delay = i * 8 + (seed % 500) / 100;
+              const duration = 2 + (seed % 200) / 100;
+
+              return (
+                <motion.div
+                  key={`shooting-star-${i}`}
+                  className="absolute w-1 h-1 bg-white rounded-full"
+                  style={{
+                    left: `${startLeft}%`,
+                    top: `${startTop}%`,
+                    filter: "blur(0.5px)",
+                    boxShadow:
+                      "0 0 8px rgba(255, 255, 255, 0.8), 0 0 16px rgba(255, 255, 255, 0.4)",
+                  }}
+                  animate={{
+                    x: [`0%`, `${endLeft - startLeft}vw`],
+                    y: [`0%`, `${endTop - startTop}vh`],
+                    opacity: [0, 1, 1, 0],
+                    scale: [0, 1, 1, 0],
+                  }}
+                  transition={{
+                    duration: duration,
+                    delay: delay,
+                    repeat: Infinity,
+                    ease: "easeOut",
+                  }}
+                />
+              );
+            })}
+          </div>
+
+          {/* Optimized Constellation Patterns */}
+          <div className="absolute inset-0 w-screen h-screen">
+            {constellationStars.map((star, i) => (
               <motion.div
-                key={i}
-                className="absolute h-px w-[100px] bg-gradient-to-r from-transparent via-purple-500 to-transparent"
+                key={`constellation-${i}`}
+                className="absolute bg-white rounded-full"
                 style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                  rotate: `${Math.random() * 360}deg`,
+                  left: `${star.x}%`,
+                  top: `${star.y}%`,
+                  width: `${star.size}px`,
+                  height: `${star.size}px`,
+                  filter: "blur(0.3px)",
+                  boxShadow: `0 0 ${star.size * 3}px rgba(255, 255, 255, 0.6)`,
                 }}
                 animate={{
-                  opacity: [0, 1, 0],
-                  scale: [1, 1.2, 1],
+                  opacity: [0.4, 1, 0.4],
+                  scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 4 + (i % 3),
+                  delay: i * 0.5,
                   repeat: Infinity,
-                  delay: i * 0.1,
+                  ease: "easeInOut",
                 }}
               />
             ))}
           </div>
+        </div>
 
-          <div className="container mx-auto px-4 relative z-20">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={journeyInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7 }}
-              className="max-w-4xl mx-auto"
-            >
-              <div className="flex flex-col items-center mb-12">
-                <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
-                    <Gamepad2 className="w-8 h-8 text-purple-500" />
-                    Quest <span className="text-purple-500">Progress</span>
-                  </h2>
-                  <motion.div
-                    className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
-                    initial={{ width: 0 }}
-                    animate={journeyInView ? { width: "100%" } : { width: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
+        {/* Navigation */}
+        <nav className="fixed top-0 bottom-0  w-full bg-black/10">
+          <div className="px-6 lg:px-10">
+            <div className="flex items-center justify-between h-20">
+              {/* Personal Brand */}
+              <Link
+                href="/"
+                className="flex items-center hover:opacity-80 transition-opacity"
+              >
+                <span
+                  className="text-white font-bold text-xl tracking-tight"
+                  style={{
+                    fontFamily: "Alan Sans",
+                  }}
+                >
+                  Piyush Raj
+                </span>
+              </Link>
+
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden text-white p-2"
+                onClick={toggleMenu}
+              >
+                {isMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
+            </div>
+          </div>
+
+         
+        </nav>
+
+        {/* Hero Section - Split Layout */}
+        <section className="relative flex items-center pt-16 sm:pt-20 md:pt-24 lg:pt-32  overflow-hidden">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 relative z-20 w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12 xl:gap-16 2xl:gap-20 items-center">
+              {/* Left Side - Portfolio Content */}
+              <div className="text-left order-2 lg:order-1 w-full max-w-none lg:max-w-2xl xl:max-w-3xl">
+                {/* Animated heading with stagger effect */}
+                <div className="mb-6 sm:mb-8 overflow-hidden">
+                  <motion.h1
+                    className="font-black text-white uppercase tracking-tight"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <motion.span
+                      className="block text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold"
+                      initial={{ y: 50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.1,
+                        ease: "easeOut",
+                      }}
+                      style={{
+                        fontFamily: "Alan Sans",
+                      }}
+                    >
+                      SOFTWARE
+                    </motion.span>
+                    <motion.span
+                      className="block text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold"
+                      initial={{ y: 50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.2,
+                        ease: "easeOut",
+                      }}
+                      style={{
+                        fontFamily: "Alan Sans",
+                      }}
+                    >
+                      DEVELOPMENT
+                    </motion.span>
+                    <motion.span
+                      className="block text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold bg-gradient-to-r from-[#5865F2] via-[#8B5CF6] to-[#EB459E] bg-clip-text text-transparent animate-pulse"
+                      style={{
+                        animationDuration: "3s",
+                        fontFamily: "Alan Sans",
+                      }}
+                      initial={{ y: 50, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.3,
+                        ease: "easeOut",
+                      }}
+                    >
+                      ENGINEER III
+                    </motion.span>
+                  </motion.h1>
                 </div>
+
+                {/* Animated description */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="mb-8 sm:mb-10 lg:mb-12"
+                >
+                  <div className="text-base sm:text-lg lg:text-xl xl:text-2xl text-white/90 leading-relaxed max-w-2xl">
+                    Building scalable applications at{" "}
+                    <motion.span
+                      className="text-[#5865F2] font-semibold relative"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      Angel One
+                      <motion.div
+                        className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5865F2]"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ duration: 0.4, delay: 0.6 }}
+                      />
+                    </motion.span>{" "}
+                    with modern tech stack. Specialized in AI-powered platforms,
+                    micro-frontends, and high-performance web applications
+                    serving millions of users.
+                  </div>
+                </motion.div>
+
+                {/* CTA Buttons with enhanced animations */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
+                  className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8 sm:mb-12"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <Button
+                      size="lg"
+                      className="w-full sm:w-auto bg-white hover:bg-[#f2f3f5] text-black px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-full flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-2xl hover:shadow-white/20 group"
+                      onClick={openResumeModal}
+                    >
+                      <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                      </svg>
+                      View Resume
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full sm:w-auto bg-gradient-to-r from-[#23272a] to-[#2c2f36] hover:from-[#36393f] hover:to-[#3a3d44] text-white border-2 border-white/20 hover:border-white/40 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-full transition-all duration-300 hover:shadow-2xl hover:shadow-[#5865F2]/20 group"
+                      onClick={copyEmail}
+                    >
+                      <Mail className="w-5 h-5 mr-2 group-hover:animate-bounce" />
+                      {copiedEmail ? "✓ Email Copied!" : "Get In Touch"}
+                    </Button>
+                  </motion.div>
+                </motion.div>
               </div>
 
-              <div className="space-y-12">
-                {[
-                  {
-                    year: "2021",
-                    level: "Level 1",
-                    title: "Beginner's Quest",
-                    description: "Started my journey as a Frontend Developer intern during my final year at LPU.",
-                    icon: Terminal,
-                    achievement: "First Code Deployment 🎯",
-                  },
-                  {
-                    year: "2021-2023",
-                    level: "Level 2",
-                    title: "Code Warrior",
-                    description: "Worked as SDE-1 at an early-stage startup for 1 year and 10 months, gaining hands-on experience in web development.",
-                    icon: Rocket,
-                    achievement: "Startup Survivor 🚀",
-                  },
-                  {
-                    year: "2023",
-                    level: "Level 3",
-                    title: "New Adventure",
-                    description: "Transitioned to AngelOne through an acquihire, continuing as SDE-1.",
-                    icon: Target,
-                    achievement: "Team Transition Master 🎯",
-                  },
-                  {
-                    year: "2024",
-                    level: "Level 4",
-                    title: "Power Level Up",
-                    description: "Promoted to SDE-2 within 10 months at AngelOne.",
-                    icon: Trophy,
-                    achievement: "Quick Promotion Unlocked 🏆",
-                  },
-                  {
-                    year: "2025",
-                    level: "Level 5",
-                    title: "Boss Battle",
-                    description: "On track for promotion to SDE-3 by April 2025.",
-                    icon: Target,
-                    achievement: "Next Challenge Loading... ⚔️",
-                  },
-                ].map((milestone, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                    animate={journeyInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ duration: 0.7, delay: 0.2 * index }}
-                    className="relative"
-                  >
-                    {/* Connection Line */}
-                    {index !== 4 && (
-                      <div className="absolute left-[27px] top-[64px] w-1 h-[calc(100%+48px)] bg-gradient-to-b from-purple-500 to-transparent" />
-                    )}
+              {/* Right Side - Discord UI Elements */}
+              <div className="relative order-1 lg:order-2 w-full h-[300px] xs:h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] xl:h-[550px] 2xl:h-[600px]">
+                {/* Main Discord Desktop Window */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, rotateY: 5 }}
+                  animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                  transition={{
+                    delay: 0.6,
+                    duration: 0.6,
+                    ease: "easeOut",
+                    type: "spring",
+                    stiffness: 200,
+                  }}
+                  whileHover={{
+                    scale: 1.02,
+                    rotateY: -2,
+                    transition: { duration: 0.3 },
+                  }}
+                  className="absolute left-0 top-0 w-full h-full"
+                >
+                  <div className="bg-[#36393f] rounded-lg shadow-2xl overflow-hidden h-full backdrop-blur-sm">
+                    {/* Discord window header */}
+                    <div className="h-8 bg-[#202225] flex items-center justify-between px-4">
+                      <div className="flex gap-2">
+                        <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                        <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                        <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                      </div>
+                      <div className="text-white text-sm font-medium">
+                        Portfolio Chat
+                      </div>
+                      <div className="w-12" />
+                    </div>
 
-                    <div className="flex gap-6">
-                      {/* Level Indicator */}
-                      <div className="relative">
+                    {/* Discord app interface */}
+                    <div className="flex h-full">
+                      {/* Server sidebar with smooth animations */}
+                      <div className="w-[60px] lg:w-[72px] bg-[#202225] flex flex-col items-center py-3 gap-2">
                         <motion.div
-                          className="w-14 h-14 rounded-full bg-purple-500/20 border-2 border-purple-500 flex items-center justify-center"
-                          whileHover={{ scale: 1.1 }}
+                          className="w-10 h-10 lg:w-12 lg:h-12 bg-[#5865F2] rounded-[20px] lg:rounded-[24px] flex items-center justify-center text-white font-bold cursor-pointer relative group"
+                          whileHover={{
+                            borderRadius: "16px",
+                            scale: 1.1,
+                            rotate: [0, -5, 5, 0],
+                          }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                            duration: 0.3,
+                          }}
                         >
-                          <milestone.icon className="w-6 h-6 text-purple-400" />
+                          <motion.svg
+                            className="w-6 h-6 lg:w-8 lg:h-8"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.197.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
+                          </motion.svg>
+                          <motion.div
+                            className="absolute -inset-1 bg-white/10 rounded-[20px] -z-10"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            whileHover={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.2 }}
+                          />
                         </motion.div>
+                        <div className="w-8 h-[2px] lg:w-12 lg:h-[2px] bg-[#35383e] rounded-full" />
+                        {[
+                          { color: "#5865F2", delay: 0 },
+                          { color: "#57F287", delay: 0.1 },
+                          { color: "#EB459E", delay: 0.2 },
+                        ].map((server, index) => (
+                          <motion.div
+                            key={index}
+                            className="w-10 h-10 lg:w-12 lg:h-12 bg-[#36393f] rounded-full cursor-pointer relative group"
+                            whileHover={{
+                              backgroundColor: server.color,
+                              borderRadius: "16px",
+                              scale: 1.1,
+                            }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 25,
+                              delay: server.delay,
+                            }}
+                          >
+                            <motion.div
+                              className="absolute -inset-1 rounded-full -z-10"
+                              style={{ backgroundColor: server.color }}
+                              initial={{ opacity: 0, scale: 0.5 }}
+                              whileHover={{ opacity: 0.2, scale: 1.1 }}
+                              transition={{ duration: 0.3 }}
+                            />
+                          </motion.div>
+                        ))}
                       </div>
 
-                      {/* Content Card */}
-                      <div className="flex-1">
-                        <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg p-6 border border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 relative group">
-                          {/* Gaming-inspired hover effect */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/5 to-purple-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          
-                          <div className="flex justify-between items-start mb-4">
-                            <div>
-                              <span className="text-purple-400 font-semibold">{milestone.year}</span>
-                              <h3 className="text-xl font-bold mt-1 text-white group-hover:text-purple-400 transition-colors">
-                                {milestone.title}
-                              </h3>
-                            </div>
-                            <span className="text-sm font-mono text-purple-400/80">{milestone.level}</span>
+                      {/* Channel sidebar with smooth interactions */}
+                      <div className="hidden sm:block w-[140px] lg:w-[180px] bg-[#2f3136]">
+                        <div className="p-3 lg:p-4">
+                          <motion.div
+                            className="text-white font-semibold mb-4 text-sm lg:text-base"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.8, duration: 0.4 }}
+                          >
+                            Portfolio Server
+                          </motion.div>
+                          <motion.div
+                            className="text-white/60 text-xs font-semibold uppercase mb-2"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.9, duration: 0.4 }}
+                          >
+                            Text Channels
+                          </motion.div>
+                          <div className="space-y-1">
+                            {[
+                              {
+                                name: "introductions",
+                                active: true,
+                                delay: 1.0,
+                              },
+                              { name: "tech-stack", active: false, delay: 1.1 },
+                              {
+                                name: "achievements",
+                                active: false,
+                                delay: 1.2,
+                              },
+                            ].map((channel, index) => (
+                              <motion.div
+                                key={channel.name}
+                                className={`px-2 py-1 rounded text-sm flex items-center gap-2 cursor-pointer group transition-all duration-300 ${
+                                  channel.active
+                                    ? "bg-[#42464d] text-white"
+                                    : "text-[#96989d] hover:bg-[#42464d]/50 hover:text-white"
+                                }`}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{
+                                  delay: channel.delay,
+                                  duration: 0.3,
+                                }}
+                                whileHover={{
+                                  x: 4,
+                                  backgroundColor: channel.active
+                                    ? "#42464d"
+                                    : "#42464d",
+                                }}
+                                whileTap={{ scale: 0.98 }}
+                              >
+                                <motion.span
+                                  className="text-[#72767d] group-hover:text-white transition-colors duration-300"
+                                  whileHover={{ scale: 1.2 }}
+                                >
+                                  #
+                                </motion.span>
+                                <span className="truncate">{channel.name}</span>
+                                {channel.active && (
+                                  <motion.div
+                                    className="w-1 h-4 bg-white rounded-full ml-auto"
+                                    initial={{ scaleY: 0 }}
+                                    animate={{ scaleY: 1 }}
+                                    transition={{
+                                      delay: channel.delay + 0.2,
+                                      duration: 0.2,
+                                    }}
+                                  />
+                                )}
+                              </motion.div>
+                            ))}
                           </div>
-                          
-                          <p className="text-gray-300 mb-4">{milestone.description}</p>
-                          
-                          <div className="flex items-center gap-2 text-sm">
-                            <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400">
-                              {milestone.achievement}
+                        </div>
+                      </div>
+
+                      {/* Main chat area */}
+                      <div className="flex-1 bg-[#36393f] flex flex-col">
+                        {/* Chat header */}
+                        <div className="h-10 lg:h-12 border-b border-[#202225] px-3 lg:px-4 flex items-center">
+                          <span className="text-[#72767d] text-lg">#</span>
+                          <span className="ml-2 text-white font-semibold text-sm lg:text-base">
+                            introductions
+                          </span>
+                          <div className="ml-auto flex items-center gap-2">
+                            <div className="w-2 h-2 bg-[#3ba55d] rounded-full animate-pulse" />
+                            <span className="text-[#b5bac1] text-xs hidden lg:inline">
+                              Active Now
                             </span>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
 
-        {/* Skills Section */}
-        <section id="skills" ref={skillsRef} className="py-20 bg-black relative">
-          <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-gray-950 to-transparent z-10" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(120,50,255,0.15),transparent_70%)]" />
-          
-          {/* Add gaming grid background */}
-          <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
+                        {/* Optimized Messages */}
+                        <div className="flex-1 p-3 lg:p-4 space-y-3 overflow-y-auto bg-[#36393f] smooth-scroll">
+                          {chatMessages.map((msg, msgIndex) => (
+                            <motion.div
+                              key={msgIndex}
+                              className="flex gap-3 group"
+                              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              transition={{
+                                delay: msg.delay,
+                                duration: 0.4,
+                                type: "spring",
+                                stiffness: 300,
+                              }}
+                              whileHover={{ scale: 1.01 }}
+                            >
+                              <motion.div
+                                className={`w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br ${msg.avatarColors} rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg cursor-pointer`}
+                                whileHover={{
+                                  scale: 1.1,
+                                  rotate: [0, -5, 5, 0],
+                                  boxShadow:
+                                    "0 8px 32px rgba(88, 101, 242, 0.3)",
+                                }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                {msg.avatar}
+                              </motion.div>
+                              <div className="flex-1">
+                                <motion.div
+                                  className="flex items-center gap-2 mb-1"
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{
+                                    delay: msg.delay + 0.05,
+                                    duration: 0.3,
+                                  }}
+                                >
+                                  <span className="text-[#f2f3f5] font-bold text-sm hover:text-white transition-colors cursor-pointer">
+                                    {msg.user}
+                                  </span>
+                                  {msg.role && (
+                                    <motion.span
+                                      className={`${
+                                        msg.roleColor || "bg-[#5865F2]"
+                                      } text-white text-xs px-2 py-0.5 rounded font-medium cursor-pointer`}
+                                      whileHover={{ scale: 1.05, y: -1 }}
+                                      whileTap={{ scale: 0.95 }}
+                                    >
+                                      {msg.role}
+                                    </motion.span>
+                                  )}
+                                  <span className="text-[#b5bac1] text-xs group-hover:text-[#dcddde] transition-colors">
+                                    {msg.time}
+                                  </span>
+                                </motion.div>
+                                <motion.div
+                                  className="text-[#dcddde] text-sm leading-relaxed bg-[#4f545c]/60 p-3 rounded-lg border border-[#5c6370]/50 shadow-sm backdrop-blur-sm hover:bg-[#4f545c]/80 hover:border-[#5c6370]/70 transition-all duration-300 cursor-pointer group-hover:shadow-md"
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{
+                                    delay: msg.delay + 0.1,
+                                    duration: 0.3,
+                                  }}
+                                  whileHover={{ y: -1 }}
+                                >
+                                  {msg.message
+                                    .split(
+                                      /(Angel One|720\+ articles daily|70% effort reduction|1\.67Cr\+ B2C|5\.3L\+ B2B users|zero failures|40% smaller bundles|scalable systems)/
+                                    )
+                                    .map((part, i) => {
+                                      const highlights: Record<string, string> =
+                                        {
+                                          "Angel One":
+                                            "text-[#00d4aa] bg-[#00d4aa]/20",
+                                          "720+ articles daily":
+                                            "text-[#faa61a] bg-[#faa61a]/20",
+                                          "70% effort reduction":
+                                            "text-[#23a559] bg-[#23a559]/20",
+                                          "1.67Cr+ B2C":
+                                            "text-[#faa61a] bg-[#faa61a]/20",
+                                          "5.3L+ B2B users":
+                                            "text-[#faa61a] bg-[#faa61a]/20",
+                                          "zero failures":
+                                            "text-[#23a559] bg-[#23a559]/20",
+                                          "40% smaller bundles":
+                                            "text-[#5865f2] bg-[#5865f2]/20",
+                                          "scalable systems":
+                                            "text-[#5865f2] bg-[#5865f2]/20",
+                                        };
 
-          <div className="container mx-auto px-4 relative z-20">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={skillsInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7 }}
-              className="max-w-4xl mx-auto"
-            >
-              <div className="flex flex-col items-center mb-12">
-                <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
-                    <Cpu className="w-8 h-8 text-purple-500" />
-                    Skill <span className="text-purple-500">Tree</span>
-                  </h2>
-                  <motion.div
-                    className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
-                    initial={{ width: 0 }}
-                    animate={skillsInView ? { width: "100%" } : { width: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
-                {[
-                  { name: "Frontend Magic", icon: Sparkles, value: 90, xp: "90,000 XP" },
-                  { name: "Backend Powers", icon: Zap, value: 85, xp: "85,000 XP" },
-                  { name: "UI/UX Mastery", icon: Crown, value: 80, xp: "80,000 XP" },
-                  { name: "React Wizardry", icon: Cpu, value: 95, xp: "95,000 XP" },
-                  { name: "Node.js Craft", icon: Terminal, value: 85, xp: "85,000 XP" },
-                  { name: "Database Arts", icon: Trophy, value: 75, xp: "75,000 XP" },
-                ].map((skill, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={skillsInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.5, delay: 0.1 * index }}
-                    className="group"
-                    whileHover={{ y: -5 }}
-                  >
-                    <Card className="bg-gray-900/50 backdrop-blur-sm border-gray-800/50 hover:border-purple-500/50 transition-all duration-300 h-full relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                      <CardContent className="p-6 flex flex-col items-center text-center relative z-10">
-                        <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors relative">
-                          <skill.icon className="h-8 w-8 text-purple-400" />
-                          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100">
-                            <motion.circle
-                              initial={{ pathLength: 0 }}
-                              animate={skillsInView ? { pathLength: skill.value / 100 } : { pathLength: 0 }}
-                              transition={{ duration: 1.5, delay: 0.2 + 0.1 * index }}
-                              stroke="rgba(139, 92, 246, 0.6)"
-                              strokeWidth="4"
-                              fill="transparent"
-                              r="48"
-                              cx="50"
-                              cy="50"
-                              strokeLinecap="round"
-                              className="transform -rotate-90 origin-center"
-                            />
-                          </svg>
+                                      if (highlights[part]) {
+                                        return (
+                                          <motion.span
+                                            key={i}
+                                            className={`font-semibold px-1.5 py-0.5 rounded transition-all duration-200 hover:scale-105 cursor-pointer ${highlights[part]}`}
+                                            whileHover={{ scale: 1.05 }}
+                                          >
+                                            {part}
+                                          </motion.span>
+                                        );
+                                      }
+                                      return part;
+                                    })}
+                                </motion.div>
+                              </div>
+                            </motion.div>
+                          ))}
                         </div>
-                        <h3 className="font-semibold mb-2 group-hover:text-purple-400 transition-colors">
-                          {skill.name}
-                        </h3>
-                        <div className="w-full bg-gray-800/50 rounded-full h-2.5 mb-1 mt-2 overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={skillsInView ? { width: `${skill.value}%` } : {}}
-                            transition={{ duration: 1, delay: 0.2 + 0.1 * index }}
-                            className="h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400"
-                          />
-                        </div>
-                        <span className="text-sm text-purple-400 font-mono">{skill.xp}</span>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Projects Section */}
-        <section id="projects" ref={projectsRef} className="py-20 bg-gray-950 relative">
-          <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-transparent z-10" />
-
-          <div className="container mx-auto px-4 relative z-20">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={projectsInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7 }}
-            >
-              <div className="flex flex-col items-center mb-12">
-                <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
-                    <Trophy className="w-8 h-8 text-purple-500" />
-                    Quest <span className="text-purple-500">Log</span>
-                  </h2>
-                  <motion.div
-                    className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
-                    initial={{ width: 0 }}
-                    animate={projectsInView ? { width: "100%" } : { width: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </div>
-              </div>
-
-              <div className="overflow-hidden">
-                <HorizontalScroll className="flex gap-6 pb-8 px-4 -mx-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide">
-                  {projects.map((project, index) => (
-                    <div key={index} className="snap-center" style={{ flex: "0 0 85%" }}>
-                      <ProjectCard project={project} index={index} inView={projectsInView} />
-                    </div>
-                  ))}
-                </HorizontalScroll>
-              </div>
-
-              <div className="mt-8 text-center">
-                <Button variant="outline" className="border-purple-500 text-purple-500 hover:bg-purple-500/10">
-                  View All Projects
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section id="contact" ref={contactRef} className="py-20 bg-black relative">
-          <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-gray-950 to-transparent z-10" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(120,50,255,0.15),transparent_70%)]" />
-
-          <div className="container mx-auto px-4 relative z-20">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={contactInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7 }}
-              className="max-w-4xl mx-auto"
-            >
-              <div className="flex flex-col items-center mb-12">
-                <div className="inline-block relative">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center flex items-center gap-3">
-                    <Gamepad2 className="w-8 h-8 text-purple-500" />
-                    Player <span className="text-purple-500">Connect</span>
-                  </h2>
-                  <motion.div
-                    className="absolute -bottom-2 left-0 right-0 h-1 bg-purple-500"
-                    initial={{ width: 0 }}
-                    animate={contactInView ? { width: "100%" } : { width: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-10">
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={contactInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.7, delay: 0.2 }}
-                  className="relative"
-                >
-                  <div className="absolute -top-10 -left-10 w-20 h-20 border border-purple-500/30 rounded-full z-[-1]" />
-                  <div className="absolute -bottom-10 -right-10 w-40 h-40 border border-purple-500/30 rounded-full z-[-1]" />
-
-                  <h3 className="text-2xl font-semibold mb-4 text-purple-400">Contact Information</h3>
-                  <p className="text-gray-300 mb-6">
-                    Feel free to reach out to me for collaborations, opportunities, or just to say hello!
-                  </p>
-
-                  <div className="space-y-6">
-                    <motion.div className="flex items-center group" whileHover={{ x: 5 }}>
-                      <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center mr-4 group-hover:bg-purple-500/20 transition-colors">
-                        <Mail className="h-5 w-5 text-purple-400" />
                       </div>
-                      <div>
-                        <p className="text-sm text-gray-400">Email</p>
-                        <p className="text-white group-hover:text-purple-400 transition-colors">piyushraj888s@gmail.com</p>
-                      </div>
-                    </motion.div>
-
-                    <motion.div className="flex items-center group" whileHover={{ x: 5 }}>
-                      <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center mr-4 group-hover:bg-purple-500/20 transition-colors">
-                        <Github className="h-5 w-5 text-purple-400" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-400">GitHub</p>
-                        <p className="text-white group-hover:text-purple-400 transition-colors">github.com/devfirexyz</p>
-                      </div>
-                    </motion.div>
-                  </div>
-
-                  <div className="mt-10">
-                    <h4 className="text-lg font-medium mb-4 text-gray-200">Follow Me</h4>
-                    <div className="flex space-x-4">
-                      {["github", "twitter", "linkedin", "instagram"].map((social, index) => (
-                        <motion.a
-                          key={index}
-                          href="#"
-                          whileHover={{ y: -5, backgroundColor: "#7c3aed", color: "#ffffff" }}
-                          className="w-12 h-12 rounded-full bg-gray-800/50 backdrop-blur-sm flex items-center justify-center text-gray-400 border border-gray-700/50 transition-colors"
-                        >
-                          <span className="sr-only">{social}</span>
-                          <Github className="h-5 w-5" />
-                        </motion.a>
-                      ))}
                     </div>
                   </div>
                 </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={contactInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.7, delay: 0.4 }}
-                >
-                  <form className="space-y-4 relative">
-                    <div className="absolute -top-20 -right-20 w-40 h-40 border border-purple-500/30 rounded-full z-[-1]" />
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label htmlFor="name" className="text-sm text-gray-400">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          className="w-full px-4 py-3 rounded-lg bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 transition-all duration-300"
-                          placeholder="Your Name"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm text-gray-400">
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          className="w-full px-4 py-3 rounded-lg bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 transition-all duration-300"
-                          placeholder="Your Email"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="subject" className="text-sm text-gray-400">
-                        Subject
-                      </label>
-                      <input
-                        type="text"
-                        id="subject"
-                        className="w-full px-4 py-3 rounded-lg bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 transition-all duration-300"
-                        placeholder="Subject"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label htmlFor="message" className="text-sm text-gray-400">
-                        Message
-                      </label>
-                      <textarea
-                        id="message"
-                        rows={5}
-                        className="w-full px-4 py-3 rounded-lg bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 transition-all duration-300 resize-none"
-                        placeholder="Your Message"
-                      />
-                    </div>
-
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700 relative overflow-hidden group">
-                      <span className="relative z-10">Send Message</span>
-                      <span className="absolute inset-0 bg-purple-800 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    </Button>
-                  </form>
-                </motion.div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
-
-        {/* Footer */}
-        <footer className="py-8 bg-gray-950 border-t border-gray-800/50 relative z-20">
-          <div className="container mx-auto px-4 text-center">
-            <p className="text-gray-400">© {new Date().getFullYear()} devfirexyz. All rights reserved.</p>
-          
-          </div>
-        </footer>
       </div>
-    </>
-  )
+
+      {/*  Footer */}
+      <footer className="relative bg-[#5865F2] text-white mt-0 bg-gradient-to-b from-[#31338b] to-[#5865F2]">
+        <div className="relative w-full flex justify-center">
+          <img
+            src="/characters_side.webp"
+            alt="side characters"
+            width={950}
+            height={490}
+            className="md:flex hidden absolute -mt-44"
+          />
+           <img
+            src="/character_main.webp"
+            alt="main character"
+            width={250}
+            height={300}
+            className="absolute -mt-44"
+          />
+          <img
+            src="/character_leaf.webp"
+            alt="main character"
+            width={350}
+            height={150}
+            className="absolute -mt-[265px] animate-bounce"
+          />
+        </div>
+
+        <div className="relative w-full py-16 lg:pt-96">
+          {/* Large "Piyush Raj" Text - Discord Style with Uni Sans Heavy */}
+          <div className="relative pt-20 pb-16 text-center">
+            <h1
+              className="text-[120px] sm:text-[180px] md:text-[240px] lg:text-[320px] font-black text-white select-none leading-[0.9]"
+              style={{
+                fontFamily:
+                  '"Alan Sans", "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+                fontWeight: 900,
+                fontStretch: "condensed",
+                opacity: 0.9,
+                textShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                WebkitTextStroke: "2px rgba(255,255,255,0.1)",
+                letterSpacing: "0.1rem",
+              }}
+            >
+              Piyush Raj
+            </h1>
+          </div>
+        </div>
+      </footer>
+
+      {/* Optimized Resume Modal */}
+      {isResumeModalOpen && (
+        <ResumeModal onClose={closeResumeModal} />
+      )}
+      </div>
+    </LazyMotion>
+  );
 }

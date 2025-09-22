@@ -1,0 +1,37 @@
+PIYUSH RAJ
+ +91-798-832-1537 | # piyushraj888s@gmail.com ïlinkedin.com/in/piyush-raj-60a6a2117 | §github.com/piyush-fs-dev
+  SKILLS SUMMARY
+ Languages : Typescript, JavaScript, Python, Java
+Technologies&Tools: Svelte&SvelteKit,NodeJS,ExpressJS,Python,CrewAI,VercelAI-SDK,Quarkus,Firebase,Docker,AWS,EC2, DocumentDB, Redis, S3, Flipper, Nx, Redux, React Native-Web, ReactJS, React Native Reanimated 2
+WORK EXPERIENCE
+Angel One Bangalore, KA, India Software Development Engineer III May 2025 - Current
+(Previously Software Development Engineer II: Aug 2024 - Apr 2025 | Software Development Engineer I: Aug 2023 - July 2024)
+• Developed an AI-powered financial content automation platform from scratch ingesting 15+ news sources (720+ daily articles) with automated trending-topic detection, reducing research effort by 70–80%.
+• Led the development & integration of composable-SDK within A1 super app, launching 3 successful campaigns (Oct–Dec 2024) reaching 192,124 users with 3.42% expansion rate, and architected for seamless scalability without code changes.
+• Scaled SDK to handle concurrent B2B (530,265 users) and B2C (1.67Cr+ users) campaigns, later executing global mutual-fund campaigns with zero failures, no performance degradation, and consistently low latency.
+• Led the development of Finone super-app integrating 5+ mini-apps, achieving >80% on-time delivery (Finone) with zero critical incidents.
+• Optimized finone app performance by cutting load size 40% to achieve FCP <1.5s, LCP <2.5s, FID <100ms, and TTI <4s on mid-range devices.
+• Led the development of a UI library (atomic design system with Storybook) for consistent UI, and a utils library (pure JS API layer with batching, caching, intelligent polling, offline queues), accelerating cross-team delivery and reducing integration efforts.
+• Established comprehensive monitoring for Web Vitals, analytics, and error tracking; resolved critical production incidents in <6 hours, supporting 97%+ on-time delivery across projects.
+• Enforced repo-level quality gates (ESLint/Prettier), 100% peer reviews, CI/CD & containerization for SvelteKit, and instituted testing/SSR safety standards.
+• Mentored junior/mid engineers, drove technical decision-making, and collaborated cross-functionally with product, backend, and QA teams to deliver high-performance, scalable, and secure frontend systems.
+• Svelte & SvelteKIT, Typescript, Android kotlin, Quarkus, NodeJS, Vercel AISDK, CrewAI, AWS S3, DocumentDB, Docker, Redis AsknBid Tech Bangalore, KA, India
+Software Development Engineer I July 2022 - July 2023
+• Dstreet Finance : Built and optimized high-impact microservices (markets, referrals, feeds, wallet, rewards) and BFF APIs in Quarkus, powering portfolio management for 300K+ users.
+• Designed and implemented a cross-platform UI component library with a scalable design system, improving development velocity across teams.
+• Engineered market data visualization with Highcharts and developed KYC & bank account flows, achieving drop-off rates as low as 4–10%.
+• Led app delivery processes including Google Play releases and OTA updates via Appcenter CodePush, ensuring rapid and reliable feature rollouts.
+• React Native, Typescript, Flipper, Redux, Quarkus, NX, Appcenter Codepush, React native reanimated 2
+AsknBid Tech Bangalore, KA, India
+Software Development Engineer Intern October 2021 - June 2022
+• Engineered high-performance React Native modules, including Facebook-style feeds, native module integrations, and animated onboarding flows, reducing user drop-off by 2%.
+• Implemented UI modules deposits, withdrawals, and engagement features (Rewards, Referrals) by integrating third-party payment gateways and optimizing UI/UX for retention.
+ • React Native/Web, Typescript, Flipper, Redux, NX EDUCATION
+Lovely Professional University
+Bachelor of Technology in Computer Science and Engineering, CGPA: 8.29
+Army Public School
+XII (CBSE), Marks: 77.7%
+Phagwara, Punjab, India
+July 2018 – July 2022
+Ambala Cantt, Haryana, India
+ June 2016 – July 2017

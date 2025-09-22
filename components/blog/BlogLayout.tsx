@@ -16,7 +16,10 @@ export function BlogLayout({
   showBackButton = false,
 }: BlogLayoutProps) {
   return (
-    <div className="min-h-screen text-white flex flex-col relative overflow-hidden" style={modernBackgroundStyle}>
+    <div
+      className="min-h-screen text-white flex flex-col relative"
+      style={modernBackgroundStyle}
+    >
       {/* Modern Gradient Background */}
       <div className="absolute inset-0">
         {/* Subtle gradient orbs for depth */}
@@ -26,13 +29,16 @@ export function BlogLayout({
           <div className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/8 to-pink-500/8 rounded-full blur-[80px]" />
         </div>
         {/* Subtle dot pattern */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
-        }} />
+        <div
+          className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
+            backgroundSize: "40px 40px",
+          }}
+        />
       </div>
       {/* Modern Glass Header */}
-      <header className="relative z-10 border-b border-white/[0.08] bg-white/[0.02] backdrop-blur-xl">
+      <header className="relative z-10 border-b border-white/[0.08]">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-5">
           <div className="flex items-center gap-4">
             {showBackButton ? (
@@ -58,9 +64,22 @@ export function BlogLayout({
             ) : (
               <Link
                 href="/"
-                className="flex shrink-0 items-center justify-center gap-3"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/[0.08] rounded-lg transition-all duration-200"
               >
-                <span className="text-xl font-semibold text-white tracking-tight">Piyush Raj</span>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                Back to Portfolio
               </Link>
             )}
           </div>
@@ -69,17 +88,6 @@ export function BlogLayout({
             <nav className="hidden items-center gap-4 text-sm sm:flex sm:gap-6">
               {/* Navigation items can be added here */}
             </nav>
-
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className="bg-white/[0.08] hover:bg-white/[0.12] text-white border-white/[0.12] hover:border-white/[0.2] backdrop-blur-sm transition-all duration-200"
-            >
-              <Link href="/">
-                Portfolio
-              </Link>
-            </Button>
           </div>
         </div>
       </header>

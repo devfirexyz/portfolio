@@ -542,15 +542,15 @@ function TableOfContents({ content }: { content: string }) {
   if (tocItems.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-2 px-4">
+    <div className="flex flex-col gap-2 px-4 w-full">
       <span className="text-lg font-medium text-gray-900 dark:text-white">
         Table of Contents
       </span>
-      <ul className="flex list-none flex-col gap-y-2">
+      <ul className="flex list-none flex-col gap-y-2 w-full">
         {tocItems.map((item) => (
           <li
             key={item.id}
-            className={`text-sm ${item.level === 2 ? "pl-0" : "pl-4"} ${
+            className={`text-sm w-full ${item.level === 2 ? "pl-0" : "pl-4"} ${
               activeIds.includes(item.id)
                 ? "text-gray-900 dark:text-white font-bold"
                 : "text-gray-900 dark:text-gray-400"
@@ -558,7 +558,7 @@ function TableOfContents({ content }: { content: string }) {
           >
             <a
               href={item.href}
-              className="underline decoration-transparent underline-offset-[3px] transition-all duration-300 ease-in-out hover:decoration-inherit"
+              className="underline decoration-transparent underline-offset-[3px] transition-all duration-300 ease-in-out hover:decoration-inherit block"
               onClick={(e) => handleClick(e, item.id)}
             >
               {item.text.replaceAll("*", "")}
@@ -714,15 +714,15 @@ export default function BlogPostClient({ post, allPosts, author }: BlogPostClien
     <div className="xl:max-w-6xl xl:mx-auto xl:px-6 xl:py-8">
       <div className="xl:grid xl:grid-cols-[250px_1fr] xl:gap-8">
         {/* Left TOC Sidebar */}
-        <aside className="hidden xl:block sticky top-20 h-[calc(100vh-5rem)]">
-          <div className="flex max-h-[calc(100vh-8rem)] flex-col overflow-y-auto">
+        <aside className="hidden xl:block sticky top-20 self-start">
+          <div className="max-h-[calc(100vh-5rem)] overflow-y-auto">
             <TableOfContents content={post.rawContent || ""} />
           </div>
         </aside>
 
         {/* Main Content */}
         <main className="max-w-3xl xl:max-w-none mx-auto px-4 xl:px-0 py-8 xl:py-0">
-          <article>
+            <article>
             {/* Article Header */}
             <header className="mb-8 sm:mb-12">
               {/* Category */}

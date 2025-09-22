@@ -1,27 +1,117 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Github, Mail, Menu, X } from "lucide-react";
+import { useState, useCallback, useMemo } from "react";
+import { motion, LazyMotion, domAnimation } from "framer-motion";
+import { Mail, Menu, X } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
+
+// Lazy load heavy components
+const ResumeModal = dynamic(() => import("@/components/ResumeModal").then(mod => ({ default: mod.default })), {
+  ssr: false,
+});
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
-  const copyEmail = async () => {
+  const copyEmail = useCallback(async () => {
     await navigator.clipboard.writeText("piyushraj888s@gmail.com");
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
-  };
+  }, []);
+
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
+
+  const openResumeModal = useCallback(() => {
+    setIsResumeModalOpen(true);
+  }, []);
+
+  const closeResumeModal = useCallback(() => {
+    setIsResumeModalOpen(false);
+  }, []);
+
+  // Memoize heavy animations data
+  const spaceElements = useMemo(() => [
+    // Rockets
+    { type: "rocket", top: "15%", left: "20%", delay: 0, duration: 25, size: "text-4xl" },
+    { type: "rocket", top: "70%", left: "80%", delay: 8, duration: 30, size: "text-3xl" },
+    // Planets
+    { type: "saturn", top: "25%", left: "70%", delay: 2, duration: 35, size: "text-5xl" },
+    { type: "earth", top: "60%", left: "15%", delay: 12, duration: 28, size: "text-4xl" },
+    { type: "mars", top: "10%", left: "85%", delay: 15, duration: 32, size: "text-3xl" },
+    { type: "neptune", top: "75%", left: "10%", delay: 20, duration: 40, size: "text-4xl" },
+    { type: "venus", top: "45%", left: "90%", delay: 6, duration: 26, size: "text-3xl" },
+    { type: "jupiter", top: "85%", left: "75%", delay: 18, duration: 38, size: "text-5xl" },
+    // Stars
+    { type: "star", top: "10%", left: "50%", delay: 1, duration: 20, size: "text-2xl" },
+    { type: "star", top: "40%", left: "85%", delay: 5, duration: 22, size: "text-xl" },
+    { type: "star", top: "80%", left: "45%", delay: 7, duration: 18, size: "text-2xl" },
+    // Sparkles
+    { type: "sparkle", top: "20%", left: "30%", delay: 3, duration: 15, size: "text-lg" },
+    { type: "sparkle", top: "65%", left: "60%", delay: 9, duration: 17, size: "text-xl" },
+    { type: "sparkle", top: "35%", left: "5%", delay: 11, duration: 19, size: "text-lg" },
+    // Twinkles
+    { type: "twinkle", top: "50%", left: "40%", delay: 4, duration: 14, size: "text-sm" },
+    { type: "twinkle", top: "30%", left: "95%", delay: 13, duration: 16, size: "text-sm" },
+    { type: "twinkle", top: "90%", left: "30%", delay: 2, duration: 21, size: "text-sm" },
+    // Satellites
+    { type: "satellite", top: "35%", left: "25%", delay: 3, duration: 32, size: "text-3xl" },
+    { type: "satellite", top: "75%", left: "65%", delay: 10, duration: 26, size: "text-2xl" },
+  ], []);
+
+  const chatMessages = useMemo(() => [
+    {
+      user: "Piyush Raj",
+      avatar: "P",
+      role: "SDE III",
+      time: "2 mins ago",
+      message: "Hey! I'm a Software Development Engineer III at Angel One. Built AI-powered financial platforms from scratch, processing 720+ articles daily with 70% effort reduction!",
+      avatarColors: "from-[#5865F2] to-[#4752c4]",
+      delay: 1.2,
+    },
+    {
+      user: "Tech Recruiter",
+      avatar: "R",
+      role: "HIRING",
+      time: "1 min ago",
+      message: "Impressive! Tell me about your experience with scalable systems 🤔",
+      avatarColors: "from-[#57F287] to-[#3ba55d]",
+      roleColor: "bg-[#EB459E]",
+      delay: 1.4,
+    },
+    {
+      user: "Piyush Raj",
+      avatar: "P",
+      time: "just now",
+      message: "Led composable-SDK integration serving 1.67Cr+ B2C and 5.3L+ B2B users with zero failures. Optimized performance: 40% smaller bundles, FCP under 1.5s 💪",
+      avatarColors: "from-[#5865F2] to-[#4752c4]",
+      delay: 1.6,
+    },
+  ], []);
+
+  const constellationStars = useMemo(() => [
+    // Big Dipper pattern
+    { x: 20, y: 25, size: 2 }, { x: 25, y: 28, size: 2 }, { x: 30, y: 30, size: 2 },
+    { x: 35, y: 29, size: 2 }, { x: 40, y: 27, size: 2 }, { x: 44, y: 32, size: 2 },
+    { x: 48, y: 35, size: 2 },
+    // Orion Belt
+    { x: 70, y: 60, size: 3 }, { x: 74, y: 62, size: 3 }, { x: 78, y: 64, size: 3 },
+    // Small cluster
+    { x: 85, y: 20, size: 1 }, { x: 87, y: 22, size: 1 }, { x: 89, y: 19, size: 1 },
+    { x: 91, y: 24, size: 1 },
+  ], []);
 
   return (
-    <div className="relative">
-      {/* Hero Section with Background */}
-      <div className="relative h-screen overflow-hidden">
+    <LazyMotion features={domAnimation}>
+      <div className="relative">
+        {/* Hero Section with Background */}
+        <div className="relative h-screen overflow-hidden">
         {/* Discord exact gradient background - matches reference images */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#404EED] via-[#36367c] to-[#1e1f22]" />
 
@@ -57,168 +147,8 @@ export default function Portfolio() {
             />
           </div>
 
-          {/* Floating Space Illustrations */}
-          {[
-            // Rockets
-            {
-              type: "rocket",
-              top: "15%",
-              left: "20%",
-              delay: 0,
-              duration: 25,
-              size: "text-4xl",
-            },
-            {
-              type: "rocket",
-              top: "70%",
-              left: "80%",
-              delay: 8,
-              duration: 30,
-              size: "text-3xl",
-            },
-
-            // Planets - More diverse planets
-            {
-              type: "saturn",
-              top: "25%",
-              left: "70%",
-              delay: 2,
-              duration: 35,
-              size: "text-5xl",
-            },
-            {
-              type: "earth",
-              top: "60%",
-              left: "15%",
-              delay: 12,
-              duration: 28,
-              size: "text-4xl",
-            },
-            {
-              type: "mars",
-              top: "10%",
-              left: "85%",
-              delay: 15,
-              duration: 32,
-              size: "text-3xl",
-            },
-            {
-              type: "neptune",
-              top: "75%",
-              left: "10%",
-              delay: 20,
-              duration: 40,
-              size: "text-4xl",
-            },
-            {
-              type: "venus",
-              top: "45%",
-              left: "90%",
-              delay: 6,
-              duration: 26,
-              size: "text-3xl",
-            },
-            {
-              type: "jupiter",
-              top: "85%",
-              left: "75%",
-              delay: 18,
-              duration: 38,
-              size: "text-5xl",
-            },
-
-            // Blinking Stars - More variety
-            {
-              type: "star",
-              top: "10%",
-              left: "50%",
-              delay: 1,
-              duration: 20,
-              size: "text-2xl",
-            },
-            {
-              type: "star",
-              top: "40%",
-              left: "85%",
-              delay: 5,
-              duration: 22,
-              size: "text-xl",
-            },
-            {
-              type: "star",
-              top: "80%",
-              left: "45%",
-              delay: 7,
-              duration: 18,
-              size: "text-2xl",
-            },
-            {
-              type: "sparkle",
-              top: "20%",
-              left: "30%",
-              delay: 3,
-              duration: 15,
-              size: "text-lg",
-            },
-            {
-              type: "sparkle",
-              top: "65%",
-              left: "60%",
-              delay: 9,
-              duration: 17,
-              size: "text-xl",
-            },
-            {
-              type: "sparkle",
-              top: "35%",
-              left: "5%",
-              delay: 11,
-              duration: 19,
-              size: "text-lg",
-            },
-            {
-              type: "twinkle",
-              top: "50%",
-              left: "40%",
-              delay: 4,
-              duration: 14,
-              size: "text-sm",
-            },
-            {
-              type: "twinkle",
-              top: "30%",
-              left: "95%",
-              delay: 13,
-              duration: 16,
-              size: "text-sm",
-            },
-            {
-              type: "twinkle",
-              top: "90%",
-              left: "30%",
-              delay: 2,
-              duration: 21,
-              size: "text-sm",
-            },
-
-            // Satellites
-            {
-              type: "satellite",
-              top: "35%",
-              left: "25%",
-              delay: 3,
-              duration: 32,
-              size: "text-3xl",
-            },
-            {
-              type: "satellite",
-              top: "75%",
-              left: "65%",
-              delay: 10,
-              duration: 26,
-              size: "text-2xl",
-            },
-          ].map((item, i) => (
+          {/* Optimized Floating Space Illustrations */}
+          {spaceElements.map((item, i) => (
             <motion.div
               key={`space-${i}`}
               className={`absolute ${item.size} select-none pointer-events-none filter blur-[1px] w-screen h-screen`}
@@ -295,9 +225,9 @@ export default function Portfolio() {
 
 
 
-          {/* Enhanced Twinkling Star Field */}
+          {/* Optimized Twinkling Star Field */}
           <div className="absolute inset-0 w-screen h-screen">
-            {Array.from({ length: 150 }).map((_, i) => {
+            {Array.from({ length: 75 }).map((_, i) => {
               const seed = i * 9876543;
               const left = seed % 100;
               const top = (seed * 7) % 100;
@@ -343,9 +273,9 @@ export default function Portfolio() {
             })}
           </div>
 
-          {/* Bright Shooting Stars - Fixed deterministic positions */}
+          {/* Optimized Shooting Stars */}
           <div className="absolute inset-0 w-screen h-screen">
-            {Array.from({ length: 8 }).map((_, i) => {
+            {Array.from({ length: 4 }).map((_, i) => {
               // Use deterministic values based on index to avoid hydration mismatch
               const seed = i * 1234567;
               const startLeft = (seed % 8000) / 100 + 10;
@@ -383,29 +313,9 @@ export default function Portfolio() {
             })}
           </div>
 
-          {/* Constellation Patterns */}
+          {/* Optimized Constellation Patterns */}
           <div className="absolute inset-0 w-screen h-screen">
-            {[
-              // Big Dipper pattern
-              { x: 20, y: 25, size: 2 },
-              { x: 25, y: 28, size: 2 },
-              { x: 30, y: 30, size: 2 },
-              { x: 35, y: 29, size: 2 },
-              { x: 40, y: 27, size: 2 },
-              { x: 44, y: 32, size: 2 },
-              { x: 48, y: 35, size: 2 },
-
-              // Orion Belt
-              { x: 70, y: 60, size: 3 },
-              { x: 74, y: 62, size: 3 },
-              { x: 78, y: 64, size: 3 },
-
-              // Small cluster
-              { x: 85, y: 20, size: 1 },
-              { x: 87, y: 22, size: 1 },
-              { x: 89, y: 19, size: 1 },
-              { x: 91, y: 24, size: 1 },
-            ].map((star, i) => (
+            {constellationStars.map((star, i) => (
               <motion.div
                 key={`constellation-${i}`}
                 className="absolute bg-white rounded-full"
@@ -454,7 +364,7 @@ export default function Portfolio() {
               {/* Mobile Menu Button */}
               <button
                 className="md:hidden text-white p-2"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={toggleMenu}
               >
                 {isMenuOpen ? (
                   <X className="w-6 h-6" />
@@ -574,7 +484,7 @@ export default function Portfolio() {
                     <Button
                       size="lg"
                       className="w-full sm:w-auto bg-white hover:bg-[#f2f3f5] text-black px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-full flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-2xl hover:shadow-white/20 group"
-                      onClick={() => setIsResumeModalOpen(true)}
+                      onClick={openResumeModal}
                     >
                       <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
@@ -795,40 +705,9 @@ export default function Portfolio() {
                           </div>
                         </div>
 
-                        {/* Messages with smooth animations */}
+                        {/* Optimized Messages */}
                         <div className="flex-1 p-3 lg:p-4 space-y-3 overflow-y-auto bg-[#36393f] smooth-scroll">
-                          {[
-                            {
-                              user: "Piyush Raj",
-                              avatar: "P",
-                              role: "SDE III",
-                              time: "2 mins ago",
-                              message:
-                                "Hey! I'm a Software Development Engineer III at Angel One. Built AI-powered financial platforms from scratch, processing 720+ articles daily with 70% effort reduction!",
-                              avatarColors: "from-[#5865F2] to-[#4752c4]",
-                              delay: 1.2,
-                            },
-                            {
-                              user: "Tech Recruiter",
-                              avatar: "R",
-                              role: "HIRING",
-                              time: "1 min ago",
-                              message:
-                                "Impressive! Tell me about your experience with scalable systems 🤔",
-                              avatarColors: "from-[#57F287] to-[#3ba55d]",
-                              roleColor: "bg-[#EB459E]",
-                              delay: 1.4,
-                            },
-                            {
-                              user: "Piyush Raj",
-                              avatar: "P",
-                              time: "just now",
-                              message:
-                                "Led composable-SDK integration serving 1.67Cr+ B2C and 5.3L+ B2B users with zero failures. Optimized performance: 40% smaller bundles, FCP under 1.5s 💪",
-                              avatarColors: "from-[#5865F2] to-[#4752c4]",
-                              delay: 1.6,
-                            },
-                          ].map((msg, msgIndex) => (
+                          {chatMessages.map((msg, msgIndex) => (
                             <motion.div
                               key={msgIndex}
                               className="flex gap-3 group"
@@ -993,71 +872,11 @@ export default function Portfolio() {
         </div>
       </footer>
 
-      {/* Resume Modal */}
-      <AnimatePresence mode="wait">
-        {isResumeModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-2 sm:p-4"
-            onClick={() => setIsResumeModalOpen(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-6xl h-[95vh] sm:h-[90vh] overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div className="flex items-center justify-between p-3 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-[#5865F2] to-[#4752c4]">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                    <svg className="w-3 h-3 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                    </svg>
-                  </div>
-                  <h2 className="text-sm sm:text-xl font-bold text-white">Resume - Piyush Raj</h2>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <button
-                    className="px-2 py-1 sm:px-4 sm:py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
-                    onClick={() => window.open("/resume.pdf", "_blank")}
-                  >
-                    Download
-                  </button>
-                  <button
-                    className="w-6 h-6 sm:w-10 sm:h-10 bg-white/20 hover:bg-white/30 text-white rounded-lg flex items-center justify-center transition-colors"
-                    onClick={() => setIsResumeModalOpen(false)}
-                  >
-                    <X className="w-3 h-3 sm:w-5 sm:h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* PDF Viewer - Optimized */}
-              <div className="h-[calc(100%-3.5rem)] sm:h-[calc(100%-5rem)] bg-gray-50">
-                {isResumeModalOpen && (
-                  <iframe
-                    src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
-                    className="w-full h-full border-0"
-                    title="Resume PDF"
-                    loading="eager"
-                    style={{
-                      background: 'white',
-                      WebkitTransform: 'translateZ(0)',
-                      transform: 'translateZ(0)'
-                    }}
-                  />
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {/* Optimized Resume Modal */}
+      {isResumeModalOpen && (
+        <ResumeModal onClose={closeResumeModal} />
+      )}
+      </div>
+    </LazyMotion>
   );
 }

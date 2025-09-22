@@ -7,7 +7,7 @@ export const resumeData = {
     email: "piyushraj888s@gmail.com",
     phone: "+91-798-832-1537",
     linkedin: "https://linkedin.com/in/piyush-raj-60a6a2117",
-    github: "https://github.com/piyush-fs-dev",
+    github: "https://github.com/devfirexyz",
     tagline: "Building scalable financial tech solutions with AI-powered automation",
     about: "Senior Software Engineer with 4+ years of experience in building high-performance web applications and scalable systems. Currently leading frontend architecture at Angel One, driving innovation in fintech through AI-powered solutions."
   },

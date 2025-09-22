@@ -495,35 +495,45 @@ I thrive at the intersection of automation, scalability, and product velocity, t
                   </span>
                 </Link>
 
-                {/* Social Links */}
-                <div className="flex items-center gap-3">
+                {/* Navigation Links */}
+                <div className="flex items-center gap-6">
                   <Link
-                    href="https://github.com/devfirexyz"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"
-                    aria-label="GitHub"
+                    href="/blog"
+                    className="hidden md:block text-white/80 hover:text-white transition-colors text-sm font-medium relative z-50"
                   >
-                    <Github className="w-5 h-5 pointer-events-none" />
+                    Blog
                   </Link>
-                  <Link
-                    href="https://linkedin.com/in/piyush-raj-60a6a2117"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"
-                    aria-label="LinkedIn"
-                  >
-                    <Linkedin className="w-5 h-5 pointer-events-none" />
-                  </Link>
-                  <Link
-                    href="https://twitter.com/devfirexyz"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"
-                    aria-label="Twitter"
-                  >
-                    <Twitter className="w-5 h-5 pointer-events-none" />
-                  </Link>
+
+                  {/* Social Links */}
+                  <div className="flex items-center gap-3">
+                    <Link
+                      href="https://github.com/devfirexyz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"
+                      aria-label="GitHub"
+                    >
+                      <Github className="w-5 h-5 pointer-events-none" />
+                    </Link>
+                    <Link
+                      href="https://linkedin.com/in/piyush-raj-60a6a2117"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"
+                      aria-label="LinkedIn"
+                    >
+                      <Linkedin className="w-5 h-5 pointer-events-none" />
+                    </Link>
+                    <Link
+                      href="https://twitter.com/devfirexyz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"
+                      aria-label="Twitter"
+                    >
+                      <Twitter className="w-5 h-5 pointer-events-none" />
+                    </Link>
+                  </div>
 
                   {/* Mobile Menu Button */}
                   <button
@@ -540,6 +550,26 @@ I thrive at the intersection of automation, scalability, and product velocity, t
               </div>
             </div>
           </nav>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="md:hidden fixed top-20 left-0 right-0 bg-[#2c2f36]/95 backdrop-blur-lg border-b border-white/10 z-40"
+            >
+              <div className="px-6 py-4 space-y-4">
+                <Link
+                  href="/blog"
+                  className="block text-white/80 hover:text-white transition-colors text-sm font-medium py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Blog
+                </Link>
+              </div>
+            </motion.div>
+          )}
 
           {/* Hero Section - Expanded Layout for Discord */}
           <section className="relative flex items-center pt-16 sm:pt-20 md:pt-24 lg:pt-32 overflow-hidden">

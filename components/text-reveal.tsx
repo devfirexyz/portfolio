@@ -30,7 +30,7 @@ export default function TextReveal({ text, className, highlightColor = "text-pur
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         damping: 12,
         stiffness: 100,
       },
@@ -39,7 +39,7 @@ export default function TextReveal({ text, className, highlightColor = "text-pur
       opacity: 0,
       y: 20,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         damping: 12,
         stiffness: 100,
       },

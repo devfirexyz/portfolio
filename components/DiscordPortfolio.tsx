@@ -207,6 +207,7 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
   }, []);
 
   const activeMessages = channelMessages[activeChannel as keyof typeof channelMessages] || [];
+  const activeChannelMeta = channels.find((ch) => ch.id === activeChannel);
 
   return (
     <motion.div
@@ -224,213 +225,245 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
         rotateY: -1,
         transition: { duration: 0.3 },
       }}
-      className={`bg-[#36393f] rounded-lg shadow-2xl overflow-hidden h-full backdrop-blur-sm ${className}`}
+      className={`bg-[#36393f] rounded-2xl shadow-2xl overflow-hidden h-full backdrop-blur-sm flex flex-col ${className}`}
     >
       {/* Discord window header */}
-      <div className="h-8 bg-[#202225] flex items-center justify-between px-4">
+      <div className="h-10 bg-[#202225] flex items-center justify-between px-4">
         <div className="flex gap-2">
           <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
           <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
           <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
         </div>
-        <div className="text-white text-sm font-medium">
+        <div className="text-white text-xs font-medium sm:text-sm">
           Piyush Raj - Portfolio
         </div>
         <div className="w-12" />
       </div>
 
       {/* Discord app interface */}
-      <div className="flex h-full">
-        {/* Server sidebar */}
-        <div className="w-[60px] lg:w-[72px] bg-[#202225] flex flex-col items-center py-3 gap-2">
-          <motion.div
-            className="w-10 h-10 lg:w-12 lg:h-12 bg-[#5865F2] rounded-[20px] lg:rounded-[24px] flex items-center justify-center text-white font-bold cursor-pointer relative group"
-            whileHover={{
-              borderRadius: "16px",
-              scale: 1.1,
-              rotate: [0, -5, 5, 0],
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 20,
-              duration: 0.3,
-            }}
-          >
-            <span className="text-lg">P</span>
-          </motion.div>
-          <div className="w-8 h-[2px] lg:w-12 lg:h-[2px] bg-[#35383e] rounded-full" />
-          {servers.map((server, index) => (
+      <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
+        {/* Mobile channel picker */}
+        <div className="md:hidden border-b border-[#202225] bg-[#2f3136]">
+          <div className="flex items-center justify-between px-4 py-3">
+            <div className="flex items-center gap-2 text-white text-sm font-semibold">
+              <span className="text-lg">{activeChannelMeta?.icon}</span>
+              <span className="capitalize">{activeChannelMeta?.name}</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-white/60">
+              <div className="w-2 h-2 rounded-full bg-[#3ba55d] animate-pulse" />
+              Live
+            </div>
+          </div>
+          <div className="flex gap-2 overflow-x-auto px-4 pb-3">
+            {channels.map((channel) => (
+              <button
+                key={channel.id}
+                onClick={() => handleChannelClick(channel.id)}
+                className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-xs font-medium transition-colors ${
+                  activeChannel === channel.id
+                    ? "bg-white text-[#202225]"
+                    : "bg-[#3a3d42] text-white/70"
+                }`}
+              >
+                <span>{channel.icon}</span>
+                <span className="capitalize">{channel.name.replace(/-/g, " ")}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-1 overflow-hidden">
+          {/* Server sidebar */}
+          <div className="hidden md:flex w-[60px] lg:w-[72px] bg-[#202225] flex-col items-center py-3 gap-2">
             <motion.div
-              key={index}
-              className="w-10 h-10 lg:w-12 lg:h-12 bg-[#36393f] rounded-full cursor-pointer relative group"
+              className="w-10 h-10 lg:w-12 lg:h-12 bg-[#5865F2] rounded-[20px] lg:rounded-[24px] flex items-center justify-center text-white font-bold cursor-pointer relative group"
               whileHover={{
-                backgroundColor: server.color,
                 borderRadius: "16px",
                 scale: 1.1,
+                rotate: [0, -5, 5, 0],
               }}
-              whileTap={{ scale: 0.95 }}
               transition={{
                 type: "spring",
-                stiffness: 400,
-                damping: 25,
+                stiffness: 300,
+                damping: 20,
+                duration: 0.3,
               }}
             >
+              <span className="text-lg">P</span>
+            </motion.div>
+            <div className="w-8 h-[2px] lg:w-12 lg:h-[2px] bg-[#35383e] rounded-full" />
+            {servers.map((server, index) => (
               <motion.div
-                className="absolute -inset-1 rounded-full -z-10"
-                style={{ backgroundColor: server.color }}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileHover={{ opacity: 0.2, scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Channel sidebar */}
-        <div className="w-[160px] lg:w-[180px] bg-[#2f3136]">
-          <div className="p-3 lg:p-4">
-            <motion.div
-              className="text-white font-semibold mb-4 text-base"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8, duration: 0.4 }}
-            >
-              Portfolio Server
-            </motion.div>
-            <motion.div
-              className="text-white/60 text-xs font-semibold uppercase mb-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.9, duration: 0.4 }}
-            >
-              Resume Channels
-            </motion.div>
-            <div className="space-y-1">
-              {channels.map((channel, index) => (
-                <motion.div
-                  key={channel.id}
-                  className={`px-3 py-2 rounded text-sm flex items-center gap-3 cursor-pointer group transition-all duration-300 ${
-                    activeChannel === channel.id
-                      ? "bg-[#42464d] text-white"
-                      : "text-[#96989d] hover:bg-[#42464d]/50 hover:text-white"
-                  }`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    delay: 1.0 + index * 0.1,
-                    duration: 0.3,
-                  }}
-                  whileHover={{
-                    x: 4,
-                    backgroundColor: activeChannel === channel.id ? "#42464d" : "#42464d",
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleChannelClick(channel.id)}
-                >
-                  <span className="text-lg">{channel.icon}</span>
-                  <span className="truncate flex-1">{channel.name}</span>
-                  {activeChannel === channel.id && (
-                    <motion.div
-                      className="w-1 h-4 bg-white rounded-full"
-                      initial={{ scaleY: 0 }}
-                      animate={{ scaleY: 1 }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Main chat area */}
-        <div className="flex-1 bg-[#36393f] flex flex-col">
-          {/* Chat header */}
-          <div className="h-12 border-b border-[#202225] px-4 flex items-center">
-            <span className="text-[#72767d] text-lg">{channels.find(ch => ch.id === activeChannel)?.icon}</span>
-            <span className="ml-2 text-white font-semibold text-base">
-              {channels.find(ch => ch.id === activeChannel)?.name}
-            </span>
-            <div className="ml-auto flex items-center gap-2">
-              <div className="w-2 h-2 bg-[#3ba55d] rounded-full animate-pulse" />
-              <span className="text-[#b5bac1] text-xs hidden lg:inline">
-                Live Portfolio
-              </span>
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 p-4 space-y-4 overflow-y-auto bg-[#36393f]">
-            {activeMessages.map((msg, msgIndex) => (
-              <motion.div
-                key={`${activeChannel}-${msgIndex}`}
-                className="flex gap-3 group"
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{
-                  delay: msgIndex * 0.1,
-                  duration: 0.4,
-                  type: "spring",
-                  stiffness: 300,
+                key={index}
+                className="w-10 h-10 lg:w-12 lg:h-12 bg-[#36393f] rounded-full cursor-pointer relative group"
+                whileHover={{
+                  backgroundColor: server.color,
+                  borderRadius: "16px",
+                  scale: 1.1,
                 }}
-                whileHover={{ scale: 1.005 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 25,
+                }}
               >
                 <motion.div
-                  className={`w-10 h-10 bg-gradient-to-br ${msg.avatarColors} rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-lg cursor-pointer`}
-                  whileHover={{
-                    scale: 1.1,
-                    rotate: [0, -5, 5, 0],
-                    boxShadow: "0 8px 32px rgba(88, 101, 242, 0.3)",
-                  }}
+                  className="absolute -inset-1 rounded-full -z-10"
+                  style={{ backgroundColor: server.color }}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileHover={{ opacity: 0.2, scale: 1.1 }}
                   transition={{ duration: 0.3 }}
-                >
-                  {msg.avatar}
-                </motion.div>
-                <div className="flex-1">
-                  <motion.div
-                    className="flex items-center gap-2 mb-1"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      delay: msgIndex * 0.1 + 0.05,
-                      duration: 0.3,
-                    }}
-                  >
-                    <span className="text-[#f2f3f5] font-bold text-sm hover:text-white transition-colors cursor-pointer">
-                      {msg.user}
-                    </span>
-                    {msg.role && (
-                      <motion.span
-                        className={`${
-                          msg.roleColor || "bg-[#5865F2]"
-                        } text-white text-xs px-2 py-0.5 rounded font-medium cursor-pointer`}
-                        whileHover={{ scale: 1.05, y: -1 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        {msg.role}
-                      </motion.span>
-                    )}
-                    <span className="text-[#b5bac1] text-xs group-hover:text-[#dcddde] transition-colors">
-                      {msg.time}
-                    </span>
-                  </motion.div>
-                  <motion.div
-                    className="text-[#dcddde] text-sm leading-relaxed bg-[#4f545c]/60 p-3 rounded-lg border border-[#5c6370]/50 shadow-sm backdrop-blur-sm hover:bg-[#4f545c]/80 hover:border-[#5c6370]/70 transition-all duration-300 cursor-pointer group-hover:shadow-md"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: msgIndex * 0.1 + 0.1,
-                      duration: 0.3,
-                    }}
-                    whileHover={{ y: -1 }}
-                    dangerouslySetInnerHTML={{
-                      __html: msg.message.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
-                    }}
-                  />
-                </div>
+                />
               </motion.div>
             ))}
+          </div>
+
+          {/* Channel sidebar */}
+          <div className="hidden md:block w-[160px] lg:w-[180px] bg-[#2f3136]">
+            <div className="p-3 lg:p-4">
+              <motion.div
+                className="text-white font-semibold mb-4 text-base"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8, duration: 0.4 }}
+              >
+                Portfolio Server
+              </motion.div>
+              <motion.div
+                className="text-white/60 text-xs font-semibold uppercase mb-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.9, duration: 0.4 }}
+              >
+                Resume Channels
+              </motion.div>
+              <div className="space-y-1">
+                {channels.map((channel, index) => (
+                  <motion.div
+                    key={channel.id}
+                    className={`px-3 py-2 rounded text-sm flex items-center gap-3 cursor-pointer group transition-all duration-300 ${
+                      activeChannel === channel.id
+                        ? "bg-[#42464d] text-white"
+                        : "text-[#96989d] hover:bg-[#42464d]/50 hover:text-white"
+                    }`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: 1.0 + index * 0.1,
+                      duration: 0.3,
+                    }}
+                    whileHover={{
+                      x: 4,
+                      backgroundColor: activeChannel === channel.id ? "#42464d" : "#42464d",
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleChannelClick(channel.id)}
+                  >
+                    <span className="text-lg">{channel.icon}</span>
+                    <span className="truncate flex-1">{channel.name}</span>
+                    {activeChannel === channel.id && (
+                      <motion.div
+                        className="w-1 h-4 bg-white rounded-full"
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: 1 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Main chat area */}
+          <div className="flex-1 bg-[#36393f] flex flex-col overflow-hidden">
+            {/* Chat header */}
+            <div className="h-12 border-b border-[#202225] px-4 flex items-center flex-shrink-0">
+              <span className="text-[#72767d] text-lg">{activeChannelMeta?.icon}</span>
+              <span className="ml-2 text-white font-semibold text-sm capitalize sm:text-base">
+                {activeChannelMeta?.name}
+              </span>
+              <div className="ml-auto hidden items-center gap-2 md:flex">
+                <div className="w-2 h-2 bg-[#3ba55d] rounded-full animate-pulse" />
+                <span className="text-[#b5bac1] text-xs">Live Portfolio</span>
+              </div>
+            </div>
+
+            {/* Messages - Scrollable Area */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden bg-[#36393f] min-h-0">
+              <div className="p-3 sm:p-4 space-y-4">
+              {activeMessages.map((msg, msgIndex) => (
+                <motion.div
+                  key={`${activeChannel}-${msgIndex}`}
+                  className="flex gap-3 group"
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{
+                    delay: msgIndex * 0.1,
+                    duration: 0.4,
+                    type: "spring",
+                    stiffness: 300,
+                  }}
+                  whileHover={{ scale: 1.005 }}
+                >
+                  <motion.div
+                    className={`w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br ${msg.avatarColors} rounded-full flex items-center justify-center text-white text-xs sm:text-sm font-bold flex-shrink-0 shadow-lg cursor-pointer`}
+                    whileHover={{
+                      scale: 1.1,
+                      rotate: [0, -5, 5, 0],
+                      boxShadow: "0 8px 32px rgba(88, 101, 242, 0.3)",
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {msg.avatar}
+                  </motion.div>
+                  <div className="flex-1">
+                    <motion.div
+                      className="flex items-center gap-2 mb-1"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: msgIndex * 0.1 + 0.05,
+                        duration: 0.3,
+                      }}
+                    >
+                      <span className="text-[#f2f3f5] font-bold text-xs sm:text-sm hover:text-white transition-colors cursor-pointer">
+                        {msg.user}
+                      </span>
+                      {msg.role && (
+                        <motion.span
+                          className={`${
+                            msg.roleColor || "bg-[#5865F2]"
+                          } text-white text-[10px] sm:text-xs px-2 py-0.5 rounded font-medium cursor-pointer`}
+                          whileHover={{ scale: 1.05, y: -1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          {msg.role}
+                        </motion.span>
+                      )}
+                      <span className="text-[#b5bac1] text-[10px] sm:text-xs group-hover:text-[#dcddde] transition-colors">
+                        {msg.time}
+                      </span>
+                    </motion.div>
+                    <motion.div
+                      className="text-[#dcddde] text-sm leading-relaxed bg-[#4f545c]/60 p-3 rounded-lg border border-[#5c6370]/50 shadow-sm backdrop-blur-sm hover:bg-[#4f545c]/80 hover:border-[#5c6370]/70 transition-all duration-300 cursor-pointer group-hover:shadow-md"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: msgIndex * 0.1 + 0.1,
+                        duration: 0.3,
+                      }}
+                      whileHover={{ y: -1 }}
+                      dangerouslySetInnerHTML={{
+                        __html: msg.message.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>'),
+                      }}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -10,6 +10,15 @@ export const metadata = {
   description: "Senior Software Engineer specializing in scalable web applications, AI integration, and frontend architecture at Angel One.",
   keywords: "Piyush Raj, Software Engineer, Full Stack Developer, React, TypeScript, Node.js, AI, SvelteKit",
   authors: [{ name: "Piyush Raj" }],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" }
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ],
+  },
   openGraph: {
     title: "Piyush Raj - Software Development Engineer III",
     description: "Building scalable financial tech solutions with AI-powered automation",

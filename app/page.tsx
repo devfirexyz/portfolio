@@ -318,6 +318,21 @@ I thrive at the intersection of automation, scalability, and product velocity, t
         <nav className="fixed top-0 z-50 w-full ">
           <div className="px-6 lg:px-10">
             <div className="flex items-center justify-between h-20">
+              {/* Personal Brand */}
+              <Link
+                href="/"
+                className="flex items-center hover:opacity-80 transition-opacity"
+              >
+                <span
+                  className="text-white font-bold text-xl tracking-tight"
+                  style={{
+                    fontFamily: "Alan Sans",
+                  }}
+                >
+                  Piyush Raj
+                </span>
+              </Link>
+
               {/* Navigation Links */}
               <div className="flex items-center gap-6">
                 <Link

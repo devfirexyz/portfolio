@@ -363,7 +363,7 @@ I thrive at the intersection of automation, scalability, and product velocity, t
                     <Linkedin className="w-5 h-5 pointer-events-none" />
                   </Link>
                   <Link
-                    href="https://twitter.com/devfirexyz"
+                    href="https://x.com/piyushrajthemt"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"

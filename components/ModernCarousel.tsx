@@ -137,7 +137,7 @@ export function ModernCarousel({
   }, []);
 
   return (
-    <div className={`relative w-full ${className} pt-40`}>
+    <div className={`relative w-full overflow-x-hidden sm:h-[900px] ${className} pt-20 sm:pt-40`}>
       {/* Main Carousel Container */}
       <div
         ref={carouselRef}
@@ -153,7 +153,7 @@ export function ModernCarousel({
       >
         {/* Slides Container */}
         <div
-          className="flex transition-transform duration-700 ease-out gap-8"
+          className="flex transition-transform duration-700 ease-out"
           style={{
             transform: `translateX(-${currentIndex * 100}%)`,
             willChange: "transform",
@@ -162,7 +162,7 @@ export function ModernCarousel({
           {children.map((child, index) => (
             <div
               key={index}
-              className="min-w-full flex-shrink-0 px-4"
+              className="w-full flex-shrink-0"
               style={{ userSelect: "none" }}
             >
               {child}
@@ -173,39 +173,39 @@ export function ModernCarousel({
       </div>
 
       {/* Bottom Controls Container */}
-      <div className="flex items-center justify-center gap-6 mt-12">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
         {/* Navigation Arrows */}
         {showArrows && totalSlides > 1 && (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={goToPrevious}
-              className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-xl hover:from-purple-500/30 hover:to-blue-500/30 border border-purple-500/30 rounded-full p-4 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/25 group"
+              className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-xl hover:from-purple-500/30 hover:to-blue-500/30 border border-purple-500/30 rounded-full p-3 sm:p-4 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/25 group"
               aria-label="Previous slide"
             >
-              <ChevronLeft className="w-5 h-5 text-white group-hover:text-purple-300 transition-colors" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-purple-300 transition-colors" />
             </button>
 
             <button
               onClick={goToNext}
-              className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-xl hover:from-blue-500/30 hover:to-purple-500/30 border border-blue-500/30 rounded-full p-4 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/25 group"
+              className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-xl hover:from-blue-500/30 hover:to-purple-500/30 border border-blue-500/30 rounded-full p-3 sm:p-4 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/25 group"
               aria-label="Next slide"
             >
-              <ChevronRight className="w-5 h-5 text-white group-hover:text-blue-300 transition-colors" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:text-blue-300 transition-colors" />
             </button>
           </div>
         )}
 
         {/* Dots Indicator */}
         {showDots && totalSlides > 1 && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {children.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`relative transition-all duration-500 rounded-full ${
                   index === currentIndex
-                    ? "w-10 h-3 bg-gradient-to-r from-purple-400 to-blue-400"
-                    : "w-3 h-3 bg-white/30 hover:bg-white/50 hover:scale-125"
+                    ? "w-8 sm:w-10 h-2.5 sm:h-3 bg-gradient-to-r from-purple-400 to-blue-400"
+                    : "w-2.5 sm:w-3 h-2.5 sm:h-3 bg-white/30 hover:bg-white/50 hover:scale-125"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               >
@@ -218,21 +218,6 @@ export function ModernCarousel({
           </div>
         )}
       </div>
-
-      {/* Progress Bar */}
-      {isAutoPlaying && totalSlides > 1 && (
-        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-full  z-20">
-          <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
-            <div
-              className="h-full bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 rounded-full transition-all duration-100 shadow-lg shadow-purple-500/20"
-              style={{
-                width: "100%",
-                animation: `progressBar ${autoPlayInterval}ms linear infinite`,
-              }}
-            />
-          </div>
-        </div>
-      )}
 
       <style jsx>{`
         @keyframes progressBar {

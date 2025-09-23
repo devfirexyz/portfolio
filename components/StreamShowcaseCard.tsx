@@ -32,39 +32,39 @@ export function StreamShowcaseCard({
 }: StreamShowcaseCardProps) {
   return (
     <div
-      className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-[#3e3d83] to-[#5e68d9] sm:rounded-[88px] shadow-2xl"
+      className="relative w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 bg-gradient-to-br from-[#3e3d83] to-[#5e68d9] rounded-[24px] sm:rounded-[88px] shadow-2xl"
       onClick={onClick}
     >
       <img
         src="/character_main.webp"
         alt="main character"
-        width={150}
-        height={200}
-        className="absolute -mt-[167px] hidden sm:flex"
+        width={100}
+        height={133}
+        className="absolute -mt-[120px] sm:-mt-[167px] hidden sm:flex sm:w-[150px] sm:h-[200px]"
       />
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/10 to-transparent rounded-[3rem] blur-3xl" />
 
       {/* Main container with glassmorphism */}
-      <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 items-center">
         {/* Left Content Section */}
-        <div className="text-white space-y-6 z-10">
-          <div className="space-y-4">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight uppercase tracking-tight">
+        <div className="text-white space-y-4 sm:space-y-6 z-10">
+          <div className="space-y-2 sm:space-y-4">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight uppercase tracking-tight">
               {title.split(" ").map((word, index) => (
                 <span key={index} className="block">
                   {word}
                 </span>
               ))}
               {subtitle && (
-                <span className="block text-3xl md:text-4xl lg:text-5xl">
+                <span className="block text-lg sm:text-3xl md:text-4xl lg:text-5xl">
                   {subtitle}
                 </span>
               )}
             </h2>
           </div>
 
-          <p className="text-base md:text-lg text-white/80 leading-relaxed max-w-md">
+          <p className="text-sm sm:text-base md:text-lg text-white/80 leading-relaxed max-w-md">
             {description}
           </p>
         </div>
@@ -75,9 +75,9 @@ export function StreamShowcaseCard({
           <div className="absolute -inset-4 bg-gradient-to-r from-green-500/30 via-purple-500/30 to-blue-500/30 rounded-[2rem] blur-2xl opacity-60" />
 
           {/* Card Container */}
-          <div className="relative bg-black/40 backdrop-blur-xl rounded-[2rem] p-4 border border-white/10 shadow-2xl">
+          <div className="relative bg-black/40 backdrop-blur-xl rounded-[1rem] sm:rounded-[2rem] p-3 sm:p-6 border border-white/10 shadow-2xl">
             {/* Main Image Container */}
-            <div className="relative rounded-xl overflow-hidden aspect-video bg-gradient-to-br from-purple-900/50 to-blue-900/50">
+            <div className="relative rounded-lg sm:rounded-xl overflow-hidden aspect-video bg-gradient-to-br from-purple-900/50 to-blue-900/50">
               <img
                 src={mainImage}
                 alt={mainImageAlt}
@@ -86,9 +86,9 @@ export function StreamShowcaseCard({
 
               {/* Live Badge */}
               {liveIndicator && (
-                <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-red-600 rounded-full">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                  <span className="text-white text-sm font-semibold uppercase">
+                <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-red-600 rounded-full">
+                  <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white rounded-full animate-pulse" />
+                  <span className="text-white text-xs sm:text-sm font-semibold uppercase">
                     Live
                   </span>
                 </div>
@@ -96,9 +96,9 @@ export function StreamShowcaseCard({
 
               {/* Viewer Count */}
               {viewerCount && (
-                <div className="absolute bottom-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-full">
+                <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-black/60 backdrop-blur-md rounded-full">
                   <svg
-                    className="w-4 h-4 text-white"
+                    className="w-3 sm:w-4 h-3 sm:h-4 text-white"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -109,7 +109,7 @@ export function StreamShowcaseCard({
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-white text-sm font-medium">
+                  <span className="text-white text-xs sm:text-sm font-medium">
                     {viewerCount}
                   </span>
                 </div>
@@ -120,10 +120,10 @@ export function StreamShowcaseCard({
             {avatars.length > 0 && (
               <div className="flex items-center gap-3 mt-4 px-2">
                 {avatars.map((avatar, index) => (
-                  <div key={index} className="relative group">
+                  <div key={index} className="relative group flex-shrink-0">
                     {/* Avatar Container */}
-                    <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 p-0.5 transition-transform duration-200 hover:scale-105">
-                      <div className="w-full h-full rounded-xl overflow-hidden bg-black">
+                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg sm:rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 p-0.5 transition-transform duration-200 hover:scale-105">
+                      <div className="w-full h-full rounded-lg sm:rounded-xl overflow-hidden bg-black">
                         <img
                           src={avatar.src}
                           alt={avatar.alt}
@@ -134,7 +134,7 @@ export function StreamShowcaseCard({
 
                     {/* Label */}
                     {avatar.label && (
-                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-purple-600/90 backdrop-blur-sm text-white text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap">
+                      <div className="absolute -bottom-1 sm:-bottom-2 left-1/2 transform -translate-x-1/2 bg-purple-600/90 backdrop-blur-sm text-white text-xs font-medium px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap">
                         {avatar.label}
                       </div>
                     )}
@@ -185,13 +185,13 @@ const projects = [
     ]
   },
   {
-    title: "PORTFOLIO",
-    subtitle: "🚀 MODERN PORTFOLIO EXPERIENCE",
-    description: "Interactive portfolio built with Next.js 14, featuring scramble text animations, space-themed backgrounds, and modern UI components. Showcasing skills in React, TypeScript, and creative web development.",
-    mainImage: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=450&fit=crop",
+    title: "MY GPT-11",
+    subtitle: "AI-Powered Fantasy Cricket Teams",
+    description: "Our AI analyzes player statistics, recent form, pitch conditions, and historical data to create optimized fantasy teams.",
+    mainImage: "/gpt11.png",
     liveIndicator: true,
     viewerCount: "1.8k",
-    onClick: () => window.open("/", "_blank"),
+    onClick: () => window.open("https://www.mygpt11.com/", "_blank"),
     avatars: [
       {
         src: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png",
@@ -199,7 +199,7 @@ const projects = [
         label: "React",
       },
       {
-        src: "https://nextjs.org/static/favicon/favicon.ico",
+        src: "https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_light_background.png",
         alt: "Next.js",
         label: "Next.js",
       },
@@ -214,42 +214,12 @@ const projects = [
         label: "Tailwind",
       },
     ]
-  },
-  {
-    title: "FINTECH",
-    subtitle: "💰 TRADING PLATFORM INNOVATION",
-    description: "Scalable financial technology solutions with real-time market data, advanced charting, and automated trading algorithms. Built for high-frequency trading with microsecond latency requirements.",
-    mainImage: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=450&fit=crop",
-    liveIndicator: false,
-    viewerCount: "892",
-    avatars: [
-      {
-        src: "https://nodejs.org/static/images/favicons/favicon.png",
-        alt: "Node.js",
-        label: "Node.js",
-      },
-      {
-        src: "https://www.python.org/static/favicon.ico",
-        alt: "Python",
-        label: "Python",
-      },
-      {
-        src: "https://redis.io/favicon.ico",
-        alt: "Redis",
-        label: "Redis",
-      },
-      {
-        src: "https://www.postgresql.org/favicon.ico",
-        alt: "PostgreSQL",
-        label: "PostgreSQL",
-      },
-    ]
   }
 ];
 
 export function DefaultStreamShowcase() {
   return (
-    <div className="relative bg-[#21237e] sm:pb-[500px] pb-48 pt-20">
+    <div className="relative bg-[#21237e] sm:pb-[500px] pb-48 pt-20 hidden lg:block">
       {/* Optimized Twinkling Star Field */}
       <div className="absolute inset-0 w-full h-full">
         {Array.from({ length: 125 }).map((_, i) => {
@@ -318,7 +288,7 @@ export function DefaultStreamShowcase() {
           autoPlayInterval={6000}
           showDots={true}
           showArrows={true}
-          className="max-w-7xl mx-auto"
+          className="w-full mx-auto"
         >
           {projects.map((project, index) => (
             <StreamShowcaseCard

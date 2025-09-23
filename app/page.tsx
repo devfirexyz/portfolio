@@ -130,7 +130,7 @@ I thrive at the intersection of automation, scalability, and product velocity, t
   return (
     <div className="relative">
       {/* Hero Section with Background */}
-      <div className="relative overflow-hidden pt-20 sm:pb-20">
+      <div className="relative overflow-hidden pt-20 pb-40 md:pb-56 sm:pb-20">
         {/* Discord exact gradient background - matches reference images */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#404EED] via-[#36367c] to-[#1e1f22]" />
 
@@ -528,7 +528,7 @@ I thrive at the intersection of automation, scalability, and product velocity, t
           <img
             src="/character_leaf.webp"
             alt="main character"
-            className="absolute sm:-mt-[265px] sm:w-[350px] sm:h-[150px] w-[200px] h-[50px] -mt-40 animate-bounce"
+            className="absolute sm:-mt-[290px] sm:w-[350px] sm:h-[150px] w-[200px] h-[50px] -mt-40 animate-bounce"
           />
         </div>
 

@@ -149,6 +149,104 @@ export function StreamShowcaseCard({
   );
 }
 
+import { ModernCarousel } from "./ModernCarousel";
+
+// Sample project data
+const projects = [
+  {
+    title: "CONVOBASE",
+    subtitle: "👷 THIS CURRENTLY ON THE SIDE ✨",
+    description: "Modern chat infrastructure for AI-first companies. Replace legacy platforms with APIs designed for streaming conversations, intelligent context, and Bring Your Own Cloud deployment.",
+    mainImage: "/convobase.png",
+    liveIndicator: true,
+    viewerCount: "2.3k",
+    onClick: () => window.open("https://convobase.app", "_blank"),
+    avatars: [
+      {
+        src: "https://tanstack.com/images/logos/logo-color-600.png",
+        alt: "tanstack_start",
+        label: "Tanstack Start",
+      },
+      {
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNq0QOFcaHlf2FUGgNwUAZrrw41XGen9BeGg&s",
+        alt: "TypeScript",
+        label: "TypeScript",
+      },
+      {
+        src: "https://cdn.prod.website-files.com/626a25d633b1b99aa0e1afa7/686e6f89b9a5b88ba66f8287_image1.jpg",
+        alt: "BYOC",
+        label: "BYOC",
+      },
+      {
+        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1xATUSgtKnWPtxuTElYHK79kG5uvqlQefEw&s",
+        alt: "GO-Lang",
+        label: "GO-Lang",
+      },
+    ]
+  },
+  {
+    title: "PORTFOLIO",
+    subtitle: "🚀 MODERN PORTFOLIO EXPERIENCE",
+    description: "Interactive portfolio built with Next.js 14, featuring scramble text animations, space-themed backgrounds, and modern UI components. Showcasing skills in React, TypeScript, and creative web development.",
+    mainImage: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&h=450&fit=crop",
+    liveIndicator: true,
+    viewerCount: "1.8k",
+    onClick: () => window.open("/", "_blank"),
+    avatars: [
+      {
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png",
+        alt: "React",
+        label: "React",
+      },
+      {
+        src: "https://nextjs.org/static/favicon/favicon.ico",
+        alt: "Next.js",
+        label: "Next.js",
+      },
+      {
+        src: "https://www.typescriptlang.org/favicon-32x32.png",
+        alt: "TypeScript",
+        label: "TypeScript",
+      },
+      {
+        src: "https://tailwindcss.com/favicons/favicon-32x32.png",
+        alt: "Tailwind",
+        label: "Tailwind",
+      },
+    ]
+  },
+  {
+    title: "FINTECH",
+    subtitle: "💰 TRADING PLATFORM INNOVATION",
+    description: "Scalable financial technology solutions with real-time market data, advanced charting, and automated trading algorithms. Built for high-frequency trading with microsecond latency requirements.",
+    mainImage: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=450&fit=crop",
+    liveIndicator: false,
+    viewerCount: "892",
+    avatars: [
+      {
+        src: "https://nodejs.org/static/images/favicons/favicon.png",
+        alt: "Node.js",
+        label: "Node.js",
+      },
+      {
+        src: "https://www.python.org/static/favicon.ico",
+        alt: "Python",
+        label: "Python",
+      },
+      {
+        src: "https://redis.io/favicon.ico",
+        alt: "Redis",
+        label: "Redis",
+      },
+      {
+        src: "https://www.postgresql.org/favicon.ico",
+        alt: "PostgreSQL",
+        label: "PostgreSQL",
+      },
+    ]
+  }
+];
+
 export function DefaultStreamShowcase() {
   return (
     <div className="relative bg-[#21237e] sm:pb-[500px] pb-48 pt-20">
@@ -160,8 +258,8 @@ export function DefaultStreamShowcase() {
           const top = (seed * 7) % 100;
           const delay = ((seed * 3) % 12000) / 1000;
           const size = (seed % 4) + 1;
-          const brightness = (seed % 5) + 3; // 3-7 for varied brightness
-          const blinkSpeed = (seed % 3) + 2; // 2-4 second blink cycles
+          const brightness = (seed % 5) + 3;
+          const blinkSpeed = (seed % 3) + 2;
 
           return (
             <div
@@ -191,58 +289,53 @@ export function DefaultStreamShowcase() {
           );
         })}
       </div>
+
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse animation-delay-2" />
       </div>
 
-      <h1 className="font-black text-white uppercase tracking-tight sm:mt-20 sm:mb-40 mb-10 w-full items-center justify-center flex">
-        <span
-          className="block animate-bounce text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold bg-gradient-to-r from-[#58f262] via-[#3ab4ff] to-[#fc34d8] bg-clip-text text-transparent animate-gradient-text"
-          style={{
-            fontFamily: "Alan Sans",
-            animationDelay: "0.2s",
-          }}
-        >
-          WhAt HaVe I b33n DOING ?
-        </span>
-      </h1>
+      {/* Section Title */}
+      <div className="relative z-10 text-center mb-16 px-4">
+        <h1 className="font-black text-white uppercase tracking-tight sm:mt-20 sm:mb-20 mb-10">
+          <span
+            className="block animate-bounce text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold bg-gradient-to-r from-[#58f262] via-[#3ab4ff] to-[#fc34d8] bg-clip-text text-transparent animate-gradient-text"
+            style={{
+              fontFamily: "Alan Sans",
+              animationDelay: "0.2s",
+            }}
+          >
+            WhAt HaVe I b33n DOING ?
+          </span>
+        </h1>
+      </div>
 
-      <StreamShowcaseCard
-        title="CONVOBASE"
-        subtitle="👷 THIS CURRENTLY ON THE SIDE ✨"
-        description="Modern chat infrastructure for AI-first companies. Replace legacy platforms with APIs designed for streaming conversations, intelligent context, and Bring Your Own Cloud deployment."
-        mainImage="/convobase.png"
-        mainImageAlt="Development collaboration"
-        liveIndicator={true}
-        onClick={() => {
-          window.open("https://convobase.app", "_blank");
-        }}
-        viewerCount="2.3k"
-        avatars={[
-          {
-            src: "https://tanstack.com/images/logos/logo-color-600.png",
-            alt: "tanstack_start",
-            label: "Tanstack Start",
-          },
-          {
-            src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNq0QOFcaHlf2FUGgNwUAZrrw41XGen9BeGg&s",
-            alt: "Developer 2",
-            label: "TypeScript",
-          },
-          {
-            src: "https://cdn.prod.website-files.com/626a25d633b1b99aa0e1afa7/686e6f89b9a5b88ba66f8287_image1.jpg",
-            alt: "Developer 4",
-            label: "BYOC",
-          },
-          {
-            src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1xATUSgtKnWPtxuTElYHK79kG5uvqlQefEw&s",
-            alt: "Developer 4",
-            label: "GO-Lang",
-          },
-        ]}
-      />
+      {/* Modern Carousel */}
+      <div className="relative z-10 px-4">
+        <ModernCarousel
+          autoPlay={true}
+          autoPlayInterval={6000}
+          showDots={true}
+          showArrows={true}
+          className="max-w-7xl mx-auto"
+        >
+          {projects.map((project, index) => (
+            <StreamShowcaseCard
+              key={index}
+              title={project.title}
+              subtitle={project.subtitle}
+              description={project.description}
+              mainImage={project.mainImage}
+              mainImageAlt={`${project.title} project`}
+              liveIndicator={project.liveIndicator}
+              viewerCount={project.viewerCount}
+              onClick={project.onClick}
+              avatars={project.avatars}
+            />
+          ))}
+        </ModernCarousel>
+      </div>
     </div>
   );
 }

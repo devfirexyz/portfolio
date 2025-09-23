@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
 import { DefaultStreamShowcase } from "@/components/StreamShowcaseCard";
+import { InfiniteTicker } from "@/components/InfiniteTicker";
 
 // Lazy load heavy components
 const ResumeModal = dynamic(
@@ -506,6 +507,8 @@ I thrive at the intersection of automation, scalability, and product velocity, t
           </div>
         </section>
       </div>
+
+      <InfiniteTicker />
 
       {/* Stream Showcase Section */}
       <DefaultStreamShowcase />

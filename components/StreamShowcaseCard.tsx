@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
-import Image from "next/image";
+import React from "react";
 
 interface StreamShowcaseCardProps {
   title: string;
@@ -189,7 +188,7 @@ const projects = [
     subtitle: "AI-Powered Fantasy Cricket Teams",
     description: "Our AI analyzes player statistics, recent form, pitch conditions, and historical data to create optimized fantasy teams.",
     mainImage: "/gpt11.png",
-    liveIndicator: true,
+    liveIndicator: false,
     viewerCount: "1.8k",
     onClick: () => window.open("https://www.mygpt11.com/", "_blank"),
     avatars: [
@@ -219,7 +218,7 @@ const projects = [
 
 export function DefaultStreamShowcase() {
   return (
-    <div className="relative bg-[#21237e] sm:pb-[500px] pb-48 pt-20 hidden lg:block">
+    <div className="relative bg-[#21237e] sm:pb-[500px] pb-48 pt-20 sm:pt-40 hidden lg:block">
       {/* Optimized Twinkling Star Field */}
       <div className="absolute inset-0 w-full h-full">
         {Array.from({ length: 125 }).map((_, i) => {

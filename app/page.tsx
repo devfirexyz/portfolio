@@ -6,8 +6,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 
 import { Button } from "@/components/ui/button";
-import { AnimatedText } from "@/components/AnimatedText";
-import { Logo } from "@/components/Logo";
+import { DefaultStreamShowcase } from "@/components/StreamShowcaseCard";
+import { InfiniteTicker } from "@/components/InfiniteTicker";
 
 // Lazy load heavy components
 const ResumeModal = dynamic(
@@ -131,7 +131,7 @@ I thrive at the intersection of automation, scalability, and product velocity, t
   return (
     <div className="relative">
       {/* Hero Section with Background */}
-      <div className="relative h-screen overflow-hidden">
+      <div className="relative overflow-hidden pt-20 pb-40 md:pb-56 sm:pb-20">
         {/* Discord exact gradient background - matches reference images */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#404EED] via-[#36367c] to-[#1e1f22]" />
 
@@ -363,7 +363,7 @@ I thrive at the intersection of automation, scalability, and product velocity, t
                     <Linkedin className="w-5 h-5 pointer-events-none" />
                   </Link>
                   <Link
-                    href="https://twitter.com/devfirexyz"
+                    href="https://x.com/piyushrajthemt"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white/80 hover:text-white transition-colors p-2 hover:scale-110 transform duration-200 cursor-pointer relative z-50"
@@ -508,6 +508,11 @@ I thrive at the intersection of automation, scalability, and product velocity, t
         </section>
       </div>
 
+      <InfiniteTicker />
+
+      {/* Stream Showcase Section */}
+      <DefaultStreamShowcase />
+
       {/*  Footer */}
       <footer className="relative bg-[#5865F2] text-white mt-0 bg-gradient-to-b from-[#31338b] to-[#5865F2]">
         <div className="relative w-full flex justify-center">
@@ -521,24 +526,20 @@ I thrive at the intersection of automation, scalability, and product velocity, t
           <img
             src="/character_main.webp"
             alt="main character"
-            width={250}
-            height={300}
-            className="absolute -mt-44"
+            className="absolute sm:-mt-44 sm:h-[300px] sm:w-[250px] h-[200px] w-[150px] -mt-32"
           />
           <img
             src="/character_leaf.webp"
             alt="main character"
-            width={350}
-            height={150}
-            className="absolute -mt-[265px] animate-bounce"
+            className="absolute sm:-mt-[290px] sm:w-[350px] sm:h-[150px] w-[200px] h-[50px] -mt-40 animate-bounce"
           />
         </div>
 
         <div className="relative w-full py-16 lg:pt-96">
           {/* Large "Piyush Raj" Text - Discord Style with Uni Sans Heavy */}
-          <div className="relative pt-20 pb-16 text-center">
+          <div className="relative pt-10 sm:pt-20 pb-16 text-center">
             <h1
-              className="text-[120px] sm:text-[180px] md:text-[240px] lg:text-[320px] font-black text-white select-none leading-[0.9]"
+              className="text-[80px] sm:text-[180px] md:text-[240px] lg:text-[320px] font-black text-white select-none leading-[0.9]"
               style={{
                 fontFamily:
                   '"Alan Sans", "gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',

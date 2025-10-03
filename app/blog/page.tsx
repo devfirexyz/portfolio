@@ -11,9 +11,15 @@ export default async function BlogIndex() {
     .filter((post: BlogPost) => !post.draft)
     .sort((a: BlogPost, b: BlogPost) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
 
-  const featuredPosts = sortedPosts.filter((post: BlogPost) => post.featured)
-  const regularPosts = sortedPosts.filter((post: BlogPost) => !post.featured)
+  // Group posts by year
+  const postsByYear = sortedPosts.reduce((acc: Record<number, BlogPost[]>, post: BlogPost) => {
+    const year = new Date(post.publishedAt).getFullYear()
+    if (!acc[year]) acc[year] = []
+    acc[year].push(post)
+    return acc
+  }, {})
 
+  const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
 
   return (
     <BlogLayout>
@@ -35,31 +41,39 @@ export default async function BlogIndex() {
 
       {/* Content Section */}
       <div className="max-w-4xl mx-auto px-6 pb-20">
-        {/* Year Section */}
-        <div className="mb-20">
-          <div className="flex items-center gap-4 mb-16">
-            <h2 className="text-3xl font-semibold text-white">2024</h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-transparent"></div>
-          </div>
+        {years.map(year => {
+          const yearPosts = postsByYear[year]
+          const featuredPosts = yearPosts.filter((post: BlogPost) => post.featured)
+          const regularPosts = yearPosts.filter((post: BlogPost) => !post.featured)
 
-        {/* Featured Posts */}
-        {featuredPosts.length > 0 && (
-            <div className="space-y-8 mb-20">
-              {featuredPosts.map((post: BlogPost) => (
-                <FeaturedPostCard key={post.slug} post={post} />
-              ))}
+          return (
+            <div key={year} className="mb-20">
+              <div className="flex items-center gap-4 mb-16">
+                <h2 className="text-3xl font-semibold text-white">{year}</h2>
+                <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-transparent"></div>
+              </div>
+
+              {/* Featured Posts */}
+              {featuredPosts.length > 0 && (
+                <div className="space-y-8 mb-20">
+                  {featuredPosts.map((post: BlogPost) => (
+                    <FeaturedPostCard key={post.slug} post={post} />
+                  ))}
+                </div>
+              )}
+
+              {/* Regular Posts */}
+              <div className="grid gap-6">
+                {regularPosts.map((post: BlogPost) => (
+                  <RegularPostCard key={post.slug} post={post} />
+                ))}
+              </div>
             </div>
-          )}
+          )
+        })}
 
-          {/* Regular Posts */}
-          <div className="grid gap-6">
-            {regularPosts.map((post: BlogPost) => (
-              <RegularPostCard key={post.slug} post={post} />
-            ))}
-          </div>
-
-          {/* Empty state */}
-          {sortedPosts.length === 0 && (
+        {/* Empty state */}
+        {sortedPosts.length === 0 && (
             <div className="text-center py-20">
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-12 max-w-md mx-auto">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -76,7 +90,6 @@ export default async function BlogIndex() {
               </div>
             </div>
           )}
-        </div>
 
         {/* Pagination */}
         {sortedPosts.length > 6 && (

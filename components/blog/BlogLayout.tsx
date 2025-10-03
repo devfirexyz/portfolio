@@ -269,7 +269,7 @@ export function BlogLayout({
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            © 2024 Piyush Raj. All rights reserved.
+            © {new Date().getFullYear()} Piyush Raj. All rights reserved.
           </motion.div>
         </div>
       </motion.footer>

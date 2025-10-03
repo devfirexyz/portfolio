@@ -38,12 +38,36 @@ function highlightCode(code: string, language: string): React.ReactNode {
     );
   }
 
-  // For other languages, return with basic styling
+  if (language === 'python' || language === 'py') {
+    return (
+      <>
+        {lines.map((line, index) => (
+          <div key={index} className="block">
+            {highlightPythonLine(line)}
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  if (language === 'bash' || language === 'sh' || language === 'shell') {
+    return (
+      <>
+        {lines.map((line, index) => (
+          <div key={index} className="block">
+            {highlightBashLine(line)}
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  // For other languages, return with enhanced basic styling
   return (
     <>
       {lines.map((line, index) => (
-        <div key={index} className="block text-gray-300">
-          {line}
+        <div key={index} className="block text-emerald-300">
+          {line || '\u00A0'}
         </div>
       ))}
     </>
@@ -233,6 +257,115 @@ function getKeywordClassName(keyword: string): string {
   return 'text-gray-300';
 }
 
+// Python syntax highlighting
+function highlightPythonLine(line: string): React.ReactNode {
+  if (!line.trim()) {
+    return <span>&nbsp;</span>;
+  }
+
+  // Handle comments
+  if (line.trim().startsWith('#')) {
+    return <span className="text-gray-500 italic">{line}</span>;
+  }
+
+  const pythonKeywords = [
+    'def', 'class', 'import', 'from', 'return', 'if', 'else', 'elif', 'for', 'while',
+    'try', 'except', 'finally', 'with', 'as', 'pass', 'break', 'continue', 'yield',
+    'lambda', 'raise', 'assert', 'del', 'global', 'nonlocal', 'async', 'await',
+    'True', 'False', 'None', 'and', 'or', 'not', 'in', 'is'
+  ];
+
+  const parts = line.split(/(\s+|[(){}\[\]:,.]|[=<>!+\-*/%]|["'])/);
+  let inString = false;
+  let stringChar = '';
+
+  return (
+    <span>
+      {parts.map((part, i) => {
+        // Handle string detection
+        if ((part === '"' || part === "'") && !inString) {
+          inString = true;
+          stringChar = part;
+          return <span key={i} className="text-green-400">{part}</span>;
+        } else if (part === stringChar && inString) {
+          inString = false;
+          return <span key={i} className="text-green-400">{part}</span>;
+        } else if (inString) {
+          return <span key={i} className="text-green-400">{part}</span>;
+        }
+
+        if (/^\s+$/.test(part)) {
+          return <span key={i}>{part}</span>;
+        } else if (pythonKeywords.includes(part)) {
+          return <span key={i} className="text-purple-400 font-semibold">{part}</span>;
+        } else if (/^\d+(\.\d+)?$/.test(part)) {
+          return <span key={i} className="text-orange-400">{part}</span>;
+        } else if (/^[(){}\[\]:,.]$/.test(part)) {
+          return <span key={i} className="text-yellow-300">{part}</span>;
+        } else {
+          return <span key={i} className="text-cyan-300">{part}</span>;
+        }
+      })}
+    </span>
+  );
+}
+
+// Bash syntax highlighting
+function highlightBashLine(line: string): React.ReactNode {
+  if (!line.trim()) {
+    return <span>&nbsp;</span>;
+  }
+
+  // Handle comments
+  if (line.trim().startsWith('#')) {
+    return <span className="text-gray-500 italic">{line}</span>;
+  }
+
+  const bashKeywords = [
+    'if', 'then', 'else', 'elif', 'fi', 'for', 'do', 'done', 'while', 'until',
+    'case', 'esac', 'function', 'return', 'exit', 'break', 'continue', 'export',
+    'source', 'alias', 'echo', 'cd', 'ls', 'pwd', 'mkdir', 'rm', 'cp', 'mv',
+    'cat', 'grep', 'sed', 'awk', 'find', 'chmod', 'chown', 'sudo', 'apt', 'npm',
+    'pip', 'git', 'docker', 'curl', 'wget'
+  ];
+
+  const parts = line.split(/(\s+|[|&;()<>{}$]|["'])/);
+  let inString = false;
+  let stringChar = '';
+
+  return (
+    <span>
+      {parts.map((part, i) => {
+        // Handle string detection
+        if ((part === '"' || part === "'") && !inString) {
+          inString = true;
+          stringChar = part;
+          return <span key={i} className="text-green-400">{part}</span>;
+        } else if (part === stringChar && inString) {
+          inString = false;
+          return <span key={i} className="text-green-400">{part}</span>;
+        } else if (inString) {
+          return <span key={i} className="text-green-400">{part}</span>;
+        }
+
+        if (/^\s+$/.test(part)) {
+          return <span key={i}>{part}</span>;
+        } else if (bashKeywords.includes(part)) {
+          return <span key={i} className="text-pink-400 font-semibold">{part}</span>;
+        } else if (part.startsWith('$')) {
+          return <span key={i} className="text-cyan-400 font-semibold">{part}</span>;
+        } else if (part.startsWith('-')) {
+          return <span key={i} className="text-yellow-300">{part}</span>;
+        } else if (/^[|&;()<>{}]$/.test(part)) {
+          return <span key={i} className="text-orange-300">{part}</span>;
+        } else {
+          return <span key={i} className="text-emerald-300">{part}</span>;
+        }
+      })}
+    </span>
+  );
+}
+
 // Enhanced Markdown Content Component
 function MarkdownContent({ content }: { content: string }) {
   // Enhanced markdown-to-JSX converter
@@ -251,8 +384,8 @@ function MarkdownContent({ content }: { content: string }) {
         if (inCodeBlock) {
           // End of code block
           result.push(
-            <pre key={`code-${index}`} className="!bg-[#0d1117] !text-[#e6edf3] p-4 rounded-lg overflow-x-auto mb-6 font-mono text-sm leading-relaxed border border-gray-800 relative">
-              <div className="absolute top-2 right-2 text-xs text-gray-400 bg-gray-700 px-2 py-1 rounded">
+            <pre key={`code-${index}`} className="!bg-[#1a1b26] !text-[#c0caf5] p-5 rounded-xl overflow-x-auto mb-6 font-mono text-sm leading-relaxed border border-[#414868] shadow-lg relative">
+              <div className="absolute top-3 right-3 text-xs text-gray-400 bg-[#2a2b3c] px-3 py-1.5 rounded-md font-semibold uppercase tracking-wider">
                 {codeLanguage || 'code'}
               </div>
               <code className={`language-${codeLanguage}`}>
@@ -308,28 +441,70 @@ function MarkdownContent({ content }: { content: string }) {
         continue;
       }
 
-      // Lists
-      if (line.startsWith('- ')) {
-        const listItems = [line];
-        let nextIndex = index + 1;
+      // Lists (including nested lists with indentation)
+      if (line.match(/^(\d+\.|-)\s+/) || line.match(/^\s+(-)\s+/)) {
+        const listItems: Array<{ text: string; indent: number; ordered: boolean }> = [];
+        let nextIndex = index;
 
-        // Collect consecutive list items
-        while (nextIndex < lines.length && lines[nextIndex].startsWith('- ')) {
-          listItems.push(lines[nextIndex]);
-          nextIndex++;
+        // Collect consecutive list items (both ordered and unordered, with indentation)
+        while (nextIndex < lines.length) {
+          const currentLine = lines[nextIndex];
+          const orderedMatch = currentLine.match(/^(\s*)(\d+)\.\s+(.+)$/);
+          const unorderedMatch = currentLine.match(/^(\s*)(-)\s+(.+)$/);
+
+          if (orderedMatch) {
+            const indent = orderedMatch[1].length / 3; // Assuming 3 spaces per indent level
+            listItems.push({ text: orderedMatch[3], indent, ordered: true });
+            nextIndex++;
+          } else if (unorderedMatch) {
+            const indent = unorderedMatch[1].length / 3;
+            listItems.push({ text: unorderedMatch[3], indent, ordered: false });
+            nextIndex++;
+          } else if (currentLine.trim() === '') {
+            // Allow empty lines within lists
+            nextIndex++;
+            break;
+          } else {
+            break;
+          }
         }
 
+        // Render nested list structure
+        const renderNestedList = (items: typeof listItems, currentIndent = 0): React.ReactNode => {
+          const currentLevelItems = items.filter(item => item.indent === currentIndent);
+          if (currentLevelItems.length === 0) return null;
+
+          const ListTag = currentLevelItems[0].ordered ? 'ol' : 'ul';
+          const listClass = currentLevelItems[0].ordered
+            ? "mb-4 pl-6 list-decimal"
+            : "mb-4 pl-6 list-disc";
+
+          return (
+            <ListTag className={listClass}>
+              {currentLevelItems.map((item, i) => {
+                const itemIndex = items.indexOf(item);
+                const nextIndentItems = items.slice(itemIndex + 1).filter(
+                  nextItem => nextItem.indent > currentIndent
+                );
+
+                return (
+                  <li key={i} className="mb-2 text-gray-700 dark:text-gray-300">
+                    {renderInlineFormatting(item.text)}
+                    {nextIndentItems.length > 0 && renderNestedList(nextIndentItems, currentIndent + 1)}
+                  </li>
+                );
+              })}
+            </ListTag>
+          );
+        };
+
         result.push(
-          <ul key={index} className="mb-4 pl-6 list-disc">
-            {listItems.map((item, i) => (
-              <li key={i} className="mb-2 text-gray-700 dark:text-gray-300">
-                {renderInlineFormatting(item.replace('- ', ''))}
-              </li>
-            ))}
-          </ul>
+          <div key={index}>
+            {renderNestedList(listItems)}
+          </div>
         );
 
-        index = nextIndex - 1; // Skip the processed items
+        index = nextIndex - 1;
         continue;
       }
 

@@ -39,7 +39,7 @@ export function StreamShowcaseCard({
         alt="main character"
         width={100}
         height={133}
-        className="absolute -mt-[120px] sm:-mt-[167px] hidden sm:flex sm:w-[150px] sm:h-[200px]"
+        className="absolute -mt-[120px] sm:-mt-[187px] hidden sm:flex sm:w-[150px] sm:h-[200px]"
       />
       {/* Background gradient effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/10 to-transparent rounded-[3rem] blur-3xl" />

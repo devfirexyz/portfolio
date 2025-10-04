@@ -526,7 +526,7 @@ I thrive at the intersection of automation, scalability, and product velocity, t
           <img
             src="/character_main.webp"
             alt="main character"
-            className="absolute sm:-mt-44 sm:h-[300px] sm:w-[250px] h-[200px] w-[150px] -mt-32"
+            className="absolute z-[9999] sm:-mt-48 sm:h-[300px] sm:w-[250px] h-[200px] w-[150px] -mt-32"
             onClick={openResumeModal}
           />
           <img

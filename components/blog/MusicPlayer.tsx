@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
@@ -10,11 +10,20 @@ export function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3); // Start at 30% volume
   const [currentTrack, setCurrentTrack] = useState(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
-  const isBlogPage = pathname?.startsWith("/blog");
+
+  // Memoized visualizer bar heights for performance
+  const visualizerHeights = React.useMemo(
+    () => Array.from({ length: 12 }, () => Math.random() * 80 + 20),
+    []
+  );
+
+  // Enable music on homepage, blog home, and blog posts
+  const isMusicPage = pathname === "/" || pathname?.startsWith("/blog");
 
   // Space ambient music tracks (add these files to /public/music/)
   const tracks = [
@@ -24,7 +33,7 @@ export function MusicPlayer() {
   ];
 
   // Smooth volume fade utility
-  const fadeVolume = (targetVolume: number, duration: number = 1000) => {
+  const fadeVolume = useCallback((targetVolume: number, duration: number = 1000) => {
     if (!audioRef.current) return;
 
     const audio = audioRef.current;
@@ -50,25 +59,40 @@ export function MusicPlayer() {
         audio.volume = startVolume + stepSize * currentStep;
       }
     }, stepDuration);
-  };
+  }, []);
 
   // Play audio with smooth fade in
-  const playAudio = async () => {
-    if (!audioRef.current) return;
+  const playAudio = useCallback(() => {
+    if (!audioRef.current) {
+      console.log("🎵 No audio ref!");
+      return;
+    }
 
     try {
+      console.log("🎵 Attempting to play audio...");
       audioRef.current.volume = 0;
-      await audioRef.current.play();
-      setIsPlaying(true);
-      fadeVolume(volume, 600); // 0.6 second fade in (faster)
+
+      // Call play() synchronously without await to preserve user gesture
+      const playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log("🎵 Audio playing!");
+            setIsPlaying(true);
+            fadeVolume(volume, 600); // 0.6 second fade in (faster)
+          })
+          .catch((error) => {
+            console.error("🎵 Autoplay prevented:", error);
+          });
+      }
     } catch (error) {
-      console.log("Autoplay prevented:", error);
-      // Browser prevented autoplay - user needs to interact first
+      console.error("🎵 Play error:", error);
     }
-  };
+  }, [volume, fadeVolume]);
 
   // Pause audio with smooth fade out
-  const pauseAudio = () => {
+  const pauseAudio = useCallback(() => {
     if (!audioRef.current || !isPlaying) return;
 
     fadeVolume(0, 400); // 0.4 second fade out (faster)
@@ -78,7 +102,7 @@ export function MusicPlayer() {
         setIsPlaying(false);
       }
     }, 400);
-  };
+  }, [isPlaying, fadeVolume]);
 
   // Handle track end - seamlessly move to next track
   const handleTrackEnd = () => {
@@ -86,19 +110,87 @@ export function MusicPlayer() {
     setCurrentTrack(nextTrack);
   };
 
-  // Auto-play when on blog pages
+  // Check if user has interacted with the page (required for autoplay)
   useEffect(() => {
-    if (isBlogPage && !isPlaying) {
-      // Small delay to ensure audio element is ready
-      const timer = setTimeout(() => {
-        playAudio();
-      }, 500);
+    if (hasInteracted) return;
 
-      return () => clearTimeout(timer);
-    } else if (!isBlogPage && isPlaying) {
+    const handleInteraction = (e: Event) => {
+      console.log("🎵 User interaction detected!", e.type);
+
+      if (!audioRef.current) {
+        console.log("🎵 No audio ref available");
+        return;
+      }
+
+      if (hasInteracted) {
+        console.log("🎵 Already interacted, skipping");
+        return;
+      }
+
+      // Mark as interacted immediately
+      setHasInteracted(true);
+
+      // Remove all listeners immediately to prevent duplicate calls
+      document.removeEventListener("pointerup", handleInteraction);
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("keydown", handleInteraction);
+
+      // Ensure audio element is loaded
+      if (audioRef.current.readyState === 0) {
+        console.log("🎵 Loading audio...");
+        audioRef.current.load();
+      }
+
+      // Start playing DIRECTLY within the user gesture handler
+      if (isMusicPage) {
+        console.log("🎵 Starting music immediately after interaction!");
+        console.log("🎵 Audio readyState:", audioRef.current.readyState);
+
+        try {
+          audioRef.current.volume = 0;
+
+          // Call play() synchronously without await
+          const playPromise = audioRef.current.play();
+
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                console.log("🎵 Audio playing successfully!");
+                setIsPlaying(true);
+                fadeVolume(volume, 600);
+              })
+              .catch((error) => {
+                console.error("🎵 Autoplay prevented:", error.name, error.message);
+              });
+          }
+        } catch (error) {
+          console.error("🎵 Play error:", error);
+        }
+      }
+    };
+
+    // Listen for VALID user interactions
+    // pointerup is more reliable than touchend for mobile
+    document.addEventListener("pointerup", handleInteraction, { once: true, passive: false });
+    document.addEventListener("click", handleInteraction, { once: true });
+    document.addEventListener("keydown", handleInteraction, { once: true });
+
+    return () => {
+      document.removeEventListener("pointerup", handleInteraction);
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("keydown", handleInteraction);
+    };
+  }, [isMusicPage, volume, fadeVolume, hasInteracted]);
+
+  // Handle navigation away from music pages
+  useEffect(() => {
+    console.log("🎵 Navigation check:", { isMusicPage, isPlaying });
+
+    if (!isMusicPage && isPlaying) {
+      console.log("🎵 Pausing music (left music page)");
       pauseAudio();
     }
-  }, [isBlogPage]);
+  }, [isMusicPage, isPlaying, pauseAudio]);
 
   // Handle track changes
   useEffect(() => {
@@ -158,7 +250,9 @@ export function MusicPlayer() {
         ref={audioRef}
         src={tracks[currentTrack]}
         onEnded={handleTrackEnd}
-        preload="auto"
+        preload="metadata"
+        playsInline
+        crossOrigin="anonymous"
       />
 
       <div className="fixed bottom-6 right-6 z-50">
@@ -179,13 +273,13 @@ export function MusicPlayer() {
                 <motion.span
                   className="absolute inset-0 rounded-full bg-purple-400 opacity-20"
                   animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0, 0.2] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", type: "tween" }}
                 />
               ) : (
                 <motion.span
                   className="absolute inset-0 rounded-full bg-purple-400/5"
                   animate={{ opacity: [0.05, 0.15, 0.05] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", type: "tween" }}
                 />
               )}
 
@@ -195,8 +289,12 @@ export function MusicPlayer() {
                   className="w-7 h-7 text-white"
                   fill="currentColor"
                   viewBox="0 0 24 24"
-                  animate={isPlaying ? { scale: [1, 1.1, 1] } : {}}
-                  transition={{ duration: 1.5, repeat: isPlaying ? Infinity : 0, ease: "easeInOut" }}
+                  animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+                  transition={{
+                    duration: 3,
+                    repeat: isPlaying ? Infinity : 0,
+                    ease: "linear"
+                  }}
                 >
                   <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                 </motion.svg>
@@ -205,7 +303,7 @@ export function MusicPlayer() {
               {/* Tooltip */}
               <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                 <div className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap shadow-xl">
-                  🌌 Space Ambient
+                  {!hasInteracted && isMusicPage ? "👆 Click to start music" : "🌌 Space Ambient"}
                   <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                 </div>
               </div>
@@ -258,22 +356,23 @@ export function MusicPlayer() {
               <div className="p-6 space-y-6">
                 {/* Visualizer bars */}
                 <div className="flex items-end justify-center gap-1 h-20">
-                  {[...Array(12)].map((_, i) => (
+                  {visualizerHeights.map((height, i) => (
                     <motion.div
                       key={i}
                       className="w-2 bg-gradient-to-t from-purple-600 to-blue-500 rounded-full"
                       animate={
                         isPlaying
                           ? {
-                              height: ["20%", `${Math.random() * 80 + 20}%`, "20%"],
+                              height: ["20%", `${height}%`, "20%"],
                             }
                           : { height: "20%" }
                       }
                       transition={{
-                        duration: 0.8 + Math.random() * 0.4,
+                        duration: 0.8 + (height / 100) * 0.4,
                         repeat: isPlaying ? Infinity : 0,
                         ease: "easeInOut",
                         delay: i * 0.1,
+                        type: "tween"
                       }}
                     />
                   ))}

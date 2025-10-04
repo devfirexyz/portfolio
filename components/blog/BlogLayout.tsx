@@ -74,22 +74,22 @@ export function BlogLayout({
           <motion.div
             className="absolute top-[10%] left-[10%] w-[600px] h-[600px] bg-gradient-to-br from-blue-500/20 via-purple-500/15 to-transparent rounded-full blur-[120px]"
             animate={{ scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", type: "tween" }}
           />
           <motion.div
             className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-gradient-to-tl from-cyan-500/20 via-blue-500/15 to-transparent rounded-full blur-[100px]"
             animate={{ scale: [1, 1.3, 1], opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2, type: "tween" }}
           />
           <motion.div
             className="absolute top-[50%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-r from-purple-500/18 to-pink-500/18 rounded-full blur-[80px]"
             animate={{ scale: [1, 1.25, 1], rotate: [0, 180, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear", type: "tween" }}
           />
           <motion.div
             className="absolute top-[20%] right-[20%] w-[300px] h-[300px] bg-gradient-to-l from-green-500/15 to-emerald-500/15 rounded-full blur-[60px]"
             animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.8, 0.3] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 5, type: "tween" }}
           />
         </div>
 

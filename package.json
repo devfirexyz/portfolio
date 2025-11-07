@@ -8,6 +8,11 @@
     "url": "https://devfire.xyz"
   },
   "private": true,
+  "packageManager": "pnpm@10.17.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

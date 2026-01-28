@@ -15,9 +15,7 @@ export default function RegularPostCard({ post }: { post: BlogPost }) {
       <article className="group">
         <Link href={`/blog/${post.slug}`} className="block">
           {/* Modern compact card */}
-          <div className="relative overflow-hidden bg-white/[0.02] backdrop-blur-xl border border-white/[0.06] rounded-xl hover:bg-white/[0.04] hover:border-white/[0.12] transition-all duration-300 p-6 group">
-            {/* Subtle gradient overlay on hover */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/[0.02] to-purple-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative overflow-hidden bg-white/5 border border-white/10 rounded-xl hover:bg-white/[0.08] hover:border-white/15 transition-colors duration-200 p-6 group">
 
             <div className="relative">
               {/* Header */}

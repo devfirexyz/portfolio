@@ -5,9 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
-}
+/* Removed scroll-behavior: smooth for better scroll performance */
 
 /* Performance optimized animations */
 @keyframes float {

@@ -316,7 +316,7 @@ export function MusicPlayer() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 20 }}
               transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
-              className="bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-purple-500/20 overflow-hidden"
+              className="bg-gray-900 rounded-2xl shadow-2xl border border-purple-500/20 overflow-hidden"
               style={{ width: "280px" }}
             >
               {/* Header */}

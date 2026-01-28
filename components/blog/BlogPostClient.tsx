@@ -1,9 +1,10 @@
 "use client";
 
 import React, {
-  useRef,
-  useEffect,
   useCallback,
+  useEffect,
+  useMemo,
+  useRef,
   useState,
 } from "react";
 import Link from "next/link";
@@ -596,19 +597,12 @@ function MarkdownContent({ content }: { content: string }) {
   return <div className="prose prose-invert max-w-none">{renderContent(content)}</div>;
 }
 
-// Table of Contents Component
+// Table of Contents Component with throttled scroll tracking
 function TableOfContents({ content }: { content: string }) {
-  const [activeIds, setActiveIds] = useState<string[]>([]);
-  const [tocItems, setTocItems] = useState<
-    Array<{ level: number; text: string; href: string; id: string }>
-  >([]);
+  const [activeId, setActiveId] = useState<string>("");
 
-  // Refs to store DOM elements
-  const headingsRef = useRef<HTMLElement[]>([]);
-  const regionsRef = useRef<{ id: string; start: number; end: number }[]>([]);
-
-  useEffect(() => {
-    // Extract TOC items directly from markdown content using regex
+  // Extract TOC items directly from markdown content using regex
+  const tocItems = useMemo(() => {
     const headingRegex = /^(#{2,3})\s+(.+)$/gm;
     const items: Array<{
       level: number;
@@ -621,7 +615,6 @@ function TableOfContents({ content }: { content: string }) {
     while ((match = headingRegex.exec(content)) !== null) {
       const level = match[1].length;
       const text = match[2].trim();
-      // Create consistent IDs that match what our markdown renderer creates
       const id = text
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
@@ -635,119 +628,79 @@ function TableOfContents({ content }: { content: string }) {
       });
     }
 
-    setTocItems(items);
+    return items;
   }, [content]);
 
+  // Use ref to avoid stale closure issues
+  const activeIdRef = useRef(activeId);
+  activeIdRef.current = activeId;
+
+  // Scroll tracking with requestAnimationFrame throttling
   useEffect(() => {
     if (tocItems.length === 0) return;
 
-    const HEADER_OFFSET = 150;
+    let ticking = false;
 
-    const buildHeadingRegions = () => {
-      headingsRef.current = Array.from(
-        document.querySelectorAll("h2[id], h3[id]")
-      ) as HTMLElement[];
-
-      if (headingsRef.current.length === 0) {
-        regionsRef.current = [];
+    const updateActiveHeading = () => {
+      const headings = document.querySelectorAll("h2[id], h3[id]");
+      if (headings.length === 0) {
+        ticking = false;
         return;
       }
 
-      regionsRef.current = headingsRef.current.map((heading, index) => {
-        const nextHeading = headingsRef.current[index + 1];
-        return {
-          id: heading.id,
-          start: heading.offsetTop,
-          end: nextHeading ? nextHeading.offsetTop : document.body.scrollHeight,
-        };
-      });
-    };
+      const scrollTop = window.scrollY;
+      const offset = 120;
 
-    const getVisibleIds = (): string[] => {
-      if (headingsRef.current.length === 0) return [];
+      let currentId = "";
 
-      const viewportTop = window.scrollY + HEADER_OFFSET;
-      const viewportBottom = window.scrollY + window.innerHeight;
-      const visibleIds = new Set<string>();
-
-      const isInViewport = (top: number, bottom: number) =>
-        (top >= viewportTop && top <= viewportBottom) ||
-        (bottom >= viewportTop && bottom <= viewportBottom) ||
-        (top <= viewportTop && bottom >= viewportBottom);
-
-      headingsRef.current.forEach((heading) => {
-        const headingBottom = heading.offsetTop + heading.offsetHeight;
-        if (isInViewport(heading.offsetTop, headingBottom)) {
-          visibleIds.add(heading.id);
+      // Find the heading that's currently at the top of the viewport
+      for (let i = headings.length - 1; i >= 0; i--) {
+        const heading = headings[i] as HTMLElement;
+        if (heading.offsetTop - offset <= scrollTop) {
+          currentId = heading.id;
+          break;
         }
-      });
+      }
 
-      regionsRef.current.forEach((region) => {
-        if (region.start <= viewportBottom && region.end >= viewportTop) {
-          const heading = document.getElementById(region.id);
-          if (heading) {
-            const headingBottom = heading.offsetTop + heading.offsetHeight;
-            if (
-              region.end > headingBottom &&
-              (headingBottom < viewportBottom || viewportTop < region.end)
-            ) {
-              visibleIds.add(region.id);
-            }
-          }
-        }
-      });
+      // If no heading found (we're at the very top), use the first one
+      if (!currentId && headings.length > 0) {
+        currentId = headings[0].id;
+      }
 
-      return Array.from(visibleIds);
+      if (currentId && currentId !== activeIdRef.current) {
+        setActiveId(currentId);
+      }
+
+      ticking = false;
     };
 
     const handleScroll = () => {
-      const newActiveIds = getVisibleIds();
-
-      if (JSON.stringify(newActiveIds) !== JSON.stringify(activeIds)) {
-        setActiveIds(newActiveIds);
+      if (!ticking) {
+        requestAnimationFrame(updateActiveHeading);
+        ticking = true;
       }
     };
 
-    const handleResize = () => {
-      buildHeadingRegions();
-      const newActiveIds = getVisibleIds();
-
-      if (JSON.stringify(newActiveIds) !== JSON.stringify(activeIds)) {
-        setActiveIds(newActiveIds);
-      }
-    };
-
-    // Initialize after content loads
+    // Initial update after content renders
     const timer = setTimeout(() => {
-      buildHeadingRegions();
-      handleScroll();
-
-      const options = { passive: true };
-      window.addEventListener("scroll", handleScroll, options);
-      window.addEventListener("resize", handleResize, options);
-    }, 100);
+      updateActiveHeading();
+      window.addEventListener("scroll", handleScroll, { passive: true });
+    }, 150);
 
     return () => {
       clearTimeout(timer);
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
     };
-  }, [tocItems, activeIds]);
+  }, [tocItems]);
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
       e.preventDefault();
       const element = document.getElementById(id);
       if (element) {
-        // Scroll with offset to account for any fixed headers
-        const yOffset = -120;
-        const y =
-          element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
-        window.scrollTo({
-          top: y,
-          behavior: "smooth",
-        });
+        const yOffset = -100;
+        const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
       }
     },
     []
@@ -757,23 +710,23 @@ function TableOfContents({ content }: { content: string }) {
 
   return (
     <div className="flex flex-col gap-2 px-4 w-full">
-      <span className="text-lg font-medium text-gray-900 dark:text-white">
+      <span className="text-lg font-medium text-white">
         Table of Contents
       </span>
       <ul className="flex list-none flex-col gap-y-2 w-full">
         {tocItems.map((item) => (
           <li
             key={item.id}
-            className={`text-sm w-full ${item.level === 2 ? "pl-0" : "pl-4"} ${
-              activeIds.includes(item.id)
-                ? "text-gray-900 dark:text-white font-bold"
-                : "text-gray-900 dark:text-gray-400"
-            }`}
+            className={`text-sm w-full ${item.level === 2 ? "pl-0" : "pl-4"}`}
           >
             <a
               href={item.href}
-              className="underline decoration-transparent underline-offset-[3px] transition-all duration-300 ease-in-out hover:decoration-inherit block"
               onClick={(e) => handleClick(e, item.id)}
+              className={`block transition-colors ${
+                activeId === item.id
+                  ? "text-white font-semibold"
+                  : "text-gray-400 hover:text-white"
+              }`}
             >
               {item.text.replaceAll("*", "")}
             </a>
@@ -927,9 +880,9 @@ export default function BlogPostClient({ post, allPosts, author }: BlogPostClien
   return (
     <div className="xl:max-w-6xl xl:mx-auto xl:px-6 xl:py-8">
       <div className="xl:grid xl:grid-cols-[250px_1fr] xl:gap-8">
-        {/* Left TOC Sidebar */}
-        <aside className="hidden xl:block sticky top-20 self-start">
-          <div className="max-h-[calc(100vh-5rem)] overflow-y-auto">
+        {/* Left TOC Sidebar - Sticky */}
+        <aside className="hidden xl:block">
+          <div className="sticky top-8">
             <TableOfContents content={post.rawContent || ""} />
           </div>
         </aside>

@@ -13,7 +13,9 @@
       "Read(//Users/piyushraj/Desktop/convobase-code/convobase-dashboard/**)",
       "Bash(npm install:*)",
       "Bash(npm run lint)",
-      "Bash(CI=true pnpm install:*)"
+      "Bash(CI=true pnpm install:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(pnpm run build:*)"
     ],
     "deny": [],
     "ask": []

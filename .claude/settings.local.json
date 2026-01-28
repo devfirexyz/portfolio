@@ -12,7 +12,8 @@
       "Bash(npx next build:*)",
       "Read(//Users/piyushraj/Desktop/convobase-code/convobase-dashboard/**)",
       "Bash(npm install:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(CI=true pnpm install:*)"
     ],
     "deny": [],
     "ask": []

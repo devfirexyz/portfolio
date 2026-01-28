@@ -71,7 +71,7 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
         avatar: "🤖",
         role: "AI",
         time: "2 hrs ago",
-        message: "🤖 **AI-Powered Financial Platform**: Built from scratch ingesting 15+ news sources (720+ daily articles) with automated trending-topic detection, reducing research effort by 70-80%",
+        message: "🤖 **AI-Powered Financial Platform**: Built from scratch ingesting 15+ news sources (720+ daily articles) with automated trending-topic detection, reducing research effort by 70-80% \n **Generative AI-powered Chatbot**: Led & Developed Generative AI-powered chatbot for Demat account opening, transforming the traditional KYC journey into an interactive, conversational experience",
         avatarColors: "from-[#5865F2] to-[#4752c4]",
         roleColor: "bg-[#57F287]",
       },
@@ -127,7 +127,7 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
         avatar: "⚡",
         role: "ANALYZER",
         time: "1 hr ago",
-        message: "💻 **Languages**: TypeScript, JavaScript, Python, Java",
+        message: "💻 **Languages**: TypeScript, JavaScript, Go-Lang, Python, Java",
         avatarColors: "from-[#FEE75C] to-[#d4ac0d]",
         roleColor: "bg-[#5865F2]",
       },
@@ -136,7 +136,7 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
         avatar: "⚛️",
         role: "FRONTEND",
         time: "1 hr ago",
-        message: "🎨 **Frontend**: Svelte & SvelteKit, ReactJS, React Native, React Native-Web, React Native Reanimated 2, Redux, Nx",
+        message: "🎨 **Frontend**: Svelte & SvelteKit, NextJS, Tanstack start, ReactJS, React Native, React Native-Web, React Native Reanimated 2, Redux, Nx",
         avatarColors: "from-[#5865F2] to-[#4752c4]",
         roleColor: "bg-[#57F287]",
       },
@@ -145,7 +145,7 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
         avatar: "🔧",
         role: "BACKEND",
         time: "55 mins ago",
-        message: "🔥 **Backend & AI**: NodeJS, ExpressJS, Quarkus, Python, Vercel AI-SDK, CrewAI",
+        message: "🔥 **Backend & AI**: Go, Camunda, NodeJS, ExpressJS, Quarkus, Python, Vercel AI-SDK, CrewAI",
         avatarColors: "from-[#EB459E] to-[#c4185e]",
         roleColor: "bg-[#FEE75C]",
       },
@@ -154,7 +154,7 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
         avatar: "☁️",
         role: "CLOUD",
         time: "50 mins ago",
-        message: "☁️ **Cloud & DevOps**: AWS (EC2, S3, DocumentDB), Docker, Firebase, Redis, Flipper",
+        message: "☁️ **Cloud & DevOps**: Camunda, AWS (EC2, S3, DocumentDB), Docker, Firebase, Redis, Flipper, K8S",
         avatarColors: "from-[#57F287] to-[#3ba55d]",
         roleColor: "bg-[#EB459E]",
       },
@@ -551,7 +551,9 @@ const DiscordPortfolio = ({ className = "" }: DiscordPortfolioProps) => {
                       }}
                       whileHover={{ y: -1 }}
                       dangerouslySetInnerHTML={{
-                        __html: msg.message.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>'),
+                        __html: msg.message
+                          .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+                          .replace(/\n/g, '<br>'),
                       }}
                     />
                   </div>

@@ -20,7 +20,7 @@ export function HeroContent({
 }: HeroContentProps) {
   return (
     <div className="w-full max-w-none text-left xl:col-span-2">
-      <div className="mb-8 animate-fade-slide-up">
+      <div className="mb-8">
         <p className="mb-4 inline-flex border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-3 py-1 text-[13px] font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground-muted)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
           Bangalore :: Operating in public
         </p>
@@ -41,7 +41,7 @@ export function HeroContent({
         </h1>
       </div>
 
-      <div className="mb-10 max-w-2xl animate-fade-slide-up border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-5 text-base leading-relaxed text-[var(--nb-foreground)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)] sm:text-lg [animation-delay:120ms]">
+      <div className="mb-10 max-w-2xl border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-5 text-base leading-relaxed text-[var(--nb-foreground)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)] sm:text-lg">
         {showAboutMe
           ? aboutMeDescription
           : `${aboutMeDescription.slice(0, 170)}...`}
@@ -54,7 +54,7 @@ export function HeroContent({
         </button>
       </div>
 
-      <div className="mb-10 flex animate-fade-slide-up flex-col gap-4 sm:flex-row sm:gap-6 [animation-delay:220ms]">
+      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:gap-6">
         <NeoButton
           size="lg"
           className="w-full sm:w-auto"

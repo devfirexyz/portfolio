@@ -8,6 +8,40 @@ const Lottie = dynamic(() => import("lottie-react"), {
   loading: () => null,
 });
 
+const FOOTER_LOTTIE_ACTIVATED_KEY = "footerLottieActivated";
+
+let footerLottieActivatedCache = false;
+let footerLottieDataCache: object | null | undefined;
+let footerLottieDataPromise: Promise<object | null> | null = null;
+
+function fetchFooterLottieData() {
+  if (footerLottieDataCache !== undefined) {
+    return Promise.resolve(footerLottieDataCache);
+  }
+
+  if (footerLottieDataPromise) {
+    return footerLottieDataPromise;
+  }
+
+  footerLottieDataPromise = fetch("/lottie/my-character.json", { cache: "force-cache" })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to load Lottie animation.");
+      }
+      return response.json() as Promise<object>;
+    })
+    .then((data) => {
+      footerLottieDataCache = data;
+      return data;
+    })
+    .catch(() => {
+      footerLottieDataCache = null;
+      return null;
+    });
+
+  return footerLottieDataPromise;
+}
+
 function LottieFallback() {
   return (
     <div className="relative h-[260px] w-full overflow-hidden rounded-md bg-[linear-gradient(180deg,#111e33_0%,#0b1423_100%)] sm:h-[320px]">
@@ -21,11 +55,11 @@ function LottieFallback() {
 }
 
 export function LazyFooterLottie() {
+  const hasCachedAnimation = footerLottieActivatedCache && Boolean(footerLottieDataCache);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isActivated, setIsActivated] = useState(false);
-  const [isInView, setIsInView] = useState(false);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [animationData, setAnimationData] = useState<object | null>(null);
+  const [isActivated, setIsActivated] = useState(footerLottieActivatedCache);
+  const [isInView, setIsInView] = useState(hasCachedAnimation);
+  const [animationData, setAnimationData] = useState<object | null>(footerLottieDataCache ?? null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -35,6 +69,19 @@ export function LazyFooterLottie() {
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, []);
+
+  useEffect(() => {
+    if (!isActivated) {
+      try {
+        if (sessionStorage.getItem(FOOTER_LOTTIE_ACTIVATED_KEY) === "1") {
+          setIsActivated(true);
+          footerLottieActivatedCache = true;
+        }
+      } catch {
+        // Ignore storage failures.
+      }
+    }
+  }, [isActivated]);
 
   useEffect(() => {
     const activate = () => setIsActivated(true);
@@ -57,6 +104,34 @@ export function LazyFooterLottie() {
       return;
     }
 
+    footerLottieActivatedCache = true;
+    try {
+      sessionStorage.setItem(FOOTER_LOTTIE_ACTIVATED_KEY, "1");
+    } catch {
+      // Ignore storage failures.
+    }
+  }, [isActivated]);
+
+  useEffect(() => {
+    if (!isActivated || footerLottieDataCache !== undefined) {
+      return;
+    }
+
+    // Preload animation module and JSON after first real interaction to avoid repeat loader flashes.
+    void import("lottie-react");
+    void fetchFooterLottieData();
+  }, [isActivated]);
+
+  useEffect(() => {
+    if (!isActivated) {
+      return;
+    }
+
+    if (hasCachedAnimation) {
+      setIsInView(true);
+      return;
+    }
+
     const node = containerRef.current;
     if (!node) {
       return;
@@ -67,9 +142,6 @@ export function LazyFooterLottie() {
         const entry = entries[0];
         const visible = Boolean(entry?.isIntersecting);
         setIsInView(visible);
-        if (visible) {
-          setShouldLoad(true);
-        }
       },
       {
         root: null,
@@ -80,38 +152,32 @@ export function LazyFooterLottie() {
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [isActivated]);
+  }, [hasCachedAnimation, isActivated]);
 
   useEffect(() => {
-    if (!shouldLoad || animationData) {
+    if (!isActivated || !isInView) {
+      return;
+    }
+
+    if (footerLottieDataCache !== undefined) {
+      setAnimationData(footerLottieDataCache);
       return;
     }
 
     let cancelled = false;
-    fetch("/lottie/my-character.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to load Lottie animation.");
-        }
-        return response.json();
-      })
-      .then((data: object) => {
+    fetchFooterLottieData()
+      .then((data: object | null) => {
         if (!cancelled) {
           setAnimationData(data);
         }
       })
-      .catch(() => {
-        if (!cancelled) {
-          setAnimationData(null);
-        }
-      });
 
     return () => {
       cancelled = true;
     };
-  }, [animationData, shouldLoad]);
+  }, [isActivated, isInView]);
 
-  const canRenderLottie = shouldLoad && isInView && animationData;
+  const canRenderLottie = isActivated && (isInView || hasCachedAnimation) && animationData;
 
   return (
     <div ref={containerRef} className="relative">

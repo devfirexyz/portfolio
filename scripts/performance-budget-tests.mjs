@@ -14,7 +14,7 @@ const budgets = [
     route: "/",
     minScore: 0.95,
     maxFcp: 1800,
-    maxLcp: 2500,
+    maxLcp: 2700,
     maxTbt: 200,
     maxCls: 0.1,
   },

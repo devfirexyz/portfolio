@@ -39,26 +39,14 @@ function ProjectsShell() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {Array.from({ length: 2 }).map((_, index) => (
-            <article
-              key={`projects-shell-${index}`}
-              className="overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)]"
-            >
-              <div className="aspect-[16/10] border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-muted)]" />
-              <div className="space-y-5 p-6">
-                <div className="h-6 w-2/3 bg-[var(--nb-surface-alt)]" />
-                <div className="h-4 w-full bg-[var(--nb-surface-alt)]" />
-                <div className="h-4 w-5/6 bg-[var(--nb-surface-alt)]" />
-                <div className="flex flex-wrap gap-2">
-                  <span className="h-7 w-20 bg-[var(--nb-surface-alt)]" />
-                  <span className="h-7 w-24 bg-[var(--nb-surface-alt)]" />
-                  <span className="h-7 w-16 bg-[var(--nb-surface-alt)]" />
-                </div>
-                <div className="h-10 w-40 bg-[var(--nb-surface-alt)]" />
-              </div>
-            </article>
-          ))}
+        <div className="overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)]">
+          <div className="h-[320px] border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-muted)] sm:h-[420px]" />
+          <div className="space-y-4 p-6">
+            <div className="h-6 w-2/5 bg-[var(--nb-surface-alt)]" />
+            <div className="h-4 w-full bg-[var(--nb-surface-alt)]" />
+            <div className="h-4 w-3/4 bg-[var(--nb-surface-alt)]" />
+            <div className="h-10 w-40 bg-[var(--nb-surface-alt)]" />
+          </div>
         </div>
 
         <div className="mt-8 flex items-center justify-between">
@@ -81,6 +69,9 @@ function ProjectsShell() {
 const loadDiscordPortfolio = () => import("@/components/DiscordPortfolio");
 const loadNeoProjectsSection = () =>
   import("@/components/home/neo/NeoProjectsSection").then((mod) => mod.NeoProjectsSection);
+
+const PROJECTS_LOADED_KEY = "projectsSectionLoaded";
+let projectsSectionLoadedCache = false;
 
 const DiscordPortfolio = dynamic(loadDiscordPortfolio, {
   ssr: false,
@@ -135,7 +126,7 @@ export default function PortfolioPage() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [showAboutMe, setShowAboutMe] = useState(false);
   const [showInteractiveConsole, setShowInteractiveConsole] = useState(false);
-  const [showProjects, setShowProjects] = useState(false);
+  const [showProjects, setShowProjects] = useState(projectsSectionLoadedCache);
   const [hasUserScrolled, setHasUserScrolled] = useState(false);
   const projectsSentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -166,6 +157,27 @@ export default function PortfolioPage() {
   const onCloseContact = useCallback(() => {
     setIsContactModalOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (showProjects) {
+      projectsSectionLoadedCache = true;
+      try {
+        sessionStorage.setItem(PROJECTS_LOADED_KEY, "1");
+      } catch {
+        // Ignore storage failures.
+      }
+      return;
+    }
+
+    try {
+      if (sessionStorage.getItem(PROJECTS_LOADED_KEY) === "1") {
+        projectsSectionLoadedCache = true;
+        setShowProjects(true);
+      }
+    } catch {
+      // Ignore storage failures.
+    }
+  }, [showProjects]);
 
   useEffect(() => {
     if (hasUserScrolled) {

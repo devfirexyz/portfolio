@@ -22,6 +22,7 @@ function LottieFallback() {
 
 export function LazyFooterLottie() {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isActivated, setIsActivated] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [animationData, setAnimationData] = useState<object | null>(null);
@@ -36,6 +37,26 @@ export function LazyFooterLottie() {
   }, []);
 
   useEffect(() => {
+    const activate = () => setIsActivated(true);
+
+    window.addEventListener("pointerdown", activate, { once: true, passive: true });
+    window.addEventListener("keydown", activate, { once: true });
+    window.addEventListener("touchstart", activate, { once: true, passive: true });
+    window.addEventListener("wheel", activate, { once: true, passive: true });
+
+    return () => {
+      window.removeEventListener("pointerdown", activate);
+      window.removeEventListener("keydown", activate);
+      window.removeEventListener("touchstart", activate);
+      window.removeEventListener("wheel", activate);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isActivated) {
+      return;
+    }
+
     const node = containerRef.current;
     if (!node) {
       return;
@@ -59,7 +80,7 @@ export function LazyFooterLottie() {
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [isActivated]);
 
   useEffect(() => {
     if (!shouldLoad || animationData) {

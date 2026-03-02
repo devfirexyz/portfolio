@@ -1,5 +1,5 @@
 export function normalizeMarkdownHref(rawHref: string): { href: string; isExternal: boolean } {
-  const href = rawHref.split(/\s+/)[0].replace(/^<|>$/g, "");
+  const href = rawHref.trim().split(/\s+/)[0].replace(/^<|>$/g, "");
   if (!href) {
     return { href: "#", isExternal: false };
   }

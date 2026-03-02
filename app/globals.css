@@ -147,8 +147,8 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
+    font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
     line-height: 1.55;
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;

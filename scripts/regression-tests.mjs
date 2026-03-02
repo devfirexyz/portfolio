@@ -79,7 +79,10 @@ test("getAllPosts handles invalid dates without NaN and keeps deterministic orde
     const posts = await getAllPosts();
 
     assert.equal(posts.length, 3);
-    assert.equal(posts[0]?.slug, "valid-date");
+    assert.deepEqual(
+      posts.map((post) => post.slug),
+      ["valid-date", "invalid-date", "missing-date"]
+    );
     assert.ok(posts.every((post) => Number.isFinite(post.publishedAt.getTime())));
     assert.equal(posts.find((post) => post.slug === "invalid-date")?.publishedAt.getTime(), 0);
     assert.equal(posts.find((post) => post.slug === "missing-date")?.publishedAt.getTime(), 0);

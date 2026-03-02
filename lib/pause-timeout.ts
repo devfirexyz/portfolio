@@ -3,7 +3,7 @@ export type TimeoutRef = {
 };
 
 export function clearPauseTimeout(ref: TimeoutRef): void {
-  if (ref.current) {
+  if (ref.current != null) {
     clearTimeout(ref.current);
     ref.current = null;
   }

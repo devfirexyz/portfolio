@@ -38,6 +38,7 @@ const budgets = [
 
 function run(cmd, args, options = {}) {
   return new Promise((resolve, reject) => {
+    const timeoutMs = typeof options.timeout === "number" ? options.timeout : 0;
     const child = spawn(cmd, args, {
       cwd: root,
       stdio: options.stdio || "inherit",
@@ -46,6 +47,32 @@ function run(cmd, args, options = {}) {
 
     let stdout = "";
     let stderr = "";
+    let settled = false;
+    let timeoutId = null;
+    let killId = null;
+
+    const clearTimers = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+      if (killId) {
+        clearTimeout(killId);
+        killId = null;
+      }
+    };
+
+    const rejectOnce = (error) => {
+      if (settled) return;
+      settled = true;
+      reject(error);
+    };
+
+    const resolveOnce = (value) => {
+      if (settled) return;
+      settled = true;
+      resolve(value);
+    };
 
     if (child.stdout) {
       child.stdout.on("data", (chunk) => {
@@ -59,15 +86,33 @@ function run(cmd, args, options = {}) {
       });
     }
 
+    if (timeoutMs > 0) {
+      timeoutId = setTimeout(() => {
+        child.kill("SIGTERM");
+        killId = setTimeout(() => {
+          if (!child.killed) {
+            child.kill("SIGKILL");
+          }
+        }, 3000);
+        rejectOnce(new Error(`${cmd} ${args.join(" ")} timed out after ${timeoutMs}ms`));
+      }, timeoutMs);
+    }
+
     child.on("close", (code) => {
+      clearTimers();
+      if (settled) return;
       if (code === 0) {
-        resolve({ stdout, stderr });
+        resolveOnce({ stdout, stderr });
       } else {
-        reject(new Error(`${cmd} ${args.join(" ")} failed with exit code ${code}\n${stderr}`));
+        rejectOnce(new Error(`${cmd} ${args.join(" ")} failed with exit code ${code}\n${stderr}`));
       }
     });
 
-    child.on("error", (error) => reject(error));
+    child.on("error", (error) => {
+      clearTimers();
+      if (settled) return;
+      rejectOnce(error);
+    });
   });
 }
 
@@ -97,25 +142,35 @@ async function ensureBuildExists() {
   }
 
   console.log("\n📦 No build output found. Running production build for perf tests...\n");
-  await run("pnpm", ["build"]);
+  await run("pnpm", ["build"], { timeout: 10 * 60 * 1000 });
 }
 
 async function runLighthouse(route) {
   const safeRoute = route.replace(/\//g, "_") || "root";
   const outputPath = path.join(os.tmpdir(), `lighthouse-${safeRoute}-${Date.now()}.json`);
 
-  await run("npx", [
-    "--no-install",
-    "lighthouse",
-    `${baseUrl}${route}`,
-    "--quiet",
-    "--chrome-flags=--headless=new --no-sandbox",
-    "--only-categories=performance",
-    "--output=json",
-    `--output-path=${outputPath}`,
-  ]);
+  try {
+    await run(
+      "npx",
+      [
+        "--no-install",
+        "lighthouse",
+        `${baseUrl}${route}`,
+        "--quiet",
+        "--chrome-flags=--headless=new --no-sandbox",
+        "--only-categories=performance",
+        "--output=json",
+        `--output-path=${outputPath}`,
+      ],
+      { timeout: 5 * 60 * 1000 }
+    );
 
-  return JSON.parse(fs.readFileSync(outputPath, "utf8"));
+    return JSON.parse(fs.readFileSync(outputPath, "utf8"));
+  } finally {
+    if (fs.existsSync(outputPath)) {
+      fs.unlinkSync(outputPath);
+    }
+  }
 }
 
 function extractMetrics(report, route) {

@@ -1,9 +1,9 @@
 import type React from "react";
 import Script from "next/script";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
-import { LazyMusicPlayer } from "@/components/LazyMusicPlayer";
-import { ThemeProvider } from "@/components/theme-provider";
+import Providers from "./providers";
 
 export const metadata = {
   title: "Piyush Raj | Systems Engineer",
@@ -43,16 +43,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen antialiased" suppressHydrationWarning>
+      <body className={`${GeistMono.variable} min-h-screen antialiased`} suppressHydrationWarning>
         <Script
           id="theme-init"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
-        <ThemeProvider defaultTheme="dark">
-          {children}
-          <LazyMusicPlayer />
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

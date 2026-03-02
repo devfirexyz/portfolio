@@ -35,7 +35,7 @@ export function NeoProjectsSection() {
   return (
     <section
       id="projects"
-      className="border-b-2 border-[var(--nb-border)] bg-[var(--nb-background-alt)] px-4 py-20 sm:px-8"
+      className="min-h-[780px] lg:min-h-[900px] border-b-2 border-[var(--nb-border)] bg-[var(--nb-background-alt)] px-4 py-20 sm:px-8"
     >
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

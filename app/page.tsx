@@ -17,15 +17,80 @@ const ContactFormModal = dynamic(() => import("@/components/ContactFormModal"), 
   loading: () => null,
 });
 
-const DiscordPortfolio = dynamic(() => import("@/components/DiscordPortfolio"), {
+function ProjectsShell() {
+  return (
+    <section
+      id="projects"
+      className="min-h-[780px] lg:min-h-[900px] border-b-2 border-[var(--nb-border)] bg-[var(--nb-background-alt)] px-4 py-20 sm:px-8"
+      aria-busy="true"
+    >
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground-muted)]">
+              Work Samples
+            </p>
+            <h2 className="mt-2 text-4xl font-black uppercase leading-[0.9] tracking-[-0.05em] sm:text-6xl">
+              Project Evidence
+            </h2>
+          </div>
+          <p className="max-w-md text-base leading-relaxed text-[var(--nb-foreground-muted)]">
+            Selected builds with measurable outcomes, production context, and implementation details.
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {Array.from({ length: 2 }).map((_, index) => (
+            <article
+              key={`projects-shell-${index}`}
+              className="overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)]"
+            >
+              <div className="aspect-[16/10] border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-muted)]" />
+              <div className="space-y-5 p-6">
+                <div className="h-6 w-2/3 bg-[var(--nb-surface-alt)]" />
+                <div className="h-4 w-full bg-[var(--nb-surface-alt)]" />
+                <div className="h-4 w-5/6 bg-[var(--nb-surface-alt)]" />
+                <div className="flex flex-wrap gap-2">
+                  <span className="h-7 w-20 bg-[var(--nb-surface-alt)]" />
+                  <span className="h-7 w-24 bg-[var(--nb-surface-alt)]" />
+                  <span className="h-7 w-16 bg-[var(--nb-surface-alt)]" />
+                </div>
+                <div className="h-10 w-40 bg-[var(--nb-surface-alt)]" />
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-8 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-10 bg-[var(--nb-surface-alt)]" />
+            <span className="h-3 w-3 bg-[var(--nb-surface-alt)]" />
+            <span className="h-3 w-3 bg-[var(--nb-surface-alt)]" />
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="h-10 w-10 bg-[var(--nb-surface-alt)]" />
+            <span className="h-10 w-10 bg-[var(--nb-surface-alt)]" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const loadDiscordPortfolio = () => import("@/components/DiscordPortfolio");
+const loadNeoProjectsSection = () =>
+  import("@/components/home/neo/NeoProjectsSection").then((mod) => mod.NeoProjectsSection);
+
+const DiscordPortfolio = dynamic(loadDiscordPortfolio, {
   ssr: false,
   loading: () => null,
 });
 
-const NeoProjectsSection = dynamic(
-  () => import("@/components/home/neo/NeoProjectsSection").then((mod) => mod.NeoProjectsSection),
-  { ssr: false, loading: () => null }
-);
+const NeoProjectsSection = dynamic(loadNeoProjectsSection, {
+  ssr: false,
+  loading: ProjectsShell,
+});
 
 function DiscordShell({
   onEnable,
@@ -61,27 +126,6 @@ function DiscordShell({
         </button>
       </div>
     </div>
-  );
-}
-
-function ProjectsShell() {
-  return (
-    <section
-      id="projects"
-      className="border-b-2 border-[var(--nb-border)] bg-[var(--nb-background-alt)] px-4 py-20 sm:px-8"
-    >
-      <div className="mx-auto max-w-7xl">
-        <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground-muted)]">
-          Work Samples
-        </p>
-        <h2 className="mt-2 text-4xl font-black uppercase leading-[0.9] tracking-[-0.05em] sm:text-6xl">
-          Project Evidence
-        </h2>
-        <p className="mt-4 max-w-md text-sm font-bold uppercase tracking-[0.1em] text-[var(--nb-foreground-subtle)]">
-          Loading showcase...
-        </p>
-      </div>
-    </section>
   );
 }
 
@@ -141,6 +185,49 @@ export default function PortfolioPage() {
   }, [hasUserScrolled]);
 
   useEffect(() => {
+    let idleId: number | null = null;
+    let timeoutId: number | null = null;
+    let warmed = false;
+
+    const warmNonCriticalChunks = () => {
+      if (warmed) {
+        return;
+      }
+
+      warmed = true;
+      void loadDiscordPortfolio();
+      void loadNeoProjectsSection();
+    };
+
+    const onInteraction = () => {
+      if (typeof window.requestIdleCallback === "function") {
+        idleId = window.requestIdleCallback(warmNonCriticalChunks, { timeout: 1800 });
+        return;
+      }
+
+      timeoutId = window.setTimeout(warmNonCriticalChunks, 500);
+    };
+
+    window.addEventListener("pointerdown", onInteraction, { once: true, passive: true });
+    window.addEventListener("keydown", onInteraction, { once: true });
+    window.addEventListener("touchstart", onInteraction, { once: true, passive: true });
+    window.addEventListener("wheel", onInteraction, { once: true, passive: true });
+
+    return () => {
+      window.removeEventListener("pointerdown", onInteraction);
+      window.removeEventListener("keydown", onInteraction);
+      window.removeEventListener("touchstart", onInteraction);
+      window.removeEventListener("wheel", onInteraction);
+      if (idleId !== null && typeof window.cancelIdleCallback === "function") {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (showProjects || !hasUserScrolled) {
       return;
     }
@@ -156,7 +243,7 @@ export default function PortfolioPage() {
             enable();
           }
         },
-        { rootMargin: "0px", threshold: 0.1 }
+        { rootMargin: "240px", threshold: 0.01 }
       );
       observer.observe(sentinel);
     } else {

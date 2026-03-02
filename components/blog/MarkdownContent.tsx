@@ -182,21 +182,37 @@ function renderBlock(block: MarkdownBlock, index: number): ReactNode {
   }
 
   if (block.type === "list") {
+    const isOrdered = block.items.some((item) => item.ordered);
+
     return (
-      <ul key={`list-${index}`} className="mb-5 space-y-2 text-[var(--nb-foreground-muted)]">
-        {block.items.map((item, itemIndex) => (
-          <li
-            key={`list-item-${index}-${itemIndex}`}
-            className="flex items-start gap-2 text-sm leading-relaxed sm:text-base"
-            style={{ paddingLeft: `${Math.min(item.indent * 16, 80)}px` }}
-          >
-            <span className="mt-[1px] font-semibold text-[var(--nb-foreground)]">
-              {item.ordered ? `${item.order || itemIndex + 1}.` : "•"}
-            </span>
-            <span>{renderInline(item.text, `list-${index}-${itemIndex}`)}</span>
-          </li>
-        ))}
-      </ul>
+      <div key={`list-${index}`}>
+        {isOrdered ? (
+          <ol className="mb-5 list-decimal space-y-2 pl-5 text-[var(--nb-foreground-muted)]">
+            {block.items.map((item, itemIndex) => (
+              <li
+                key={`list-item-${index}-${itemIndex}`}
+                className="text-sm leading-relaxed sm:text-base"
+                style={{ paddingLeft: `${Math.min(item.indent * 16, 80)}px` }}
+              >
+                <span>{renderInline(item.text, `list-${index}-${itemIndex}`)}</span>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <ul className="mb-5 space-y-2 text-[var(--nb-foreground-muted)]">
+            {block.items.map((item, itemIndex) => (
+              <li
+                key={`list-item-${index}-${itemIndex}`}
+                className="flex items-start gap-2 text-sm leading-relaxed sm:text-base"
+                style={{ paddingLeft: `${Math.min(item.indent * 16, 80)}px` }}
+              >
+                <span className="mt-[1px] font-semibold text-[var(--nb-foreground)]">•</span>
+                <span>{renderInline(item.text, `list-${index}-${itemIndex}`)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     );
   }
 

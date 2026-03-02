@@ -10,6 +10,7 @@ export type ChannelId =
 export interface DiscordChannel {
   id: ChannelId;
   name: string;
+  shortName?: string;
   icon: string;
 }
 
@@ -21,13 +22,13 @@ export interface ResumeSectionContent {
 }
 
 export const DISCORD_CHANNELS: DiscordChannel[] = [
-  { id: "resume", name: "resume-highlight", icon: "📄" },
-  { id: "introduction", name: "introduction", icon: "👋" },
-  { id: "experience", name: "work-experience", icon: "💼" },
-  { id: "skills", name: "tech-skills", icon: "⚡" },
-  { id: "projects", name: "key-projects", icon: "🚀" },
-  { id: "achievements", name: "achievements", icon: "🏆" },
-  { id: "education", name: "education", icon: "🎓" },
+  { id: "resume", name: "resume-highlight", shortName: "resume", icon: "📄" },
+  { id: "introduction", name: "introduction", shortName: "intro", icon: "👋" },
+  { id: "experience", name: "work-experience", shortName: "experience", icon: "💼" },
+  { id: "skills", name: "tech-skills", shortName: "skills", icon: "⚡" },
+  { id: "projects", name: "key-projects", shortName: "projects", icon: "🚀" },
+  { id: "achievements", name: "achievements", shortName: "wins", icon: "🏆" },
+  { id: "education", name: "education", shortName: "education", icon: "🎓" },
 ];
 
 export const RESUME_SECTION_CONTENT: Record<ChannelId, ResumeSectionContent> = {

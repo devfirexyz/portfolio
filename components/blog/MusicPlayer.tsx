@@ -8,6 +8,9 @@ const TRACKS = [
   "/music/space-ambient-2.mp3",
   "/music/space-ambient-3.mp3",
 ];
+const EXPANDED_STORAGE_KEY = "musicPlayerExpanded";
+const VOLUME_STORAGE_KEY = "musicPlayerVolume";
+const PLAYING_STORAGE_KEY = "musicPlayerPlaying";
 
 export function MusicPlayer() {
   const pathname = usePathname();
@@ -15,6 +18,7 @@ export function MusicPlayer() {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [shouldPlay, setShouldPlay] = useState(false);
   const [volume, setVolume] = useState(0.3);
   const [currentTrack, setCurrentTrack] = useState(0);
 
@@ -77,23 +81,31 @@ export function MusicPlayer() {
   }, [fadeVolume, isPlaying]);
 
   useEffect(() => {
-    const savedExpanded = localStorage.getItem("musicPlayerExpanded");
-    const savedVolume = localStorage.getItem("musicPlayerVolume");
+    const savedExpanded = localStorage.getItem(EXPANDED_STORAGE_KEY);
+    const savedVolume = localStorage.getItem(VOLUME_STORAGE_KEY);
+    const savedPlaying = localStorage.getItem(PLAYING_STORAGE_KEY);
 
     if (savedExpanded !== null) setIsExpanded(savedExpanded === "true");
     if (savedVolume !== null) setVolume(Number(savedVolume));
+    if (savedPlaying !== null) {
+      setShouldPlay(savedPlaying === "true");
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("musicPlayerExpanded", String(isExpanded));
+    localStorage.setItem(EXPANDED_STORAGE_KEY, String(isExpanded));
   }, [isExpanded]);
 
   useEffect(() => {
-    localStorage.setItem("musicPlayerVolume", String(volume));
+    localStorage.setItem(VOLUME_STORAGE_KEY, String(volume));
     if (audioRef.current && isPlaying) {
       fadeVolume(volume, 300);
     }
   }, [fadeVolume, isPlaying, volume]);
+
+  useEffect(() => {
+    localStorage.setItem(PLAYING_STORAGE_KEY, String(shouldPlay));
+  }, [shouldPlay]);
 
   useEffect(() => {
     if (!isMusicPage && isPlaying) {
@@ -109,7 +121,7 @@ export function MusicPlayer() {
 
   useEffect(() => {
     const onInteract = () => {
-      if (hasInteractedRef.current || !isMusicPage) return;
+      if (hasInteractedRef.current || !isMusicPage || !shouldPlay) return;
       hasInteractedRef.current = true;
       playAudio();
     };
@@ -121,7 +133,7 @@ export function MusicPlayer() {
       document.removeEventListener("pointerup", onInteract);
       document.removeEventListener("keydown", onInteract);
     };
-  }, [isMusicPage, playAudio]);
+  }, [isMusicPage, playAudio, shouldPlay]);
 
   useEffect(() => {
     return () => {
@@ -195,7 +207,15 @@ export function MusicPlayer() {
               <div className="flex justify-center">
                 <button
                   type="button"
-                  onClick={() => (isPlaying ? pauseAudio() : playAudio())}
+                  onClick={() => {
+                    if (isPlaying) {
+                      setShouldPlay(false);
+                      pauseAudio();
+                      return;
+                    }
+                    setShouldPlay(true);
+                    playAudio();
+                  }}
                   className="flex h-14 w-14 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] text-[var(--nb-foreground-inverse)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)]"
                   aria-label={isPlaying ? "Pause" : "Play"}
                 >

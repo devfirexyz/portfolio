@@ -92,6 +92,7 @@ export default function PortfolioPage() {
   const [showAboutMe, setShowAboutMe] = useState(false);
   const [showInteractiveConsole, setShowInteractiveConsole] = useState(false);
   const [showProjects, setShowProjects] = useState(false);
+  const [hasUserScrolled, setHasUserScrolled] = useState(false);
   const projectsSentinelRef = useRef<HTMLDivElement | null>(null);
 
   const onToggleMenu = useCallback(() => {
@@ -123,7 +124,24 @@ export default function PortfolioPage() {
   }, []);
 
   useEffect(() => {
-    if (showProjects) {
+    if (hasUserScrolled) {
+      return;
+    }
+
+    const onScroll = () => {
+      if (window.scrollY > 0) {
+        setHasUserScrolled(true);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [hasUserScrolled]);
+
+  useEffect(() => {
+    if (showProjects || !hasUserScrolled) {
       return;
     }
 
@@ -138,7 +156,7 @@ export default function PortfolioPage() {
             enable();
           }
         },
-        { rootMargin: "240px" }
+        { rootMargin: "0px", threshold: 0.1 }
       );
       observer.observe(sentinel);
     } else {
@@ -148,7 +166,7 @@ export default function PortfolioPage() {
     return () => {
       observer?.disconnect();
     };
-  }, [showProjects]);
+  }, [hasUserScrolled, showProjects]);
 
   return (
     <div className="relative bg-[var(--nb-background)] text-[var(--nb-foreground)]">

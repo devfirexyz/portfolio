@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 import { clearPauseTimeout, schedulePauseTimeout } from "@/lib/pause-timeout";
+import { useCurrentPathname } from "@/lib/use-current-pathname";
 
 const TRACKS = [
   "/music/space-ambient-1.mp3",
@@ -14,7 +14,7 @@ const VOLUME_STORAGE_KEY = "musicPlayerVolume";
 const PLAYING_STORAGE_KEY = "musicPlayerPlaying";
 
 export function MusicPlayer() {
-  const pathname = usePathname();
+  const pathname = useCurrentPathname();
   const isMusicPage = pathname === "/" || pathname.startsWith("/blog");
 
   const [isExpanded, setIsExpanded] = useState(false);

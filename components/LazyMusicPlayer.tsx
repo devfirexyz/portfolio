@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useCurrentPathname } from "@/lib/use-current-pathname";
 
 const MusicPlayer = dynamic(
   () => import("@/components/blog/MusicPlayer").then((mod) => mod.MusicPlayer),
@@ -10,7 +10,7 @@ const MusicPlayer = dynamic(
 );
 
 export function LazyMusicPlayer() {
-  const pathname = usePathname();
+  const pathname = useCurrentPathname();
   const isMusicRoute = pathname === "/" || pathname.startsWith("/blog");
   const [shouldLoad, setShouldLoad] = useState(false);
 
@@ -21,15 +21,29 @@ export function LazyMusicPlayer() {
     }
 
     const loadPlayer = () => setShouldLoad(true);
-    const timer = window.setTimeout(loadPlayer, 1400);
+
+    try {
+      const hasSavedState =
+        localStorage.getItem("musicPlayerPlaying") === "true" ||
+        localStorage.getItem("musicPlayerExpanded") === "true";
+      if (hasSavedState) {
+        loadPlayer();
+        return;
+      }
+    } catch {
+      // Ignore storage failures.
+    }
 
     window.addEventListener("pointerdown", loadPlayer, { once: true, passive: true });
     window.addEventListener("keydown", loadPlayer, { once: true });
+    window.addEventListener("touchstart", loadPlayer, { once: true, passive: true });
+    window.addEventListener("wheel", loadPlayer, { once: true, passive: true });
 
     return () => {
-      window.clearTimeout(timer);
       window.removeEventListener("pointerdown", loadPlayer);
       window.removeEventListener("keydown", loadPlayer);
+      window.removeEventListener("touchstart", loadPlayer);
+      window.removeEventListener("wheel", loadPlayer);
     };
   }, [isMusicRoute]);
 

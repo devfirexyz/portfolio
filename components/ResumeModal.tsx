@@ -53,7 +53,7 @@ const ResumeModal = memo(({ onClose }: ResumeModalProps) => {
             </div>
             <h2
               id={titleId}
-              className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] sm:text-sm"
+              className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] sm:text-base"
             >
               Resume - Piyush Raj
             </h2>
@@ -66,11 +66,11 @@ const ResumeModal = memo(({ onClose }: ResumeModalProps) => {
             <button
               ref={closeButtonRef}
               type="button"
-              className="flex h-7 w-7 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] text-[var(--nb-foreground)] shadow-[3px_3px_0px_0px_var(--nb-shadow-color)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)] sm:h-9 sm:w-9"
+              className="flex h-8 w-8 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] text-[var(--nb-foreground)] shadow-[3px_3px_0px_0px_var(--nb-shadow-color)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)] sm:h-9 sm:w-9"
               onClick={onClose}
               aria-label="Close resume modal"
             >
-              <X className="h-3 w-3 sm:h-4 sm:w-4" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>

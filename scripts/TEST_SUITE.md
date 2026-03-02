@@ -6,6 +6,7 @@ This project includes a comprehensive test suite that validates:
 - Theme token configuration
 - Color contrast compliance
 - Component styling patterns
+- Performance budgets (Core Web Vitals)
 - Build integrity
 
 ## Test Scripts
@@ -27,6 +28,12 @@ Validates theme tokens, color contrast, and component styling patterns.
 npm run test:smoke
 ```
 Validates core functionality and architecture decisions.
+
+### Run Performance Budget Tests
+```bash
+npm run test:perf
+```
+Runs Lighthouse against key routes and validates Core Web Vitals budgets.
 
 ## Test Suites
 
@@ -59,11 +66,26 @@ Validates core functionality and architecture decisions.
 - ✅ Theme initialization
 - ✅ CSS organization
 
+### 3. Performance Budget Tests (`scripts/performance-budget-tests.mjs`)
+
+**Tests:**
+- ✅ Lighthouse performance score thresholds
+- ✅ FCP budgets
+- ✅ LCP budgets
+- ✅ TBT budgets
+- ✅ CLS budgets
+
+**Audited Routes:**
+- `/`
+- `/blog`
+- `/blog/hello-world`
+
 ## Test Runner
 
 All tests are orchestrated by `scripts/run-all-tests.mjs`, which:
 1. Runs smoke tests
 2. Runs theme contrast tests
+3. Runs performance budget tests
 3. Reports combined results
 4. Exits with code 0 on success, 1 on failure
 

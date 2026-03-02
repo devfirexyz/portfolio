@@ -3,14 +3,9 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  outputFileTracingRoot: process.cwd(),
   typescript: {
     ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
   },
 }
 

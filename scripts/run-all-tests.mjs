@@ -39,6 +39,9 @@ async function runAllTests() {
     
     // Run theme contrast tests
     await runTest("scripts/theme-contrast-tests.mjs", "Theme Contrast Tests");
+
+    // Run performance budget tests
+    await runTest("scripts/performance-budget-tests.mjs", "Performance Budget Tests");
     
     console.log("\n════════════════════════════════════════════════");
     console.log("✅ ALL TESTS PASSED SUCCESSFULLY");

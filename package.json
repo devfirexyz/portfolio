@@ -21,6 +21,7 @@
     "test": "node scripts/run-all-tests.mjs",
     "test:smoke": "node scripts/feedback-smoke-tests.mjs",
     "test:theme": "node scripts/theme-contrast-tests.mjs",
+    "test:perf": "node scripts/performance-budget-tests.mjs",
     "test:feedback": "pnpm test:smoke && pnpm build"
   },
   "dependencies": {

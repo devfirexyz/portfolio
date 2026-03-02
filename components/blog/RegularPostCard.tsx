@@ -17,7 +17,7 @@ export default function RegularPostCard({ post }: { post: BlogPost }) {
           <div className="mb-4 flex items-start justify-between gap-4">
             <div className="flex-1">
               {post.category && (
-                <div className="mb-3 inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
+                <div className="mb-3 inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2.5 py-1 text-[13px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
                   {post.category}
                 </div>
               )}
@@ -26,17 +26,17 @@ export default function RegularPostCard({ post }: { post: BlogPost }) {
                 {post.title}
               </h3>
 
-              <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[var(--nb-foreground-muted)]">
+              <p className="mb-4 line-clamp-2 text-base leading-relaxed text-[var(--nb-foreground-muted)]">
                 {post.description}
               </p>
             </div>
 
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent-light)] text-sm font-bold text-[var(--nb-foreground-inverse)]">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent-light)] text-base font-bold text-[var(--nb-foreground-inverse)]">
               {post.title.charAt(0)}
             </div>
           </div>
 
-          <div className="flex items-center justify-between border-t-2 border-[var(--nb-border)] pt-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--nb-foreground-muted)]">
+          <div className="flex items-center justify-between border-t-2 border-[var(--nb-border)] pt-3 text-[13px] font-semibold uppercase tracking-[0.1em] text-[var(--nb-foreground-muted)]">
             <div className="flex items-center gap-2">
               <span>{formatDate(post.publishedAt)}</span>
               <span>•</span>

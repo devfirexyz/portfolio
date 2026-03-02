@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const neoButtonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap border-2 px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)] disabled:pointer-events-none disabled:opacity-40",
+  "inline-flex items-center justify-center whitespace-nowrap border-2 px-5 py-3 text-sm font-bold uppercase tracking-[0.16em] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)] disabled:pointer-events-none disabled:opacity-40",
   {
     variants: {
       variant: {
@@ -17,9 +17,9 @@ const neoButtonVariants = cva(
           "border-[var(--nb-border)] bg-[var(--nb-surface)] text-[var(--nb-foreground)] shadow-[6px_6px_0px_0px_var(--nb-shadow-color)] hover:bg-[var(--nb-surface-alt)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_var(--nb-shadow-color)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-[2px_2px_0px_0px_var(--nb-shadow-color)]",
       },
       size: {
-        sm: "h-10 px-4 text-[10px]",
-        md: "h-12 px-6 text-xs",
-        lg: "h-14 px-8 text-sm",
+        sm: "h-10 px-4 text-xs",
+        md: "h-12 px-6 text-sm",
+        lg: "h-14 px-8 text-base",
       },
     },
     defaultVariants: {

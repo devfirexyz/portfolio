@@ -47,7 +47,7 @@ export function HomeHeader({
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3">
           <Link
             href="/"
-            className="inline-flex border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-3 py-2 text-sm font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]"
+            className="inline-flex border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-3 py-2 text-base font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]"
           >
             piyushraj.sys
           </Link>
@@ -59,14 +59,14 @@ export function HomeHeader({
           <div className="flex items-center gap-3">
             <Link
               href="/blog"
-              className="neo-link hidden text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] md:block"
+              className="neo-link hidden text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] md:block"
             >
               Blogs
             </Link>
 
             <Link
               href="/#projects"
-              className="neo-link hidden text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] md:block"
+              className="neo-link hidden text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] md:block"
             >
               Projects
             </Link>
@@ -115,7 +115,7 @@ export function HomeHeader({
         >
           <Link
             href="/blog"
-            className="neo-link block py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)]"
+            className="neo-link block py-2 text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)]"
             onClick={onCloseMenu}
           >
             Blogs
@@ -123,7 +123,7 @@ export function HomeHeader({
 
           <Link
             href="/#projects"
-            className="neo-link block py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)]"
+            className="neo-link block py-2 text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)]"
             onClick={onCloseMenu}
           >
             Projects

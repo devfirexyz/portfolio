@@ -17,18 +17,18 @@ export default function FeaturedPostCard({ post }: { post: BlogPost }) {
           <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               {post.category && (
-                <span className="inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
+                <span className="inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2.5 py-1 text-[13px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
                   {post.category}
                 </span>
               )}
               {post.featured && (
-                <span className="inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-inverse)]">
+                <span className="inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] px-2.5 py-1 text-[13px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-inverse)]">
                   Featured
                 </span>
               )}
             </div>
 
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
+            <div className="text-[13px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
               {post.readingTime} min read
             </div>
           </div>
@@ -42,12 +42,12 @@ export default function FeaturedPostCard({ post }: { post: BlogPost }) {
           </p>
 
           <div className="flex items-center justify-between border-t-2 border-[var(--nb-border)] pt-4">
-            <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--nb-foreground-muted)]">
+            <div className="flex items-center gap-4 text-sm font-semibold uppercase tracking-[0.1em] text-[var(--nb-foreground-muted)]">
               <span>{formatDate(post.publishedAt)}</span>
               {post.tags && post.tags.length > 0 && <span>#{post.tags[0]}</span>}
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--nb-accent-ink)]">
+            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.12em] text-[var(--nb-accent-ink)]">
               <span>Read</span>
               <svg className="h-4 w-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

@@ -1,8 +1,15 @@
 import type React from "react";
+import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { LazyMusicPlayer } from "@/components/LazyMusicPlayer";
 import { ThemeProvider } from "@/components/theme-provider";
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-mono",
+});
 
 export const metadata = {
   title: "Piyush Raj | Systems Engineer",
@@ -11,6 +18,9 @@ export const metadata = {
   keywords:
     "Piyush Raj, Software Engineer, Full Stack Developer, React, TypeScript, Node.js, AI, portfolio",
   authors: [{ name: "Piyush Raj" }],
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 const themeInitScript = `
@@ -39,7 +49,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen antialiased" suppressHydrationWarning>
+      <body className={`${geistMono.variable} min-h-screen antialiased`} suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <ThemeProvider defaultTheme="dark">
           {children}

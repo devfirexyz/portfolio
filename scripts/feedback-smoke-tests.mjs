@@ -27,7 +27,7 @@ function run() {
     discord.includes("onClick={() => setActiveChannel(channel.id)}"),
     "Discord panel channel switching handler missing."
   );
-  assert(discord.includes("activeMessages.map"), "Discord panel message render loop missing.");
+  assert(discord.includes("activeSection.points.map"), "Discord panel section render loop missing.");
 
   assert(globals.includes("--nb-background: #1e1f22"), "Discord dark base token not found.");
   assert(globals.includes("--nb-accent: #5865f2"), "Discord blurple accent token not found.");

@@ -40,14 +40,14 @@ export function NeoProjectsSection() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground-muted)]">
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground-muted)]">
               Work Samples
             </p>
             <h2 className="mt-2 text-4xl font-black uppercase leading-[0.9] tracking-[-0.05em] sm:text-6xl">
               Project Evidence
             </h2>
           </div>
-          <p className="max-w-md text-sm leading-relaxed text-[var(--nb-foreground-muted)]">
+          <p className="max-w-md text-base leading-relaxed text-[var(--nb-foreground-muted)]">
             Selected builds with measurable outcomes, production context, and implementation details.
           </p>
         </div>
@@ -59,7 +59,7 @@ export function NeoProjectsSection() {
           aria-label="Projects carousel"
         >
           <CarouselContent className="-ml-0">
-            {NEO_PROJECTS.map((project) => (
+            {NEO_PROJECTS.map((project, index) => (
               <CarouselItem key={project.id} className="pl-0 md:basis-1/2">
                 <article className="group mr-6 overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)]">
                   <div className="relative aspect-[16/10] border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-muted)]">
@@ -67,10 +67,13 @@ export function NeoProjectsSection() {
                       src={project.image}
                       alt={`${project.title} preview`}
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      quality={70}
+                      priority={index === 0}
                       className="object-cover transition-transform duration-200 group-hover:scale-[1.03]"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <span className="absolute left-4 top-4 border-2 border-[var(--nb-border)] bg-[var(--nb-surface-strong)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--nb-accent-ink-inverse)]">
+                    <span className="absolute left-4 top-4 border-2 border-[var(--nb-border)] bg-[var(--nb-surface-strong)] px-2 py-1 text-[12px] font-bold uppercase tracking-[0.16em] text-[var(--nb-accent-ink-inverse)]">
                       {project.status}
                     </span>
                   </div>
@@ -80,15 +83,15 @@ export function NeoProjectsSection() {
                       <h3 className="text-2xl font-black uppercase leading-[0.95] tracking-[-0.03em] text-[var(--nb-foreground)]">
                         {project.title}
                       </h3>
-                      <span className="shrink-0 border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-muted)]">
+                      <span className="shrink-0 border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2 py-1 text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-muted)]">
                         {project.impactMetric}
                       </span>
                     </div>
 
-                    <p className="text-sm leading-relaxed text-[var(--nb-foreground-muted)]">
+                    <p className="text-base leading-relaxed text-[var(--nb-foreground-muted)]">
                       {project.description}
                     </p>
-                    <p className="text-sm leading-relaxed text-[var(--nb-foreground)]">
+                    <p className="text-base leading-relaxed text-[var(--nb-foreground)]">
                       <span className="font-bold uppercase tracking-[0.1em] text-[var(--nb-accent-ink)]">
                         Impact:
                       </span>{" "}
@@ -99,7 +102,7 @@ export function NeoProjectsSection() {
                       {project.stack.map((tag) => (
                         <span
                           key={tag}
-                          className="border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-muted)]"
+                          className="border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2 py-1 text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-muted)]"
                         >
                           {tag}
                         </span>
@@ -125,7 +128,7 @@ export function NeoProjectsSection() {
                         Live Preview Unavailable
                       </NeoButton>
                     ) : (
-                      <div className="inline-flex border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-3 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-subtle)]">
+                      <div className="inline-flex border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-3 py-2 text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-subtle)]">
                         Case Study on Request
                       </div>
                     )}

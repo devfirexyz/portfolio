@@ -29,7 +29,7 @@ export default async function BlogIndex() {
     <BlogLayout>
       <div className="mx-auto max-w-6xl px-6 py-14 lg:py-20">
         <div className="text-center">
-          <div className="mb-8 inline-flex items-center gap-2 border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-muted)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
+          <div className="mb-8 inline-flex items-center gap-2 border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-4 py-2 text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-muted)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
             <div className="h-2 w-2 bg-[var(--nb-success)]" />
             Personal Blog Archive
           </div>

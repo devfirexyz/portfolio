@@ -21,7 +21,7 @@ export function HeroContent({
   return (
     <div className="w-full max-w-none text-left xl:col-span-2">
       <div className="mb-8 animate-fade-slide-up">
-        <p className="mb-4 inline-flex border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground-muted)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
+        <p className="mb-4 inline-flex border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-3 py-1 text-[13px] font-bold uppercase tracking-[0.16em] text-[var(--nb-foreground-muted)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
           Bangalore :: Operating in public
         </p>
 
@@ -29,7 +29,7 @@ export function HeroContent({
           {HERO_TITLE_LINES.map((line, index) => (
             <span
               key={line}
-              className={`block text-[34px] font-extrabold leading-[0.88] sm:text-[44px] md:text-[54px] lg:text-[64px] xl:text-[74px] ${
+              className={`block text-[38px] font-extrabold leading-[0.88] sm:text-[50px] md:text-[60px] lg:text-[70px] xl:text-[82px] ${
                 index === HERO_TITLE_LINES.length - 1
                   ? "bg-gradient-to-r from-[var(--nb-accent-ink)] via-[var(--nb-accent)] to-[var(--nb-accent-hover)] bg-clip-text text-transparent"
                   : ""
@@ -41,7 +41,7 @@ export function HeroContent({
         </h1>
       </div>
 
-      <div className="mb-10 max-w-2xl animate-fade-slide-up border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-5 text-sm leading-relaxed text-[var(--nb-foreground)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)] sm:text-base [animation-delay:120ms]">
+      <div className="mb-10 max-w-2xl animate-fade-slide-up border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-5 text-base leading-relaxed text-[var(--nb-foreground)] shadow-[8px_8px_0px_0px_var(--nb-shadow-color)] sm:text-lg [animation-delay:120ms]">
         {showAboutMe
           ? aboutMeDescription
           : `${aboutMeDescription.slice(0, 170)}...`}

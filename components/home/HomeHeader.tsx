@@ -59,6 +59,7 @@ export function HomeHeader({
           <div className="flex items-center gap-3">
             <Link
               href="/blog"
+              prefetch={true}
               className="neo-link hidden text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] md:block"
             >
               Blogs
@@ -115,6 +116,7 @@ export function HomeHeader({
         >
           <Link
             href="/blog"
+            prefetch={true}
             className="neo-link block py-2 text-sm font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)]"
             onClick={onCloseMenu}
           >

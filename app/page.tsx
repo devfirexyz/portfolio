@@ -123,32 +123,11 @@ export default function PortfolioPage() {
   }, []);
 
   useEffect(() => {
-    const warmChunk = () => {
-      void import("@/components/DiscordPortfolio");
-    };
-    const timer = window.setTimeout(warmChunk, 1800);
-
-    if ("requestIdleCallback" in window) {
-      const idleId = window.requestIdleCallback(warmChunk, { timeout: 2500 });
-
-      return () => {
-        window.clearTimeout(timer);
-        window.cancelIdleCallback(idleId);
-      };
-    }
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, []);
-
-  useEffect(() => {
     if (showProjects) {
       return;
     }
 
     const enable = () => setShowProjects(true);
-    const timer = window.setTimeout(enable, 3200);
     const sentinel = projectsSentinelRef.current;
 
     let observer: IntersectionObserver | null = null;
@@ -162,10 +141,11 @@ export default function PortfolioPage() {
         { rootMargin: "240px" }
       );
       observer.observe(sentinel);
+    } else {
+      enable();
     }
 
     return () => {
-      window.clearTimeout(timer);
       observer?.disconnect();
     };
   }, [showProjects]);

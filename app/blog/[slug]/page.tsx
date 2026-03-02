@@ -8,6 +8,13 @@ interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.filter((post) => !post.draft).map((post) => ({ slug: post.slug }));
+}
+
 export default async function BlogPost({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);

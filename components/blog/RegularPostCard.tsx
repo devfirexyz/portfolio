@@ -1,75 +1,60 @@
 import Link from "next/link";
 import { BlogPost } from "@/types/blog";
 
-// Simple date formatting function
 function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
 export default function RegularPostCard({ post }: { post: BlogPost }) {
-    return (
-      <article className="group">
-        <Link href={`/blog/${post.slug}`} className="block">
-          {/* Modern compact card */}
-          <div className="relative overflow-hidden bg-white/5 border border-white/10 rounded-xl hover:bg-white/[0.08] hover:border-white/15 transition-colors duration-200 p-6 group">
-
-            <div className="relative">
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  {/* Category */}
-                  {post.category && (
-                    <div className="inline-flex items-center gap-1.5 bg-blue-500/8 text-blue-400 px-2.5 py-1 rounded-md text-xs font-medium border border-blue-500/15 mb-3">
-                      <div className="w-1 h-1 bg-blue-400 rounded-full" />
-                      {post.category}
-                    </div>
-                  )}
-
-                  {/* Title */}
-                  <h3 className="text-xl font-semibold text-white mb-2 leading-tight group-hover:text-blue-400 transition-colors duration-300">
-                    {post.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-white/60 mb-4 leading-relaxed line-clamp-2 text-sm">
-                    {post.description}
-                  </p>
+  return (
+    <article className="group">
+      <Link href={`/blog/${post.slug}`} className="block">
+        <div className="overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-6 shadow-[6px_6px_0px_0px_var(--nb-shadow-color)] transition-all duration-150 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div className="flex-1">
+              {post.category && (
+                <div className="mb-3 inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
+                  {post.category}
                 </div>
+              )}
 
-                {/* Compact thumbnail */}
-                <div className="flex-shrink-0 ml-4 w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg flex items-center justify-center group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300 border border-white/[0.08]">
-                  <div className="text-sm font-bold text-white/80">
-                    {post.title.charAt(0)}
-                  </div>
-                </div>
-              </div>
+              <h3 className="mb-2 text-xl font-black uppercase leading-tight text-[var(--nb-foreground)]">
+                {post.title}
+              </h3>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
-                <div className="flex items-center gap-3 text-xs text-white/40">
-                  <span>{formatDate(post.publishedAt)}</span>
-                  <span>•</span>
-                  <span>{post.readingTime} min read</span>
-                  {post.tags && post.tags.length > 0 && (
-                    <>
-                      <span>•</span>
-                      <span className="text-white/50">#{post.tags[0]}</span>
-                    </>
-                  )}
-                </div>
+              <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-[var(--nb-foreground-muted)]">
+                {post.description}
+              </p>
+            </div>
 
-                {/* Arrow indicator */}
-                <svg className="w-4 h-4 text-white/30 group-hover:text-white/60 group-hover:translate-x-0.5 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent-light)] text-sm font-bold text-[var(--nb-foreground-inverse)]">
+              {post.title.charAt(0)}
             </div>
           </div>
-        </Link>
-      </article>
-    )
-  }
+
+          <div className="flex items-center justify-between border-t-2 border-[var(--nb-border)] pt-3 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--nb-foreground-muted)]">
+            <div className="flex items-center gap-2">
+              <span>{formatDate(post.publishedAt)}</span>
+              <span>•</span>
+              <span>{post.readingTime} min</span>
+              {post.tags && post.tags.length > 0 && (
+                <>
+                  <span>•</span>
+                  <span>#{post.tags[0]}</span>
+                </>
+              )}
+            </div>
+
+            <svg className="h-4 w-4 text-[var(--nb-accent-ink)] transition-all duration-150 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </Link>
+    </article>
+  );
+}

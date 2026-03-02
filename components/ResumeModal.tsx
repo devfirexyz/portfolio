@@ -1,75 +1,91 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { memo, useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
-import { memo } from "react";
 
 interface ResumeModalProps {
   onClose: () => void;
 }
 
 const ResumeModal = memo(({ onClose }: ResumeModalProps) => {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [onClose]);
+
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.15 }}
-        className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-2 sm:p-4"
-        onClick={onClose}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
+    >
+      <div
+        className="relative h-[95vh] w-full max-w-6xl overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[10px_10px_0px_0px_var(--nb-shadow-color)] sm:h-[90vh]"
+        onClick={(event) => event.stopPropagation()}
       >
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          transition={{ duration: 0.15, ease: "easeOut" }}
-          className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-6xl h-[95vh] sm:h-[90vh] overflow-hidden"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Modal Header */}
-          <div className="flex items-center justify-between p-3 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-[#5865F2] to-[#4752c4]">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <svg className="w-3 h-3 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                </svg>
-              </div>
-              <h2 className="text-sm sm:text-xl font-bold text-white">Resume - Piyush Raj</h2>
+        <div className="flex items-center justify-between border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] p-3 sm:p-5">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex h-7 w-7 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] text-[var(--nb-foreground)] sm:h-8 sm:w-8">
+              <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+              </svg>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button
-                className="px-2 py-1 sm:px-4 sm:py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors"
-                onClick={() => window.open("/resume.pdf", "_blank")}
-              >
-                Download
-              </button>
-              <button
-                className="w-6 h-6 sm:w-10 sm:h-10 bg-white/20 hover:bg-white/30 text-white rounded-lg flex items-center justify-center transition-colors"
-                onClick={onClose}
-              >
-                <X className="w-3 h-3 sm:w-5 sm:h-5" />
-              </button>
-            </div>
+            <h2
+              id={titleId}
+              className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)] sm:text-sm"
+            >
+              Resume - Piyush Raj
+            </h2>
+            <p id={descriptionId} className="sr-only">
+              Resume preview dialog. Press Escape to close.
+            </p>
           </div>
 
-          {/* PDF Viewer - Optimized */}
-          <div className="h-[calc(100%-3.5rem)] sm:h-[calc(100%-5rem)] bg-gray-50">
-            <iframe
-              src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
-              className="w-full h-full border-0"
-              title="Resume PDF"
-              loading="lazy"
-              style={{
-                background: 'white',
-                WebkitTransform: 'translateZ(0)',
-                transform: 'translateZ(0)'
-              }}
-            />
+          <div className="flex items-center gap-2">
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="flex h-7 w-7 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] text-[var(--nb-foreground)] shadow-[3px_3px_0px_0px_var(--nb-shadow-color)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)] sm:h-9 sm:w-9"
+              onClick={onClose}
+              aria-label="Close resume modal"
+            >
+              <X className="h-3 w-3 sm:h-4 sm:w-4" />
+            </button>
           </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        </div>
+
+        <div className="h-[calc(100%-3.75rem)] bg-[var(--nb-background)] sm:h-[calc(100%-4.5rem)]">
+          <iframe
+            src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
+            className="h-full w-full border-0"
+            title="Resume PDF"
+            loading="lazy"
+            style={{ background: "white" }}
+          />
+        </div>
+      </div>
+    </div>
   );
 });
 

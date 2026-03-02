@@ -1,675 +1,227 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Alan+Sans:wght@300..900&display=swap');
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-mono/GeistMono-Regular.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-mono/GeistMono-Medium.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-mono/GeistMono-SemiBold.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-mono/GeistMono-Bold.woff2")
+    format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Removed scroll-behavior: smooth for better scroll performance */
-
-/* Performance optimized animations */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(-10px) translateX(-5px) scale(0.9);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translateY(10px) translateX(5px) scale(1.1);
-    opacity: 0.8;
-  }
-}
-
-@keyframes float-reverse {
-  0%, 100% {
-    transform: translateY(10px) translateX(5px) scale(1.1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translateY(-10px) translateX(-5px) scale(0.9);
-    opacity: 0.6;
-  }
-}
-
-@keyframes twinkle {
-  0%, 100% {
-    opacity: 0.1;
-    transform: scale(0.5);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.5);
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-}
-
-@keyframes shooting-star {
-  0% {
-    transform: translate(0, 0) scale(0);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    transform: translate(300px, 300px) scale(0);
-    opacity: 0;
-  }
-}
-
-@keyframes rotate-slow {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  50% {
-    transform: rotate(180deg) scale(1.15);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-slide-up {
-  0% {
-    opacity: 0;
-    transform: translateY(40px) scale(0.95);
-    filter: blur(8px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-/* Character-by-character animations */
-@keyframes char-reveal {
-  0% {
-    opacity: 0;
-    transform: translateY(50px) scale(0.8);
-    filter: blur(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-@keyframes char-clip {
-  0% {
-    opacity: 0;
-    clip-path: inset(100% 0 0 0);
-  }
-  100% {
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@keyframes char-flip {
-  0% {
-    transform: rotateY(90deg);
-    opacity: 0;
-  }
-  100% {
-    transform: rotateY(0deg);
-    opacity: 1;
-  }
-}
-
-@keyframes char-bounce {
-  0% {
-    transform: translateY(30px) scale(0.8);
-    opacity: 0;
-  }
-  60% {
-    transform: translateY(-5px) scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes char-slide {
-  0% {
-    transform: translateX(-30px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes char-glow {
-  0%, 100% {
-    text-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
-  }
-  50% {
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(147, 51, 234, 0.5);
-  }
-}
-
-/* Animation classes for characters */
-.char {
-  display: inline-block;
-  overflow: hidden;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.char-clip {
-  display: inline-block;
-  overflow: hidden;
-}
-
-.char-inner {
-  display: inline-block;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.animate-char-reveal {
-  animation: char-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-char-clip {
-  animation: char-clip 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-char-flip {
-  animation: char-flip 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-char-bounce {
-  animation: char-bounce 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
-}
-
-.animate-char-slide {
-  animation: char-slide 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-.animate-char-glow {
-  animation: char-glow 2s ease-in-out infinite;
-}
-
-/* Modern Carousel Animations */
-@keyframes twinkle {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-}
-
-@keyframes gradient-text {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-.animate-twinkle {
-  animation: twinkle 3s ease-in-out infinite;
-}
-
-.animate-gradient-text {
-  background-size: 200% 200%;
-  animation: gradient-text 3s ease infinite;
-}
-
-/* Animation delay utilities */
-.animation-delay-1 {
-  animation-delay: 1s;
-}
-
-.animation-delay-2 {
-  animation-delay: 2s;
-}
-
-/* Hide scrollbar for mobile avatar scrolling */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-@keyframes hero-text-glow {
-  0%, 100% {
-    text-shadow: 0 0 30px rgba(59, 130, 246, 0.4), 0 0 60px rgba(147, 51, 234, 0.2);
-  }
-  50% {
-    text-shadow: 0 0 40px rgba(59, 130, 246, 0.6), 0 0 80px rgba(147, 51, 234, 0.3), 0 0 120px rgba(59, 130, 246, 0.1);
-  }
-}
-
-@keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes slide-in-left {
-  0% {
-    opacity: 0;
-    transform: translateX(-120px) translateY(30px) scale(0.8);
-    filter: blur(10px);
-  }
-  40% {
-    opacity: 0.6;
-    transform: translateX(-20px) translateY(5px) scale(0.95);
-    filter: blur(3px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-@keyframes bounce-in {
-  0% {
-    opacity: 0;
-    transform: scale(0.2) translateY(50px);
-    filter: blur(15px);
-  }
-  40% {
-    opacity: 0.8;
-    transform: scale(1.1) translateY(-10px);
-    filter: blur(2px);
-  }
-  60% {
-    transform: scale(0.95) translateY(5px);
-    filter: blur(1px);
-  }
-  80% {
-    transform: scale(1.02) translateY(-2px);
-    filter: blur(0);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    filter: blur(0);
-  }
-}
-
-@keyframes floating-gentle {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-8px) rotate(1deg);
-  }
-}
-
-@keyframes hero-glow-pulse {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(147, 51, 234, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(147, 51, 234, 0.3), 0 0 90px rgba(59, 130, 246, 0.1);
-  }
-}
-
-/* Animation classes */
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out forwards;
-}
-
-.animate-fade-slide-up {
-  animation: fade-slide-up 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-  will-change: transform, opacity, filter;
-  backface-visibility: hidden;
-}
-
-.animate-hero-reveal {
-  animation: hero-text-reveal 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity, filter;
-  backface-visibility: hidden;
-}
-
-.animate-hero-glow {
-  animation: hero-text-glow 3s ease-in-out infinite;
-}
-
-.animate-gradient-text {
-  background-size: 200% 200%;
-  animation: gradient-shift 4s ease-in-out infinite;
-}
-
-.animate-slide-in-left {
-  animation: slide-in-left 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity, filter;
-}
-
-.animate-bounce-in {
-  animation: bounce-in 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-  will-change: transform, opacity, filter;
-}
-
-.animate-floating {
-  animation: floating-gentle 4s ease-in-out infinite;
-}
-
-.animate-hero-glow-pulse {
-  animation: hero-glow-pulse 2s ease-in-out infinite;
-}
-
-.animate-float {
-  animation: float 20s ease-in-out infinite;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.animate-float-reverse {
-  animation: float-reverse 25s ease-in-out infinite;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.animate-twinkle {
-  animation: twinkle 3s ease-in-out infinite;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 8s ease-in-out infinite;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.animate-shooting {
-  animation: shooting-star 4s linear infinite;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-.animate-rotate-slow {
-  animation: rotate-slow 20s linear infinite;
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-/* Delay classes */
-.animation-delay-1 { animation-delay: 1s; }
-.animation-delay-2 { animation-delay: 2s; }
-.animation-delay-3 { animation-delay: 3s; }
-.animation-delay-4 { animation-delay: 4s; }
-.animation-delay-5 { animation-delay: 5s; }
-.animation-delay-6 { animation-delay: 6s; }
-.animation-delay-8 { animation-delay: 8s; }
-.animation-delay-10 { animation-delay: 10s; }
-.animation-delay-12 { animation-delay: 12s; }
-
 @layer base {
   :root {
-    /* Discord 2021 Rebrand Color System */
-    --discord-blurple: #5865F2;
-    --discord-green: #57F287;
-    --discord-yellow: #FEE75C;
-    --discord-fuchsia: #EB459E;
-    --discord-red: #ED4245;
-    --discord-dark: #313338;
-    --discord-darker: #2C2F33;
-    --discord-darkest: #1e1f22;
+    --background: 220 7% 12%;
+    --foreground: 214 9% 95%;
+    --card: 220 8% 19%;
+    --card-foreground: 214 9% 95%;
+    --popover: 220 8% 19%;
+    --popover-foreground: 214 9% 95%;
+    --primary: 235 86% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 223 7% 24%;
+    --secondary-foreground: 214 9% 95%;
+    --muted: 223 8% 26%;
+    --muted-foreground: 214 8% 74%;
+    --accent: 235 86% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 87% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 11% 10%;
+    --input: 223 8% 26%;
+    --ring: 235 86% 65%;
+    --radius: 0rem;
 
-    /* Additional Discord Colors */
-    --discord-white: #FFFFFF;
-    --discord-black: #000000;
-    --discord-grey: #b5bac1;
-    --discord-grey-dark: #949ba4;
-    --discord-grey-darker: #4f545c;
-
-    /* Gradient Colors */
-    --discord-gradient-1: #9A59B6;
-    --discord-gradient-2: #5865F2;
-    --discord-gradient-3: #57F287;
-
-    --background: var(--discord-darkest);
-    --foreground: 0 0% 98%;
-    --card: var(--discord-dark);
-    --card-foreground: 0 0% 98%;
-    --popover: var(--discord-dark);
-    --popover-foreground: 0 0% 98%;
-    --primary: var(--discord-blurple);
-    --primary-foreground: 0 0% 98%;
-    --secondary: var(--discord-darker);
-    --secondary-foreground: 0 0% 98%;
-    --muted: 216 7% 28%;
-    --muted-foreground: 215 20% 65%;
-    --accent: var(--discord-blurple);
-    --accent-foreground: 0 0% 98%;
-    --destructive: var(--discord-red);
-    --destructive-foreground: 0 0% 98%;
-    --border: 216 7% 20%;
-    --input: var(--discord-dark);
-    --ring: var(--discord-blurple);
-    --radius: 0.75rem;
+    --nb-background: #1e1f22;
+    --nb-background-alt: #232428;
+    --nb-surface: #313338;
+    --nb-surface-alt: #383a40;
+    --nb-surface-strong: #23272a;
+    --nb-surface-muted: #3f4147;
+    --nb-foreground: #f2f3f5;
+    --nb-foreground-muted: #c1c6cf;
+    --nb-foreground-subtle: #adb4bf;
+    --nb-foreground-inverse: #ffffff;
+    --nb-border: #111214;
+    --nb-border-subtle: #3f4147;
+    --nb-accent: #5865f2;
+    --nb-accent-hover: #4752c4;
+    --nb-accent-light: #7289da;
+    --nb-accent-ink: #a5b4ff;
+    --nb-accent-ink-inverse: #a5b4ff;
+    --nb-shadow-color: #111214;
+    --nb-shadow-accent: #5865f2;
+    --nb-success: #23a55a;
+    --nb-warning: #f0b232;
+    --nb-danger: #f23f43;
+    --nb-code-bg: #1b1f2a;
+    --nb-code-fg: #e8ecf3;
+    --nb-code-muted: #c6ceda;
+    --nb-code-comment: #8f98a8;
+    --nb-code-keyword: #b39bff;
+    --nb-code-keyword-strong: #9fb0ff;
+    --nb-code-operator: #d2dae6;
+    --nb-code-string: #6ee7b7;
+    --nb-code-number: #fbbf24;
+    --nb-code-tag: #7dd3fc;
+    --nb-code-chip-bg: #2b3242;
+    --nb-inline-code-bg: #343b4c;
+    --nb-inline-code-border: #59627c;
+    --nb-inline-code-fg: #d5dcff;
+    --selection-bg: #5865f2;
+    --selection-fg: #ffffff;
+    color-scheme: dark;
   }
 
-  .light {
-    --background: 0 0% 100%;
-    --foreground: var(--discord-darkest);
+  :root[data-theme="light"] {
+    --background: 220 13% 95%;
+    --foreground: 220 14% 20%;
     --card: 0 0% 100%;
-    --card-foreground: var(--discord-darkest);
+    --card-foreground: 220 14% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: var(--discord-darkest);
-    --primary: var(--discord-blurple);
-    --primary-foreground: 0 0% 98%;
-    --secondary: 220 14% 96%;
-    --secondary-foreground: var(--discord-dark);
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 220 14% 96%;
-    --accent-foreground: var(--discord-dark);
-    --destructive: var(--discord-red);
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: var(--discord-blurple);
-  }
-}
+    --popover-foreground: 220 14% 20%;
+    --primary: 235 86% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 90%;
+    --secondary-foreground: 220 14% 20%;
+    --muted: 220 14% 90%;
+    --muted-foreground: 220 9% 40%;
+    --accent: 235 86% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 57%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 70%;
+    --input: 220 14% 90%;
+    --ring: 235 86% 65%;
 
-@layer utilities {
-  /* Radial gradient backgrounds for Discord effect */
-  .bg-gradient-radial {
-    background-image: radial-gradient(var(--tw-gradient-stops));
+    --nb-background: #f8f9fa;
+    --nb-background-alt: #eef0f2;
+    --nb-surface: #ffffff;
+    --nb-surface-alt: #f8f9fa;
+    --nb-surface-strong: #1e1f22;
+    --nb-surface-muted: #e3e5e8;
+    --nb-foreground: #111214;
+    --nb-foreground-muted: #2f3339;
+    --nb-foreground-subtle: #434851;
+    --nb-foreground-inverse: #ffffff;
+    --nb-border: #2f3747;
+    --nb-border-subtle: #6f7a92;
+    --nb-accent: #4338ca;
+    --nb-accent-hover: #3730a3;
+    --nb-accent-light: #6366f1;
+    --nb-accent-ink: #312e81;
+    --nb-accent-ink-inverse: #a5b4ff;
+    --nb-shadow-color: #4f5a73;
+    --nb-shadow-accent: #4338ca;
+    --nb-success: #15803d;
+    --nb-warning: #b45309;
+    --nb-danger: #b91c1c;
+    --nb-code-bg: #1b1f2a;
+    --nb-code-fg: #edf2ff;
+    --nb-code-muted: #d0d8e6;
+    --nb-code-comment: #9aa3b5;
+    --nb-code-keyword: #c4b5fd;
+    --nb-code-keyword-strong: #a5b4fc;
+    --nb-code-operator: #dbe3ef;
+    --nb-code-string: #86efac;
+    --nb-code-number: #fcd34d;
+    --nb-code-tag: #93c5fd;
+    --nb-code-chip-bg: #2f384a;
+    --nb-inline-code-bg: #e8ecf4;
+    --nb-inline-code-border: #a3adbf;
+    --nb-inline-code-fg: #1f2761;
+    --selection-bg: #4338ca;
+    --selection-fg: #ffffff;
+    color-scheme: light;
   }
 
-  .bg-gradient-conic {
-    background-image: conic-gradient(var(--tw-gradient-stops));
-  }
-}
-
-@layer base {
   * {
     @apply border-border;
   }
+
+  html,
+  body {
+    min-height: 100%;
+  }
+
   body {
     @apply bg-background text-foreground;
-    font-family:  'Alan Sans', 'Inter', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Discord Typography Scale - 8px Grid System */
-  h1 {
-    @apply text-[80px] md:text-[95px] leading-[0.85] font-black tracking-tight;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    letter-spacing: -0.03em;
   }
-  h2 {
-    @apply text-[32px] md:text-[48px] leading-[1.1] font-bold;
+
+  a,
+  button {
+    transition-duration: 140ms;
+    transition-timing-function: cubic-bezier(0.2, 0.9, 0.2, 1);
   }
-  h3 {
-    @apply text-[24px] md:text-[32px] leading-[1.2] font-bold;
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--selection-fg);
   }
-  h4 {
-    @apply text-[18px] md:text-[24px] leading-[1.3] font-semibold;
-  }
-  p {
-    @apply text-[16px] leading-[1.5];
-  }
-}
 
-/* Discord-style scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--discord-dark));
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--discord-blurple));
-}
-
-/* Smooth transitions for interactive elements */
-a,
-button {
-  transition: all 0.2s ease;
-}
-
-/* Discord Galactic Background - Exact Match */
-.discord-galactic-bg {
-  background:
-    /* Deep space gradient */
-    radial-gradient(ellipse 1200px 800px at 30% 20%, #404eed 0%, transparent 50%),
-    radial-gradient(ellipse 800px 600px at 70% 80%, #7289da 0%, transparent 60%),
-    radial-gradient(ellipse 600px 400px at 20% 60%, #593695 0%, transparent 40%),
-    radial-gradient(ellipse 1000px 700px at 80% 30%, #36393f 0%, transparent 70%),
-    linear-gradient(135deg, #2c2f33 0%, #23272a 50%, #1e2124 100%);
-  background-attachment: fixed;
-}
-
-/* Animated cosmic particles */
-.cosmic-particles {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.cosmic-particles::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 300%;
-  height: 300%;
-  background-image:
-    radial-gradient(2px 2px at 40px 60px, #fff, transparent),
-    radial-gradient(2px 2px at 90px 40px, #fff, transparent),
-    radial-gradient(1px 1px at 130px 80px, #fff, transparent),
-    radial-gradient(1px 1px at 160px 30px, #fff, transparent),
-    radial-gradient(1px 1px at 200px 120px, #fff, transparent),
-    radial-gradient(2px 2px at 300px 50px, #fff, transparent);
-  background-repeat: repeat;
-  background-size: 250px 120px;
-  animation: cosmic-drift 25s linear infinite;
-  opacity: 0.3;
-}
-
-/* Animated mesh gradient */
-@keyframes mesh-animation {
-  0%, 100% {
-    background-position: 0% 0%, 100% 100%, 50% 50%, 0% 0%;
-  }
-  25% {
-    background-position: 100% 0%, 0% 100%, 100% 50%, 0% 0%;
-  }
-  50% {
-    background-position: 100% 100%, 0% 0%, 50% 100%, 0% 0%;
-  }
-  75% {
-    background-position: 0% 100%, 100% 0%, 0% 50%, 0% 0%;
+  ::-moz-selection {
+    background: var(--selection-bg);
+    color: var(--selection-fg);
   }
 }
 
-.discord-mesh-animated {
-  animation: mesh-animation 20s ease-in-out infinite;
-  background-size: 200% 200%, 200% 200%, 200% 200%, 100% 100%;
-}
-
-/* Discord Glassmorphism Effects */
-.discord-glass {
-  background: rgba(49, 51, 56, 0.6);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.discord-glass-light {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px) saturate(200%);
-  -webkit-backdrop-filter: blur(20px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Discord-style animations */
-@keyframes discord-float {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
+@layer utilities {
+  .neo-grid-bg {
+    background-image:
+      linear-gradient(var(--nb-border-subtle) 1px, transparent 1px),
+      linear-gradient(90deg, var(--nb-border-subtle) 1px, transparent 1px);
+    background-size: 28px 28px;
   }
-  33% {
-    transform: translateY(-20px) rotate(1deg);
-  }
-  66% {
-    transform: translateY(-10px) rotate(-1deg);
+
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
-@keyframes discord-wave {
-  0%, 100% {
-    transform: rotate(-5deg);
-  }
-  50% {
-    transform: rotate(5deg);
-  }
-}
-
-@keyframes fade-in-up {
+@keyframes fade-slide-up {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -680,325 +232,119 @@ button {
   }
 }
 
-@keyframes slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
+@keyframes soft-glow {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
   }
-  to {
-    opacity: 1;
+  50% {
+    opacity: 0.45;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes marquee {
+  0% {
     transform: translateX(0);
   }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 hsl(var(--discord-blurple) / 0.4);
-  }
-  50% {
-    box-shadow: 0 0 20px 10px hsl(var(--discord-blurple) / 0);
-  }
-}
-
-.animate-discord-float {
-  animation: discord-float 6s ease-in-out infinite;
-}
-
-.animate-discord-wave {
-  animation: discord-wave 1s ease-in-out infinite;
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out;
-}
-
-.animate-slide-in-right {
-  animation: slide-in-right 0.6s ease-out;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-/* Discord button styles */
-.discord-button {
-  @apply relative overflow-hidden;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.discord-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 25px -5px hsl(var(--discord-blurple) / 0.6);
-}
-
-.discord-button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.discord-button:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-/* Discord card hover effect */
-.discord-card {
-  @apply relative transition-all duration-300;
-}
-
-.discord-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px;
-  background: linear-gradient(135deg, hsl(var(--discord-blurple)), hsl(var(--discord-gradient-1)));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.discord-card:hover::before {
-  opacity: 1;
-}
-
-/* Glassmorphism effect */
-.glass {
-  background: rgba(35, 39, 42, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Discord Text Effects */
-.text-gradient-discord {
-  background: linear-gradient(135deg, var(--discord-blurple) 0%, var(--discord-fuchsia) 50%, var(--discord-yellow) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes cosmic-drift {
-  0% { transform: translateX(0) translateY(0); }
-  100% { transform: translateX(-200px) translateY(-100px); }
-}
-
-/* Discord Floating UI Cards */
-.discord-floating-card {
-  backdrop-filter: blur(40px) saturate(150%);
-  -webkit-backdrop-filter: blur(40px) saturate(150%);
-  background: linear-gradient(135deg,
-    rgba(116, 127, 141, 0.2) 0%,
-    rgba(72, 84, 96, 0.1) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transform-style: preserve-3d;
-}
-
-/* Bright gradient overlays like Discord */
-.discord-bright-overlay {
-  background: linear-gradient(45deg,
-    rgba(88, 101, 242, 0.8) 0%,
-    rgba(235, 69, 158, 0.9) 50%,
-    rgba(254, 231, 92, 0.7) 100%);
-  border-radius: 24px;
-  filter: blur(1px);
-}
-
-/* 3D Floating Elements */
-.float-3d {
-  transform-style: preserve-3d;
-  animation: float-3d 6s ease-in-out infinite;
-}
-
-@keyframes float-3d {
-  0%, 100% {
-    transform: translateY(0) rotateX(0) rotateY(0);
-  }
-  25% {
-    transform: translateY(-20px) rotateX(5deg) rotateY(5deg);
-  }
-  75% {
-    transform: translateY(-10px) rotateX(-5deg) rotateY(-5deg);
-  }
-}
-
-/* Discord Blob Shape */
-.discord-blob {
-  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-  animation: morph 8s ease-in-out infinite;
-}
-
-@keyframes morph {
-  0% {
-    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-  }
-  50% {
-    border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%;
-  }
   100% {
-    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    transform: translateX(-50%);
   }
 }
 
-/* Hover Card Effect - Touch-friendly */
-.discord-hover-card {
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-origin: center;
-}
-
-.discord-hover-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow:
-    0 20px 40px rgba(88, 101, 242, 0.3),
-    0 0 0 1px rgba(88, 101, 242, 0.5);
-}
-
-/* Touch devices - reduce animations for performance */
-@media (max-width: 768px) {
-  .discord-hover-card:hover {
-    transform: translateY(-4px) scale(1.01);
+@keyframes subtle-float {
+  0%,
+  100% {
+    transform: translateY(0);
   }
-
-  .float-3d {
-    animation-duration: 8s; /* Slower on mobile */
-  }
-
-  .cosmic-particles::before {
-    animation-duration: 30s; /* Slower cosmic drift */
-    opacity: 0.2; /* Less opacity for performance */
+  50% {
+    transform: translateY(-6px);
   }
 }
 
-/* Disable animations on reduced motion preference */
+.animate-fade-slide-up {
+  animation: fade-slide-up 0.6s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.animate-soft-glow {
+  animation: soft-glow 5.5s ease-in-out infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 2.8s ease-in-out infinite;
+}
+
+.animate-marquee {
+  animation: marquee 24s linear infinite;
+}
+
+.animate-subtle-float {
+  animation: subtle-float 6s ease-in-out infinite;
+}
+
+.char,
+.char-clip,
+.char-inner {
+  display: inline-block;
+}
+
+.animate-char-reveal,
+.animate-char-clip,
+.animate-char-flip,
+.animate-char-bounce,
+.animate-char-slide {
+  animation: fade-slide-up 0.55s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.animate-char-glow {
+  text-shadow: 0 0 8px rgba(183, 157, 230, 0.6);
+}
+
+.neo-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nb-accent-light);
+  border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nb-accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .float-3d,
-  .cosmic-particles::before,
-  .animate-pulse,
-  .animate-bounce {
-    animation: none;
+  .animate-fade-slide-up,
+  .animate-soft-glow,
+  .animate-twinkle,
+  .animate-marquee,
+  .animate-subtle-float {
+    animation: none !important;
   }
-}
-
-
-.stars1 {
-  animation: space 180s ease-in-out infinite;
-  background-image:
-    radial-gradient(
-      1px 1px at 25px 5px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1px 1px at 50px 25px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1px 1px at 125px 20px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1.5px 1.5px at 50px 75px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      2px 2px at 15px 125px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      2.5px 2.5px at 110px 80px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    );
-}
-.stars2 {
-  animation: space 240s ease-in-out infinite;
-  background-image:
-    radial-gradient(
-      1px 1px at 75px 125px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1px 1px at 100px 75px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1.5px 1.5px at 199px 100px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      2px 2px at 20px 50px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      2.5px 2.5px at 100px 5px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      2.5px 2.5px at 5px 5px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    )
-}
-.stars3 {
-  animation: space 300s ease-in-out infinite;
-  background-image:
-    radial-gradient(
-      1px 1px at 10px 10px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1px 1px at 150px 150px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1.5px 1.5px at 60px 170px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      1.5px 1.5px at 175px 180px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      2px 2px at 195px 95px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    ),
-    radial-gradient(
-      2.5px 2.5px at 95px 145px, 
-      white, 
-      rgba(255, 255, 255, 0)
-    );
 }

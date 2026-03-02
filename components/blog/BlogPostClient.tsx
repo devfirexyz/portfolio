@@ -22,7 +22,7 @@ function formatDate(date: Date): string {
 // Enhanced syntax highlighting function using React components (no HTML strings)
 function highlightCode(code: string, language: string): React.ReactNode {
   if (!language || language === '') {
-    return <span className="text-gray-300">{code}</span>;
+    return <span className="text-[var(--nb-code-muted)]">{code}</span>;
   }
 
   const lines = code.split('\n');
@@ -67,7 +67,7 @@ function highlightCode(code: string, language: string): React.ReactNode {
   return (
     <>
       {lines.map((line, index) => (
-        <div key={index} className="block text-emerald-300">
+        <div key={index} className="block text-[var(--nb-code-string)]">
           {line || '\u00A0'}
         </div>
       ))}
@@ -220,33 +220,33 @@ function isKeyword(word: string): boolean {
 // Get CSS class for token
 function getTokenClassName(token: Token): string {
   if (token.type === 'string') {
-    return 'text-emerald-400';
+    return "text-[var(--nb-code-string)]";
   }
   if (token.type === 'comment') {
-    return 'text-gray-500 italic';
+    return "text-[var(--nb-code-comment)] italic";
   }
   if (token.type === 'number') {
-    return 'text-orange-400';
+    return "text-[var(--nb-code-number)]";
   }
   if (token.type === 'operator') {
-    return 'text-gray-300';
+    return "text-[var(--nb-code-operator)]";
   }
   if (token.type === 'keyword') {
     return getKeywordClassName(token.value);
   }
-  return 'text-gray-300';
+  return "text-[var(--nb-code-muted)]";
 }
 
 // Get specific keyword class
 function getKeywordClassName(keyword: string): string {
   const keywordTypes = {
-    'interface|type|class|extends|implements|enum': 'text-blue-400 font-semibold',
-    'function|const|let|var|return|if|else|for|while|do|switch|case|break|continue|try|catch|finally|throw|async|await': 'text-purple-400 font-semibold',
-    'import|export|from|default|as|namespace': 'text-pink-400 font-semibold',
-    'React|useState|useEffect|useCallback|useMemo|useRef|useContext|Component|ReactNode': 'text-cyan-400 font-semibold',
-    'string|number|boolean|void|any|unknown|never|object|Array|Promise|Function': 'text-yellow-400',
-    'true|false|null|undefined': 'text-orange-400 font-semibold',
-    'onClick|className|style|key|ref|id|cn': 'text-green-400',
+    'interface|type|class|extends|implements|enum': "text-[var(--nb-code-keyword-strong)] font-semibold",
+    'function|const|let|var|return|if|else|for|while|do|switch|case|break|continue|try|catch|finally|throw|async|await': "text-[var(--nb-code-keyword)] font-semibold",
+    'import|export|from|default|as|namespace': "text-[var(--nb-code-tag)] font-semibold",
+    'React|useState|useEffect|useCallback|useMemo|useRef|useContext|Component|ReactNode': "text-[var(--nb-code-tag)] font-semibold",
+    'string|number|boolean|void|any|unknown|never|object|Array|Promise|Function': "text-[var(--nb-code-number)]",
+    'true|false|null|undefined': "text-[var(--nb-code-number)] font-semibold",
+    'onClick|className|style|key|ref|id|cn': "text-[var(--nb-code-string)]",
   };
 
   for (const [pattern, className] of Object.entries(keywordTypes)) {
@@ -255,7 +255,7 @@ function getKeywordClassName(keyword: string): string {
     }
   }
 
-  return 'text-gray-300';
+  return "text-[var(--nb-code-muted)]";
 }
 
 // Python syntax highlighting
@@ -266,7 +266,7 @@ function highlightPythonLine(line: string): React.ReactNode {
 
   // Handle comments
   if (line.trim().startsWith('#')) {
-    return <span className="text-gray-500 italic">{line}</span>;
+    return <span className="text-[var(--nb-code-comment)] italic">{line}</span>;
   }
 
   const pythonKeywords = [
@@ -287,24 +287,24 @@ function highlightPythonLine(line: string): React.ReactNode {
         if ((part === '"' || part === "'") && !inString) {
           inString = true;
           stringChar = part;
-          return <span key={i} className="text-green-400">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-string)]">{part}</span>;
         } else if (part === stringChar && inString) {
           inString = false;
-          return <span key={i} className="text-green-400">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-string)]">{part}</span>;
         } else if (inString) {
-          return <span key={i} className="text-green-400">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-string)]">{part}</span>;
         }
 
         if (/^\s+$/.test(part)) {
           return <span key={i}>{part}</span>;
         } else if (pythonKeywords.includes(part)) {
-          return <span key={i} className="text-purple-400 font-semibold">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-keyword)] font-semibold">{part}</span>;
         } else if (/^\d+(\.\d+)?$/.test(part)) {
-          return <span key={i} className="text-orange-400">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-number)]">{part}</span>;
         } else if (/^[(){}\[\]:,.]$/.test(part)) {
-          return <span key={i} className="text-yellow-300">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-operator)]">{part}</span>;
         } else {
-          return <span key={i} className="text-cyan-300">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-muted)]">{part}</span>;
         }
       })}
     </span>
@@ -319,7 +319,7 @@ function highlightBashLine(line: string): React.ReactNode {
 
   // Handle comments
   if (line.trim().startsWith('#')) {
-    return <span className="text-gray-500 italic">{line}</span>;
+    return <span className="text-[var(--nb-code-comment)] italic">{line}</span>;
   }
 
   const bashKeywords = [
@@ -341,26 +341,26 @@ function highlightBashLine(line: string): React.ReactNode {
         if ((part === '"' || part === "'") && !inString) {
           inString = true;
           stringChar = part;
-          return <span key={i} className="text-green-400">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-string)]">{part}</span>;
         } else if (part === stringChar && inString) {
           inString = false;
-          return <span key={i} className="text-green-400">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-string)]">{part}</span>;
         } else if (inString) {
-          return <span key={i} className="text-green-400">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-string)]">{part}</span>;
         }
 
         if (/^\s+$/.test(part)) {
           return <span key={i}>{part}</span>;
         } else if (bashKeywords.includes(part)) {
-          return <span key={i} className="text-pink-400 font-semibold">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-keyword)] font-semibold">{part}</span>;
         } else if (part.startsWith('$')) {
-          return <span key={i} className="text-cyan-400 font-semibold">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-tag)] font-semibold">{part}</span>;
         } else if (part.startsWith('-')) {
-          return <span key={i} className="text-yellow-300">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-number)]">{part}</span>;
         } else if (/^[|&;()<>{}]$/.test(part)) {
-          return <span key={i} className="text-orange-300">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-operator)]">{part}</span>;
         } else {
-          return <span key={i} className="text-emerald-300">{part}</span>;
+          return <span key={i} className="text-[var(--nb-code-muted)]">{part}</span>;
         }
       })}
     </span>
@@ -385,8 +385,8 @@ function MarkdownContent({ content }: { content: string }) {
         if (inCodeBlock) {
           // End of code block
           result.push(
-            <pre key={`code-${index}`} className="!bg-[#1a1b26] !text-[#c0caf5] p-5 rounded-xl overflow-x-auto mb-6 font-mono text-sm leading-relaxed border border-[#414868] shadow-lg relative">
-              <div className="absolute top-3 right-3 text-xs text-gray-400 bg-[#2a2b3c] px-3 py-1.5 rounded-md font-semibold uppercase tracking-wider">
+            <pre key={`code-${index}`} className="!bg-[var(--nb-code-bg)] !text-[var(--nb-code-fg)] p-5 overflow-x-auto mb-6 font-mono text-sm leading-relaxed border-2 border-[var(--nb-border)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)] relative">
+              <div className="absolute top-3 right-3 text-xs text-[var(--nb-code-comment)] bg-[var(--nb-code-chip-bg)] px-3 py-1.5 font-semibold uppercase tracking-wider">
                 {codeLanguage || 'code'}
               </div>
               <code className={`language-${codeLanguage}`}>
@@ -415,7 +415,7 @@ function MarkdownContent({ content }: { content: string }) {
         const text = line.replace('# ', '');
         const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         result.push(
-          <h1 key={index} id={id} className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 mt-6 sm:mt-8 text-gray-900 dark:text-white scroll-mt-32">
+          <h1 key={index} id={id} className="mt-6 mb-4 scroll-mt-32 text-2xl font-bold text-[var(--nb-foreground)] sm:mt-8 sm:mb-6 sm:text-3xl lg:text-4xl">
             {text}
           </h1>
         );
@@ -425,7 +425,7 @@ function MarkdownContent({ content }: { content: string }) {
         const text = line.replace('## ', '');
         const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         result.push(
-          <h2 key={index} id={id} className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-gray-900 dark:text-white border-b border-gray-200/50 dark:border-gray-700/50 pb-2 scroll-mt-32">
+          <h2 key={index} id={id} className="mt-6 mb-3 scroll-mt-32 border-b border-[var(--nb-border-subtle)] pb-2 text-xl font-semibold text-[var(--nb-foreground)] sm:mt-8 sm:mb-4 sm:text-2xl lg:text-3xl">
             {text}
           </h2>
         );
@@ -435,7 +435,7 @@ function MarkdownContent({ content }: { content: string }) {
         const text = line.replace('### ', '');
         const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         result.push(
-          <h3 key={index} id={id} className="text-lg sm:text-xl lg:text-2xl font-semibold mb-2 sm:mb-3 mt-4 sm:mt-6 text-gray-900 dark:text-white scroll-mt-32">
+          <h3 key={index} id={id} className="mt-4 mb-2 scroll-mt-32 text-lg font-semibold text-[var(--nb-foreground)] sm:mt-6 sm:mb-3 sm:text-xl lg:text-2xl">
             {text}
           </h3>
         );
@@ -489,7 +489,7 @@ function MarkdownContent({ content }: { content: string }) {
                 );
 
                 return (
-                  <li key={i} className="mb-2 text-gray-700 dark:text-gray-300">
+                  <li key={i} className="mb-2 text-[var(--nb-foreground-muted)]">
                     {renderInlineFormatting(item.text)}
                     {nextIndentItems.length > 0 && renderNestedList(nextIndentItems, currentIndent + 1)}
                   </li>
@@ -512,7 +512,7 @@ function MarkdownContent({ content }: { content: string }) {
       // Regular paragraphs
       if (line.trim() && !line.startsWith('#')) {
         result.push(
-          <p key={index} className="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed sm:leading-loose mb-4 sm:mb-6">
+          <p key={index} className="mb-4 text-sm leading-relaxed text-[var(--nb-foreground-muted)] sm:mb-6 sm:text-base sm:leading-loose">
             {renderInlineFormatting(line)}
           </p>
         );
@@ -529,7 +529,7 @@ function MarkdownContent({ content }: { content: string }) {
       const parts = text.split('`');
       return parts.map((part, i) =>
         i % 2 === 1 ? (
-          <code key={i} className="text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded text-sm font-mono">
+          <code key={i} className="rounded border border-[var(--nb-inline-code-border)] bg-[var(--nb-inline-code-bg)] px-2 py-1 font-mono text-sm font-semibold text-[var(--nb-inline-code-fg)]">
             {part}
           </code>
         ) : renderBoldText(part)
@@ -545,7 +545,7 @@ function MarkdownContent({ content }: { content: string }) {
       const parts = text.split('**');
       return parts.map((part, i) =>
         i % 2 === 1 ? (
-          <strong key={i} className="text-gray-900 dark:text-white font-semibold">
+          <strong key={i} className="font-semibold text-[var(--nb-foreground)]">
             {part}
           </strong>
         ) : renderLinks(part)
@@ -577,7 +577,7 @@ function MarkdownContent({ content }: { content: string }) {
           href={linkUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline underline-offset-2 transition-colors"
+          className="text-[var(--nb-accent-ink)] underline underline-offset-2 transition-colors hover:text-[var(--nb-accent)]"
         >
           {linkText}
         </a>
@@ -594,7 +594,7 @@ function MarkdownContent({ content }: { content: string }) {
     return parts.length > 0 ? parts : text;
   };
 
-  return <div className="prose prose-invert max-w-none">{renderContent(content)}</div>;
+  return <div className="max-w-none">{renderContent(content)}</div>;
 }
 
 // Table of Contents Component with throttled scroll tracking
@@ -710,7 +710,7 @@ function TableOfContents({ content }: { content: string }) {
 
   return (
     <div className="flex flex-col gap-2 px-4 w-full">
-      <span className="text-lg font-medium text-white">
+      <span className="text-lg font-medium text-[var(--nb-foreground)]">
         Table of Contents
       </span>
       <ul className="flex list-none flex-col gap-y-2 w-full">
@@ -724,8 +724,8 @@ function TableOfContents({ content }: { content: string }) {
               onClick={(e) => handleClick(e, item.id)}
               className={`block transition-colors ${
                 activeId === item.id
-                  ? "text-white font-semibold"
-                  : "text-gray-400 hover:text-white"
+                  ? "text-[var(--nb-foreground)] font-bold"
+                  : "text-[var(--nb-foreground-muted)] hover:text-[var(--nb-foreground)]"
               }`}
             >
               {item.text.replaceAll("*", "")}
@@ -763,11 +763,11 @@ function PostNavigation({ post, allPosts }: { post: BlogPost; allPosts: BlogPost
       {previousPost ? (
         <Link
           href={`/blog/${previousPost.slug}`}
-          className="group p-3 bg-gray-200 dark:bg-gray-900/50 rounded-lg border border-gray-500 dark:border-gray-700/50 hover:bg-gray-300 dark:hover:bg-gray-800/50 hover:border-gray-600 dark:hover:border-gray-600 transition-all duration-200"
+          className="group border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-3 transition-colors duration-150 hover:bg-[var(--nb-surface-alt)]"
         >
           <div className="flex items-center gap-2 mb-1">
             <svg
-              className="w-3 h-3 text-gray-900 dark:text-gray-500"
+              className="h-3 w-3 text-[var(--nb-foreground-subtle)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -779,19 +779,19 @@ function PostNavigation({ post, allPosts }: { post: BlogPost; allPosts: BlogPost
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            <span className="text-xs text-gray-900 dark:text-gray-400">
+            <span className="text-xs text-[var(--nb-foreground-muted)]">
               Previous
             </span>
           </div>
-          <div className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2 leading-tight">
+          <div className="line-clamp-2 text-sm font-medium leading-tight text-[var(--nb-foreground)] transition-colors group-hover:text-[var(--nb-accent-ink)]">
             {previousPost.title}
           </div>
         </Link>
       ) : (
-        <div className="p-3 bg-gray-200 dark:bg-gray-900/20 rounded-lg border border-gray-500 dark:border-gray-700/30 opacity-50">
+        <div className="border-2 border-[var(--nb-border-subtle)] bg-[var(--nb-surface-alt)] p-3 opacity-60">
           <div className="flex items-center gap-2 mb-1">
             <svg
-              className="w-3 h-3 text-gray-300 dark:text-gray-600"
+              className="h-3 w-3 text-[var(--nb-foreground-subtle)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -803,11 +803,11 @@ function PostNavigation({ post, allPosts }: { post: BlogPost; allPosts: BlogPost
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            <span className="text-xs text-gray-400 dark:text-gray-600">
+            <span className="text-xs text-[var(--nb-foreground-subtle)]">
               Previous
             </span>
           </div>
-          <div className="text-sm text-gray-400 dark:text-gray-600">
+          <div className="text-sm text-[var(--nb-foreground-subtle)]">
             Oldest post
           </div>
         </div>
@@ -817,14 +817,14 @@ function PostNavigation({ post, allPosts }: { post: BlogPost; allPosts: BlogPost
       {nextPost ? (
         <Link
           href={`/blog/${nextPost.slug}`}
-          className="group p-3 bg-gray-200 dark:bg-gray-900/50 rounded-lg border border-gray-500 dark:border-gray-700/50 hover:bg-gray-300 dark:hover:bg-gray-800/50 hover:border-gray-600 dark:hover:border-gray-600 transition-all duration-200 text-right"
+          className="group border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-3 text-right transition-colors duration-150 hover:bg-[var(--nb-surface-alt)]"
         >
           <div className="flex items-center justify-end gap-2 mb-1">
-            <span className="text-xs text-gray-900 dark:text-gray-400">
+            <span className="text-xs text-[var(--nb-foreground-muted)]">
               Next
             </span>
             <svg
-              className="w-3 h-3 text-gray-900 dark:text-gray-500"
+              className="h-3 w-3 text-[var(--nb-foreground-subtle)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -837,18 +837,18 @@ function PostNavigation({ post, allPosts }: { post: BlogPost; allPosts: BlogPost
               />
             </svg>
           </div>
-          <div className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors line-clamp-2 leading-tight">
+          <div className="line-clamp-2 text-sm font-medium leading-tight text-[var(--nb-foreground)] transition-colors group-hover:text-[var(--nb-accent-ink)]">
             {nextPost.title}
           </div>
         </Link>
       ) : (
-        <div className="p-3 bg-gray-200 dark:bg-gray-900/20 rounded-lg border border-gray-500 dark:border-gray-700/30 opacity-50 text-right">
+        <div className="border-2 border-[var(--nb-border-subtle)] bg-[var(--nb-surface-alt)] p-3 text-right opacity-60">
           <div className="flex items-center justify-end gap-2 mb-1">
-            <span className="text-xs text-gray-400 dark:text-gray-600">
+            <span className="text-xs text-[var(--nb-foreground-subtle)]">
               Next
             </span>
             <svg
-              className="w-3 h-3 text-gray-300 dark:text-gray-600"
+              className="h-3 w-3 text-[var(--nb-foreground-subtle)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -861,7 +861,7 @@ function PostNavigation({ post, allPosts }: { post: BlogPost; allPosts: BlogPost
               />
             </svg>
           </div>
-          <div className="text-sm text-gray-400 dark:text-gray-600">
+          <div className="text-sm text-[var(--nb-foreground-subtle)]">
             Newest post
           </div>
         </div>
@@ -895,33 +895,33 @@ export default function BlogPostClient({ post, allPosts, author }: BlogPostClien
               {/* Category */}
               {post.category && (
                 <div className="mb-4">
-                  <span className="text-xs sm:text-sm font-medium text-white dark:text-gray-400 uppercase tracking-wide bg-gray-800 dark:bg-gray-800 px-3 py-1 rounded-full">
+                  <span className="inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-strong)] px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-inverse)] sm:text-sm">
                     {post.category}
                   </span>
                 </div>
               )}
 
               {/* Title */}
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight">
+              <h1 className="mb-4 text-2xl font-bold leading-tight text-[var(--nb-foreground)] sm:mb-6 sm:text-3xl md:text-4xl lg:text-5xl">
                 {post.title}
               </h1>
 
               {/* Description */}
-              <p className="text-lg sm:text-xl text-gray-900 dark:text-gray-400 leading-relaxed mb-6 sm:mb-8">
+              <p className="mb-6 text-lg leading-relaxed text-[var(--nb-foreground-muted)] sm:mb-8 sm:text-xl">
                 {post.description}
               </p>
 
               {/* Author & Meta */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 sm:mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-200 to-purple-300 dark:from-purple-700 dark:to-purple-600 rounded-full flex items-center justify-center text-sm font-bold text-purple-700 dark:text-purple-200">
+                  <div className="flex h-8 w-8 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] text-sm font-bold text-[var(--nb-foreground-inverse)] sm:h-10 sm:w-10">
                     {(author?.name || post.author).charAt(0)}
                   </div>
                   <div>
-                    <div className="font-medium text-gray-900 dark:text-white">
+                    <div className="font-medium text-[var(--nb-foreground)]">
                       {author?.name || post.author}
                     </div>
-                    <div className="text-sm text-gray-900 dark:text-gray-400">
+                    <div className="text-sm text-[var(--nb-foreground-muted)]">
                       {formatDate(post.publishedAt)} • {post.readingTime} min
                       read
                     </div>
@@ -935,7 +935,7 @@ export default function BlogPostClient({ post, allPosts, author }: BlogPostClien
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center px-3 py-1 text-xs sm:text-sm font-medium bg-gray-800 dark:bg-white/10 text-white dark:text-gray-300 rounded-full border border-gray-800 dark:border-white/10"
+                      className="inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-3 py-1 text-xs font-medium text-[var(--nb-foreground-muted)] sm:text-sm"
                     >
                       #{tag}
                     </span>
@@ -954,16 +954,16 @@ export default function BlogPostClient({ post, allPosts, author }: BlogPostClien
 
             {/* Author Bio */}
             {author && (
-              <div className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-gray-200/50 dark:border-gray-800/50">
+              <div className="mt-12 border-t-2 border-[var(--nb-border)] pt-6 sm:mt-16 sm:pt-8">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-200 to-purple-300 dark:from-purple-700 dark:to-purple-600 rounded-full flex items-center justify-center text-purple-700 dark:text-purple-200 font-bold text-lg sm:text-xl">
+                  <div className="flex h-12 w-12 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] font-bold text-[var(--nb-foreground-inverse)] sm:h-16 sm:w-16 sm:text-xl">
                     {author.name.charAt(0)}
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                    <h3 className="mb-2 text-lg font-semibold text-[var(--nb-foreground)] sm:text-xl">
                       {author.name}
                     </h3>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                    <p className="mb-4 text-sm leading-relaxed text-[var(--nb-foreground-muted)] sm:text-base">
                       {author.bio ||
                         "Building modern web applications with React, TypeScript, and the latest technologies. Passionate about creating developer-friendly tools and sharing knowledge with the community."}
                     </p>

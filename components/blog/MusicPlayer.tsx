@@ -248,7 +248,7 @@ export function MusicPlayer() {
                   step="0.01"
                   value={volume}
                   onChange={(event) => setVolume(Number(event.target.value))}
-                  className="slider h-1 w-full cursor-pointer appearance-none rounded-lg bg-[var(--nb-surface-muted)]"
+                  className="music-player-slider h-1 w-full cursor-pointer appearance-none rounded-lg bg-[var(--nb-surface-muted)]"
                   style={{
                     background: `linear-gradient(to right, var(--nb-accent) 0%, var(--nb-accent) ${
                       volume * 100
@@ -260,27 +260,6 @@ export function MusicPlayer() {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          width: 14px;
-          height: 14px;
-          background: var(--nb-accent);
-          border: 2px solid var(--nb-border);
-          border-radius: 0;
-          cursor: pointer;
-        }
-
-        .slider::-moz-range-thumb {
-          width: 14px;
-          height: 14px;
-          background: var(--nb-accent);
-          border: 2px solid var(--nb-border);
-          border-radius: 0;
-          cursor: pointer;
-        }
-      `}</style>
     </>
   );
 }

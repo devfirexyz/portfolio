@@ -61,6 +61,8 @@
     --nb-inline-code-bg: #343b4c;
     --nb-inline-code-border: #59627c;
     --nb-inline-code-fg: #d5dcff;
+    --nb-hero-glow-primary: rgba(88, 101, 242, 0.15);
+    --nb-hero-glow-secondary: rgba(114, 137, 218, 0.1);
     --selection-bg: #5865f2;
     --selection-fg: #ffffff;
     color-scheme: dark;
@@ -123,6 +125,8 @@
     --nb-inline-code-bg: #e8ecf4;
     --nb-inline-code-border: #a3adbf;
     --nb-inline-code-fg: #1f2761;
+    --nb-hero-glow-primary: rgba(67, 56, 202, 0.18);
+    --nb-hero-glow-secondary: rgba(99, 102, 241, 0.14);
     --selection-bg: #4338ca;
     --selection-fg: #ffffff;
     color-scheme: light;
@@ -143,8 +147,8 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      "Liberation Mono", "Courier New", monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
     line-height: 1.55;
     text-rendering: geometricPrecision;
     -webkit-font-smoothing: antialiased;

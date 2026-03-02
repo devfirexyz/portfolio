@@ -74,29 +74,31 @@ jobs:
 
       - name: Create annotated git tag
         if: steps.version.outputs.skip != 'true'
+        env:
+          TAG: ${{ steps.version.outputs.next_tag }}
+          PREVIOUS: ${{ steps.version.outputs.latest_tag }}
+          SUBJECT: ${{ steps.version.outputs.latest_subject }}
+          NOTES: ${{ steps.version.outputs.notes }}
         shell: bash
         run: |
           set -euo pipefail
-          tag="${{ steps.version.outputs.next_tag }}"
-          previous="${{ steps.version.outputs.latest_tag }}"
-          subject="${{ steps.version.outputs.latest_subject }}"
+          tag="$TAG"
+          previous="$PREVIOUS"
+          subject="$SUBJECT"
+          notes="$NOTES"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           {
-            echo "$tag: automated release"
+            printf '%s\n' "$tag: automated release"
             if [ -n "$previous" ]; then
-              echo
-              echo "Changes since $previous"
+              printf '\n%s\n' "Changes since $previous"
             else
-              echo
-              echo "Initial release"
+              printf '\n%s\n' "Initial release"
             fi
-            echo
-            echo "${{ steps.version.outputs.notes }}"
-            echo
-            echo "Head commit: $subject"
+            printf '\n%s\n' "$notes"
+            printf '\n%s\n' "Head commit: $subject"
           } > tag-message.txt
 
           git tag -a "$tag" -F tag-message.txt

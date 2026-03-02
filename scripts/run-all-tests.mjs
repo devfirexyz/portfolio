@@ -5,11 +5,11 @@ import path from "node:path";
 
 const root = process.cwd();
 
-function runTest(scriptPath, name) {
+function runTest(scriptPath, name, nodeArgs = []) {
   return new Promise((resolve, reject) => {
     console.log(`\n▶️  Running ${name}...\n`);
     
-    const child = spawn("node", [path.join(root, scriptPath)], {
+    const child = spawn("node", [...nodeArgs, path.join(root, scriptPath)], {
       stdio: "inherit",
       cwd: root
     });
@@ -39,6 +39,12 @@ async function runAllTests() {
     
     // Run theme contrast tests
     await runTest("scripts/theme-contrast-tests.mjs", "Theme Contrast Tests");
+
+    // Run regression tests
+    await runTest("scripts/regression-tests.mjs", "Regression Tests", [
+      "--experimental-strip-types",
+      "--test",
+    ]);
 
     // Run performance budget tests
     await runTest("scripts/performance-budget-tests.mjs", "Performance Budget Tests");

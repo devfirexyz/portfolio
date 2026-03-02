@@ -79,6 +79,28 @@ function calculateReadingTime(content: string): { minutes: number; text: string;
   };
 }
 
+function safeParseDate(value: unknown): Date | undefined {
+  if (value === null || value === undefined || value === "") {
+    return undefined;
+  }
+
+  const parsed = new Date(value as string | number | Date);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+
+  return parsed;
+}
+
+function getDateTimestamp(date: Date | undefined): number {
+  if (!date) {
+    return 0;
+  }
+
+  const timestamp = date.getTime();
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
 export async function getAllPosts(): Promise<BlogPost[]> {
   const contentDir = path.join(process.cwd(), "content/blog");
 
@@ -95,12 +117,14 @@ export async function getAllPosts(): Promise<BlogPost[]> {
     const { frontmatter, content } = parseFrontmatter(fileContent);
     const readingTime = calculateReadingTime(content);
     const slug = file.replace(/\.mdx$/, "");
+    const publishedAt = safeParseDate(frontmatter.publishedAt) ?? new Date(0);
+    const updatedAt = safeParseDate(frontmatter.updatedAt);
 
     return {
       title: frontmatter.title || "Untitled",
       description: frontmatter.description || "",
-      publishedAt: new Date(frontmatter.publishedAt || Date.now()),
-      updatedAt: frontmatter.updatedAt ? new Date(frontmatter.updatedAt) : undefined,
+      publishedAt,
+      updatedAt,
       tags: frontmatter.tags || [],
       category: frontmatter.category,
       author: frontmatter.author || "Piyush Raj",
@@ -115,7 +139,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
     } as BlogPost;
   });
 
-  return posts.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  return posts.sort((a, b) => getDateTimestamp(b.publishedAt) - getDateTimestamp(a.publishedAt));
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {

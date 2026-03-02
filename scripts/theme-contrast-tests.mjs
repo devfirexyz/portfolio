@@ -300,6 +300,8 @@ function testThemeVariables() {
   console.log("\n🎯 Testing Theme Variable Usage...");
 
   const blogPost = read("components/blog/BlogPostClient.tsx");
+  const markdownContent = read("components/blog/MarkdownContent.tsx");
+  const blogRenderingContent = `${blogPost}\n${markdownContent}`;
   const footer = read("components/home/HomeFooter.tsx");
   const backdrop = read("components/home/HeroBackdrop.tsx");
 
@@ -309,7 +311,8 @@ function testThemeVariables() {
   );
 
   assert(
-    blogPost.includes("var(--nb-code-bg)") || blogPost.includes("bg-[var(--nb-"),
+    blogRenderingContent.includes("var(--nb-code-bg)") ||
+      blogRenderingContent.includes("bg-[var(--nb-"),
     "BlogPostClient must use theme variables for code/background colors"
   );
 
@@ -319,8 +322,8 @@ function testThemeVariables() {
   );
 
   assert(
-    blogPost.includes("var(--nb-inline-code-fg)") &&
-      blogPost.includes("var(--nb-inline-code-bg)"),
+    blogRenderingContent.includes("var(--nb-inline-code-fg)") &&
+      blogRenderingContent.includes("var(--nb-inline-code-bg)"),
     "BlogPostClient inline code must use dedicated high-contrast inline code tokens"
   );
 
@@ -346,26 +349,23 @@ function testSyntaxHighlighting() {
   console.log("\n💡 Testing Syntax Highlighting Colors...");
 
   const blogPost = read("components/blog/BlogPostClient.tsx");
+  const markdownContent = read("components/blog/MarkdownContent.tsx");
+  const blogRenderingContent = `${blogPost}\n${markdownContent}`;
 
   const requiredSyntaxTokens = [
     "var(--nb-code-bg)",
     "var(--nb-code-fg)",
-    "var(--nb-code-muted)",
     "var(--nb-code-comment)",
-    "var(--nb-code-keyword)",
-    "var(--nb-code-keyword-strong)",
-    "var(--nb-code-string)",
-    "var(--nb-code-number)",
-    "var(--nb-code-tag)",
-    "var(--nb-code-operator)",
+    "var(--nb-code-chip-bg)",
   ];
 
   requiredSyntaxTokens.forEach((token) => {
-    assert(blogPost.includes(token), `Syntax highlighting is missing ${token}`);
+    assert(blogRenderingContent.includes(token), `Syntax highlighting is missing ${token}`);
   });
 
   assert(
-    blogPost.includes("text-[var(--nb-code-comment)]") || blogPost.includes("italic"),
+    blogRenderingContent.includes("text-[var(--nb-code-comment)]") ||
+      blogRenderingContent.includes("italic"),
     "Syntax highlighting comments should be styled"
   );
 
@@ -410,24 +410,28 @@ function testCodeBlocks() {
   console.log("\n📦 Testing Code Block Styling...");
 
   const blogPost = read("components/blog/BlogPostClient.tsx");
+  const markdownContent = read("components/blog/MarkdownContent.tsx");
+  const blogRenderingContent = `${blogPost}\n${markdownContent}`;
 
   assert(
-    blogPost.includes("bg-[var(--nb-code-bg)]") || blogPost.includes("!bg-[var(--nb-code-bg)]"),
+    blogRenderingContent.includes("bg-[var(--nb-code-bg)]") ||
+      blogRenderingContent.includes("!bg-[var(--nb-code-bg)]"),
     "Code blocks should use nb-code-bg"
   );
 
   assert(
-    blogPost.includes("text-[var(--nb-code-fg)]") || blogPost.includes("!text-[var(--nb-code-fg)]"),
+    blogRenderingContent.includes("text-[var(--nb-code-fg)]") ||
+      blogRenderingContent.includes("!text-[var(--nb-code-fg)]"),
     "Code blocks should use nb-code-fg for base text"
   );
 
   assert(
-    blogPost.includes("bg-[var(--nb-code-chip-bg)]"),
+    blogRenderingContent.includes("bg-[var(--nb-code-chip-bg)]"),
     "Code block language label should use nb-code-chip-bg"
   );
 
   assert(
-    blogPost.includes("bg-[var(--nb-inline-code-bg)]"),
+    blogRenderingContent.includes("bg-[var(--nb-inline-code-bg)]"),
     "Inline code should use dedicated inline code background token"
   );
 

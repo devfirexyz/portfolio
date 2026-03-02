@@ -140,13 +140,29 @@ function stripPossibleFrontmatter(lines: string[]): string[] {
     return lines;
   }
 
+  let closingIndex = -1;
   for (let index = 1; index < lines.length; index += 1) {
     if (FRONTMATTER_RE.test(lines[index])) {
-      return lines.slice(index + 1);
+      closingIndex = index;
+      break;
     }
   }
 
-  return lines;
+  if (closingIndex === -1) {
+    return lines;
+  }
+
+  const candidateFrontmatter = lines.slice(1, closingIndex);
+  const hasYamlLikeKey = candidateFrontmatter.some((line) => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) {
+      return false;
+    }
+
+    return /^[A-Za-z0-9_-]+:\s*/.test(trimmed) || trimmed.includes(":");
+  });
+
+  return hasYamlLikeKey ? lines.slice(closingIndex + 1) : lines;
 }
 
 export function parseMarkdown(content: string): ParsedMarkdown {

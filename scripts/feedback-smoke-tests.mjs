@@ -24,7 +24,8 @@ function run() {
   assert(!page.includes("NeoCompareSection"), "Home page still includes NeoCompareSection section.");
 
   assert(
-    discord.includes("onClick={() => setActiveChannel(channel.id)}"),
+    discord.includes("onClick={() => handleSelectChannel(channel.id)}") ||
+      discord.includes("onClick={() => setActiveChannel(channel.id)}"),
     "Discord panel channel switching handler missing."
   );
   assert(discord.includes("activeSection.points.map"), "Discord panel section render loop missing.");

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import type { MarkdownBlock, ParsedMarkdown } from "@/lib/blog-markdown";
+import { normalizeMarkdownHref } from "@/lib/markdown-links";
 
 interface MarkdownContentProps {
   parsed: ParsedMarkdown;
@@ -32,8 +33,7 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
       );
     } else if (match[2]) {
       const label = match[3] || "";
-      const href = (match[4] || "").split(/\s+/)[0].replace(/^<|>$/g, "");
-      const isExternal = /^https?:\/\//i.test(href);
+      const { href, isExternal } = normalizeMarkdownHref(match[4] || "");
 
       nodes.push(
         <a

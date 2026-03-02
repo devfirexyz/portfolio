@@ -105,7 +105,7 @@ async function runLighthouse(route) {
   const outputPath = path.join(os.tmpdir(), `lighthouse-${safeRoute}-${Date.now()}.json`);
 
   await run("npx", [
-    "-y",
+    "--no-install",
     "lighthouse",
     `${baseUrl}${route}`,
     "--quiet",

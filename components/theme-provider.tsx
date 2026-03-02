@@ -30,7 +30,15 @@ function getInitialTheme(defaultTheme: Theme | "system"): Theme {
     return attributeTheme;
   }
 
-  const stored = localStorage.getItem(THEME_STORAGE_KEY);
+  let stored: string | null = null;
+  if (typeof window !== "undefined") {
+    try {
+      stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    } catch {
+      stored = null;
+    }
+  }
+
   if (stored === "dark" || stored === "light") {
     return stored;
   }
@@ -57,7 +65,13 @@ export function ThemeProvider({
   React.useEffect(() => {
     if (!mounted) return;
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem(THEME_STORAGE_KEY, theme);
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+      } catch {
+        // Ignore storage failures (private mode/restricted environments).
+      }
+    }
   }, [mounted, theme]);
 
   const setTheme = React.useCallback((value: Theme) => {

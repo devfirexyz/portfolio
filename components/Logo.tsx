@@ -9,20 +9,22 @@ interface LogoProps {
   animated?: boolean;
 }
 
+type LogoSize = NonNullable<LogoProps["size"]>;
+
 export function Logo({
   variant = "full",
   size = "md",
   className = "",
   animated = false
 }: LogoProps) {
-  const sizeClasses = {
+  const sizeClasses: Record<LogoSize, string> = {
     sm: "w-8 h-8",
     md: "w-12 h-12",
     lg: "w-16 h-16",
     xl: "w-24 h-24"
   };
 
-  const textSizes = {
+  const textSizes: Record<LogoSize, string> = {
     sm: "text-lg",
     md: "text-xl",
     lg: "text-2xl",
@@ -66,7 +68,7 @@ export function Logo({
 }
 
 // Main geometric logo symbol
-function LogoSymbol({ size, animated }: { size: string; animated: boolean }) {
+function LogoSymbol({ size, animated }: { size: LogoSize; animated: boolean }) {
   const strokeWidth = size === "sm" ? "2" : size === "md" ? "2.5" : "3";
 
   return (
@@ -116,7 +118,7 @@ function LogoSymbol({ size, animated }: { size: string; animated: boolean }) {
 }
 
 // Ultra minimal version
-function MinimalLogo({ size, animated }: { size: string; animated: boolean }) {
+function MinimalLogo({ size, animated }: { size: LogoSize; animated: boolean }) {
   return (
     <svg
       viewBox="0 0 32 32"
@@ -140,8 +142,8 @@ function MinimalLogo({ size, animated }: { size: string; animated: boolean }) {
 }
 
 // Alternative circular logo
-export function CircularLogo({ size = "md", animated = false }: { size?: string; animated?: boolean }) {
-  const sizeClasses = {
+export function CircularLogo({ size = "md", animated = false }: { size?: LogoSize; animated?: boolean }) {
+  const sizeClasses: Record<LogoSize, string> = {
     sm: "w-8 h-8",
     md: "w-12 h-12",
     lg: "w-16 h-16",

@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { clearPauseTimeout, schedulePauseTimeout } from "@/lib/pause-timeout";
 
 const TRACKS = [
   "/music/space-ambient-1.mp3",
@@ -24,6 +25,7 @@ export function MusicPlayer() {
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const volumeFadeRef = useRef<NodeJS.Timeout | null>(null);
+  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasInteractedRef = useRef(false);
 
   const visualizerHeights = useMemo(
@@ -56,6 +58,7 @@ export function MusicPlayer() {
 
   const playAudio = useCallback(() => {
     if (!audioRef.current) return;
+    clearPauseTimeout(pauseTimeoutRef);
     audioRef.current.volume = 0;
     const playPromise = audioRef.current.play();
     if (playPromise) {
@@ -72,8 +75,9 @@ export function MusicPlayer() {
 
   const pauseAudio = useCallback(() => {
     if (!audioRef.current || !isPlaying) return;
+    clearPauseTimeout(pauseTimeoutRef);
     fadeVolume(0, 300);
-    setTimeout(() => {
+    schedulePauseTimeout(pauseTimeoutRef, () => {
       if (!audioRef.current) return;
       audioRef.current.pause();
       setIsPlaying(false);
@@ -138,6 +142,7 @@ export function MusicPlayer() {
   useEffect(() => {
     return () => {
       if (volumeFadeRef.current) clearInterval(volumeFadeRef.current);
+      clearPauseTimeout(pauseTimeoutRef);
     };
   }, []);
 

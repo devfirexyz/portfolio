@@ -7,12 +7,19 @@ node_modules/
 .pnpm-store/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
+
+# tanstack
+.output/
+.tanstack/
 
 # production
-/build
-/dist
+build/
+dist/
+
+# turbo
+.turbo/
 
 # debug
 npm-debug.log*
@@ -30,3 +37,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# misc
+*.log
+*.pid
+*.seed
+*.pid.lock

@@ -1,0 +1,22 @@
+{
+  "name": "@portfolio/hooks",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./use-media-query": "./src/use-media-query.ts",
+    "./use-debounce": "./src/use-debounce.ts",
+    "./use-local-storage": "./src/use-local-storage.ts",
+    "./use-scroll-position": "./src/use-scroll-position.ts",
+    "./use-theme": "./src/use-theme.ts"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

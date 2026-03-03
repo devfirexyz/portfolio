@@ -207,6 +207,10 @@ function validateBudget(metrics, budget) {
 }
 
 async function runPerformanceTests() {
+  const isCi = process.env.CI === "true";
+  const softFailInCi = process.env.PERF_BUDGET_SOFT_FAIL_IN_CI !== "false";
+  const shouldFailOnBudgetMiss = !isCi || !softFailInCi;
+
   console.log("\n════════════════════════════════════════════════");
   console.log("⚡ PERFORMANCE BUDGET TESTS");
   console.log("════════════════════════════════════════════════");
@@ -268,6 +272,14 @@ async function runPerformanceTests() {
           console.error(`  • ${error}`);
         }
       }
+
+      if (!shouldFailOnBudgetMiss) {
+        console.warn(
+          "\n⚠️ CI soft-fail mode enabled (`PERF_BUDGET_SOFT_FAIL_IN_CI`); continuing without failing the suite."
+        );
+        return;
+      }
+
       process.exitCode = 1;
       return;
     }

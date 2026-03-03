@@ -33,7 +33,7 @@ const ResumeModal = memo(({ onClose }: ResumeModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 p-3 sm:p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -41,7 +41,7 @@ const ResumeModal = memo(({ onClose }: ResumeModalProps) => {
       aria-describedby={descriptionId}
     >
       <div
-        className="relative h-[95vh] w-full max-w-6xl overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[10px_10px_0px_0px_var(--nb-shadow-color)] sm:h-[90vh]"
+        className="relative flex h-[80vh] max-h-[80vh] w-[80vw] max-w-[80vw] flex-col overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[10px_10px_0px_0px_var(--nb-shadow-color)] sm:h-[90vh] sm:max-h-[calc(100vh-2rem)] sm:w-full sm:max-w-6xl"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] p-3 sm:p-5">
@@ -75,11 +75,18 @@ const ResumeModal = memo(({ onClose }: ResumeModalProps) => {
           </div>
         </div>
 
-        <div className="h-[calc(100%-3.75rem)] bg-[var(--nb-background)] sm:h-[calc(100%-4.5rem)]">
+        <div className="min-h-0 flex-1 bg-[var(--nb-background)]">
           <iframe
-            src="/resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
-            className="h-full w-full border-0"
-            title="Resume PDF"
+            src="/resume.pdf"
+            className="h-full w-full border-0 sm:hidden"
+            title="Resume PDF mobile"
+            loading="lazy"
+            style={{ background: "white" }}
+          />
+          <iframe
+            src="/resume.pdf"
+            className="hidden h-full w-full border-0 sm:block"
+            title="Resume PDF desktop"
             loading="lazy"
             style={{ background: "white" }}
           />

@@ -71,7 +71,7 @@ const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-5"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-3 sm:p-5"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -79,7 +79,7 @@ const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
       aria-describedby={descriptionId}
     >
       <div
-        className="w-full max-w-2xl border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[10px_10px_0px_0px_var(--nb-shadow-color)]"
+        className="max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl overflow-y-auto border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[10px_10px_0px_0px_var(--nb-shadow-color)] sm:max-h-[calc(100dvh-2.5rem)]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-4 py-3">

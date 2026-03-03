@@ -2,20 +2,24 @@
 
 import React from "react";
 
+import { ModernCarousel } from "./ModernCarousel";
+
+interface ShowcaseAvatar {
+  src: string;
+  alt: string;
+  label?: string;
+}
+
 interface StreamShowcaseCardProps {
   title: string;
   subtitle?: string;
   description: string;
   mainImage: string;
   mainImageAlt?: string;
-  avatars?: {
-    src: string;
-    alt: string;
-    label?: string;
-  }[];
+  projectUrl?: string;
+  avatars?: ShowcaseAvatar[];
   liveIndicator?: boolean;
   viewerCount?: string;
-  onClick?: () => void;
 }
 
 export function StreamShowcaseCard({
@@ -24,83 +28,61 @@ export function StreamShowcaseCard({
   description,
   mainImage,
   mainImageAlt = "Showcase image",
+  projectUrl,
   avatars = [],
   liveIndicator = false,
   viewerCount,
-  onClick,
 }: StreamShowcaseCardProps) {
   return (
-    <div
-      className="relative w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 bg-gradient-to-br from-[#3e3d83] to-[#5e68d9] rounded-[24px] sm:rounded-[88px] shadow-2xl"
-      onClick={onClick}
+    <article
+      className="relative mx-auto w-full max-w-7xl rounded-[24px] bg-gradient-to-br from-[#32357f] via-[#4f5ac9] to-[#3555a7] px-3 py-8 shadow-2xl transition-transform duration-300 hover:-translate-y-1 sm:rounded-[64px] sm:px-6 sm:py-16 lg:px-8"
     >
       <img
         src="/character_main.webp"
         alt="main character"
         width={100}
         height={133}
-        className="absolute -mt-[120px] sm:-mt-[187px] hidden sm:flex sm:w-[150px] sm:h-[200px]"
+        className="animate-subtle-float absolute -mt-[120px] hidden sm:flex sm:h-[200px] sm:w-[150px] sm:-mt-[187px]"
       />
-      {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/10 to-transparent rounded-[3rem] blur-3xl" />
 
-      {/* Main container with glassmorphism */}
-      <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 items-center">
-        {/* Left Content Section */}
-        <div className="text-white space-y-4 sm:space-y-6 z-10">
-          <div className="space-y-2 sm:space-y-4">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight uppercase tracking-tight">
-              {title.split(" ").map((word, index) => (
-                <span key={index} className="block">
-                  {word}
-                </span>
-              ))}
-              {subtitle && (
-                <span className="block text-lg sm:text-3xl md:text-4xl lg:text-5xl">
-                  {subtitle}
-                </span>
-              )}
-            </h2>
-          </div>
+      <div className="relative grid grid-cols-1 items-center gap-6 lg:grid-cols-2 lg:gap-12">
+        <div className="space-y-4 text-white sm:space-y-6">
+          <h2 className="text-2xl font-black uppercase leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+            {title.split(" ").map((word) => (
+              <span key={word} className="block">
+                {word}
+              </span>
+            ))}
+            {subtitle && <span className="block text-lg sm:text-3xl md:text-4xl">{subtitle}</span>}
+          </h2>
 
-          <p className="text-sm sm:text-base md:text-lg text-white/80 leading-relaxed max-w-md">
+          <p className="max-w-md text-sm leading-relaxed text-white/85 sm:text-base md:text-lg">
             {description}
           </p>
         </div>
 
-        {/* Right Card Section */}
         <div className="relative">
-          {/* Glow effect behind card */}
-          <div className="absolute -inset-4 bg-gradient-to-r from-green-500/30 via-purple-500/30 to-blue-500/30 rounded-[2rem] blur-2xl opacity-60" />
-
-          {/* Card Container */}
-          <div className="relative bg-black/40 backdrop-blur-xl rounded-[1rem] sm:rounded-[2rem] p-3 sm:p-6 border border-white/10 shadow-2xl">
-            {/* Main Image Container */}
-            <div className="relative rounded-lg sm:rounded-xl overflow-hidden aspect-video bg-gradient-to-br from-purple-900/50 to-blue-900/50">
+          <div className="rounded-[1rem] border border-[#9fb4ff]/30 bg-black/35 p-3 shadow-2xl backdrop-blur-xl transition-colors duration-300 hover:border-[#b8ffdb]/45 sm:rounded-[2rem] sm:p-6">
+            <div className="relative aspect-video overflow-hidden rounded-lg bg-gradient-to-br from-purple-900/50 to-blue-900/50 sm:rounded-xl">
               <img
                 src={mainImage}
                 alt={mainImageAlt}
-                className="w-full h-full object-cover"
+                width={1280}
+                height={720}
+                loading="lazy"
+                className="h-full w-full object-cover"
               />
 
-              {/* Live Badge */}
               {liveIndicator && (
-                <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-red-600 rounded-full">
-                  <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white rounded-full animate-pulse" />
-                  <span className="text-white text-xs sm:text-sm font-semibold uppercase">
-                    Live
-                  </span>
+                <div className="absolute right-2 top-2 flex items-center gap-2 rounded-full bg-red-600 px-2 py-1 sm:right-4 sm:top-4 sm:px-3 sm:py-1.5">
+                  <div className="h-2 w-2 rounded-full bg-white" />
+                  <span className="text-xs font-semibold uppercase text-white sm:text-sm">Live</span>
                 </div>
               )}
 
-              {/* Viewer Count */}
               {viewerCount && (
-                <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-black/60 backdrop-blur-md rounded-full">
-                  <svg
-                    className="w-3 sm:w-4 h-3 sm:h-4 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
+                <div className="absolute bottom-2 left-2 flex items-center gap-2 rounded-full bg-black/60 px-2 py-1 backdrop-blur-md sm:bottom-4 sm:left-4 sm:px-3 sm:py-1.5">
+                  <svg className="h-3 w-3 text-white sm:h-4 sm:w-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                     <path
                       fillRule="evenodd"
@@ -108,32 +90,30 @@ export function StreamShowcaseCard({
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="text-white text-xs sm:text-sm font-medium">
-                    {viewerCount}
-                  </span>
+                  <span className="text-xs font-medium text-white sm:text-sm">{viewerCount}</span>
                 </div>
               )}
             </div>
 
-            {/* Avatar Row */}
             {avatars.length > 0 && (
-              <div className="flex items-center gap-3 mt-4 px-2">
-                {avatars.map((avatar, index) => (
-                  <div key={index} className="relative group flex-shrink-0">
-                    {/* Avatar Container */}
-                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-lg sm:rounded-xl overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 p-0.5 transition-transform duration-200 hover:scale-105">
-                      <div className="w-full h-full rounded-lg sm:rounded-xl overflow-hidden bg-black">
+              <div className="mt-4 flex items-center gap-3 px-2">
+                {avatars.map((avatar) => (
+                  <div key={`${avatar.alt}-${avatar.label}`} className="relative shrink-0">
+                    <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 p-0.5 sm:h-16 sm:w-16 sm:rounded-xl md:h-20 md:w-20">
+                      <div className="h-full w-full overflow-hidden rounded-lg bg-black sm:rounded-xl">
                         <img
                           src={avatar.src}
                           alt={avatar.alt}
-                          className="w-full h-full object-cover"
+                          width={80}
+                          height={80}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
                         />
                       </div>
                     </div>
 
-                    {/* Label */}
                     {avatar.label && (
-                      <div className="absolute -bottom-1 sm:-bottom-2 left-1/2 transform -translate-x-1/2 bg-purple-600/90 backdrop-blur-sm text-white text-xs font-medium px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap">
+                      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-purple-600/90 px-1.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm sm:-bottom-2 sm:px-2">
                         {avatar.label}
                       </div>
                     )}
@@ -141,33 +121,44 @@ export function StreamShowcaseCard({
                 ))}
               </div>
             )}
+
+            {projectUrl && (
+              <div className="mt-4 px-2">
+                <a
+                  href={projectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex rounded-full border border-white/30 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                >
+                  Open Project
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
-import { ModernCarousel } from "./ModernCarousel";
-
-// Sample project data
 const projects = [
   {
     title: "CONVOBASE",
-    subtitle: "👷 THIS CURRENTLY ON THE SIDE ✨",
-    description: "Modern chat infrastructure for AI-first companies. Replace legacy platforms with APIs designed for streaming conversations, intelligent context, and Bring Your Own Cloud deployment.",
+    subtitle: "Infrastructure for AI conversations",
+    description:
+      "Modern chat infrastructure for AI-first companies. Replace legacy platforms with APIs designed for streaming conversations, intelligent context, and Bring Your Own Cloud deployment.",
     mainImage: "/convobase.png",
     liveIndicator: true,
     viewerCount: "2.3k",
-    onClick: () => window.open("https://convobase.app", "_blank"),
+    projectUrl: "https://convobase.app",
     avatars: [
       {
         src: "https://tanstack.com/images/logos/logo-color-600.png",
-        alt: "tanstack_start",
+        alt: "Tanstack Start",
         label: "Tanstack Start",
       },
       {
-        src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNq0QOFcaHlf2FUGgNwUAZrrw41XGen9BeGg&s",
+        src: "https://www.typescriptlang.org/favicon-32x32.png",
         alt: "TypeScript",
         label: "TypeScript",
       },
@@ -178,19 +169,20 @@ const projects = [
       },
       {
         src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1xATUSgtKnWPtxuTElYHK79kG5uvqlQefEw&s",
-        alt: "GO-Lang",
-        label: "GO-Lang",
+        alt: "Go",
+        label: "Go",
       },
-    ]
+    ],
   },
   {
     title: "MY GPT-11",
-    subtitle: "AI-Powered Fantasy Cricket Teams",
-    description: "Our AI analyzes player statistics, recent form, pitch conditions, and historical data to create optimized fantasy teams.",
+    subtitle: "AI fantasy cricket engine",
+    description:
+      "AI-driven fantasy team generation using player form, pitch conditions, and historical data to optimize outcomes.",
     mainImage: "/gpt11.png",
     liveIndicator: false,
     viewerCount: "1.8k",
-    onClick: () => window.open("https://www.mygpt11.com/", "_blank"),
+    projectUrl: "https://www.mygpt11.com/",
     avatars: [
       {
         src: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png",
@@ -209,102 +201,47 @@ const projects = [
       },
       {
         src: "https://tailwindcss.com/favicons/favicon-32x32.png",
-        alt: "Tailwind",
+        alt: "Tailwind CSS",
         label: "Tailwind",
       },
-    ]
-  }
+    ],
+  },
 ];
 
 export function DefaultStreamShowcase() {
   return (
-    <div className="relative bg-[#21237e] sm:pb-[500px] pb-48 pt-20 sm:pt-40 hidden lg:block">
-      {/* Optimized Twinkling Star Field */}
-      <div className="absolute inset-0 w-full h-full">
-        {Array.from({ length: 125 }).map((_, i) => {
-          const seed = i * 9876544;
-          const left = seed % 100;
-          const top = (seed * 7) % 100;
-          const delay = ((seed * 3) % 12000) / 1000;
-          const size = (seed % 4) + 1;
-          const brightness = (seed % 5) + 3;
-          const blinkSpeed = (seed % 3) + 2;
-
-          return (
-            <div
-              key={`star-${i}`}
-              className={`absolute animate-twinkle animation-delay-${Math.floor(
-                delay
-              )}`}
-              style={{
-                left: `${left}%`,
-                top: `${top}%`,
-                animationDuration: `${blinkSpeed + (i % 3)}s`,
-              }}
-            >
-              <div
-                className={`bg-white rounded-full`}
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  filter: "blur(0.5px)",
-                  opacity: brightness / 10,
-                  boxShadow: `0 0 ${size * 2}px rgba(255, 255, 255, ${
-                    brightness / 10
-                  })`,
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse animation-delay-2" />
-      </div>
-
-      {/* Section Title */}
-      <div className="relative z-10 text-center mb-16 px-4">
-        <h1 className="font-black text-white uppercase tracking-tight sm:mt-20 sm:mb-20 mb-10">
+    <section className="relative hidden bg-[radial-gradient(circle_at_15%_20%,#2e3ca6_0%,#21237e_45%,#16195c_100%)] pb-48 pt-20 sm:pb-[500px] sm:pt-40 lg:block">
+      <div className="animate-soft-glow absolute left-16 top-10 h-60 w-60 rounded-full bg-[#58f262]/20 blur-3xl" />
+      <div className="animate-soft-glow absolute bottom-16 right-24 h-72 w-72 rounded-full bg-[#3ab4ff]/20 blur-3xl [animation-delay:1.2s]" />
+      <div className="relative z-10 mb-10 px-4 text-center sm:mb-20 sm:mt-20">
+        <h2 className="font-black uppercase tracking-tight text-white">
           <span
-            className="block animate-bounce text-[28px] xs:text-[32px] sm:text-[40px] md:text-[48px] lg:text-[52px] xl:text-[64px] 2xl:text-[72px] leading-[0.9] font-extrabold bg-gradient-to-r from-[#58f262] via-[#3ab4ff] to-[#fc34d8] bg-clip-text text-transparent animate-gradient-text"
-            style={{
-              fontFamily: "Alan Sans",
-              animationDelay: "0.2s",
-            }}
+            className="block bg-gradient-to-r from-[#58f262] via-[#3ab4ff] to-[#fc34d8] bg-clip-text text-[32px] font-extrabold leading-[0.9] text-transparent sm:text-[44px] md:text-[56px] lg:text-[64px]"
+            style={{ fontFamily: "Alan Sans" }}
           >
-            WhAt HaVe I b33n DOING ?
+            What Have I Been Doing?
           </span>
-        </h1>
+        </h2>
       </div>
 
-      {/* Modern Carousel */}
       <div className="relative z-10 px-4">
-        <ModernCarousel
-          autoPlay={true}
-          autoPlayInterval={6000}
-          showDots={true}
-          showArrows={true}
-          className="w-full mx-auto"
-        >
-          {projects.map((project, index) => (
+        <ModernCarousel autoPlay={false} showDots showArrows className="mx-auto w-full">
+          {projects.map((project) => (
             <StreamShowcaseCard
-              key={index}
+              key={project.title}
               title={project.title}
               subtitle={project.subtitle}
               description={project.description}
               mainImage={project.mainImage}
               mainImageAlt={`${project.title} project`}
+              projectUrl={project.projectUrl}
               liveIndicator={project.liveIndicator}
               viewerCount={project.viewerCount}
-              onClick={project.onClick}
               avatars={project.avatars}
             />
           ))}
         </ModernCarousel>
       </div>
-    </div>
+    </section>
   );
 }

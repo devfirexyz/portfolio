@@ -1,0 +1,122 @@
+name: Release On Main
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  tag-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 0
+
+      - name: Compute next version and release notes
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          latest_tag="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1 || true)"
+          head_tag="$(git describe --tags --exact-match --match 'v[0-9]*.[0-9]*.[0-9]*' 2>/dev/null || true)"
+
+          if [ -n "$head_tag" ]; then
+            tag_exists="true"
+            next_tag="$head_tag"
+            latest_tag="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | grep -Fxv "$head_tag" | sort -V | tail -n1 || true)"
+            if [ -z "$latest_tag" ]; then
+              range="HEAD"
+            else
+              range="${latest_tag}..HEAD"
+            fi
+          else
+            tag_exists="false"
+            if [ -z "$latest_tag" ]; then
+              next_tag="v1.0.0"
+              range="HEAD"
+            else
+              range="${latest_tag}..HEAD"
+              major="$(echo "$latest_tag" | sed -E 's/^v([0-9]+)\..*/\1/')"
+              minor="$(echo "$latest_tag" | sed -E 's/^v[0-9]+\.([0-9]+)\..*/\1/')"
+              patch="$(echo "$latest_tag" | sed -E 's/^v[0-9]+\.[0-9]+\.([0-9]+).*/\1/')"
+
+              if git log --format=%B "$range" | grep -qE 'BREAKING CHANGE|!:'; then
+                major="$((major + 1))"
+                minor=0
+                patch=0
+              elif git log --format=%s "$range" | grep -qE '^feat(\(.+\))?: '; then
+                minor="$((minor + 1))"
+                patch=0
+              else
+                patch="$((patch + 1))"
+              fi
+
+              next_tag="v${major}.${minor}.${patch}"
+            fi
+          fi
+
+          notes="$(git log --pretty=format:'- %s (%h)' "$range")"
+          if [ -z "$notes" ]; then
+            notes="- Internal maintenance changes."
+          fi
+
+          latest_subject="$(git log -1 --pretty=%s)"
+
+          {
+            echo "tag_exists=$tag_exists"
+            echo "latest_tag=$latest_tag"
+            echo "next_tag=$next_tag"
+            echo "latest_subject=$latest_subject"
+            echo "notes<<EOF"
+            echo "$notes"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create annotated git tag
+        if: steps.version.outputs.tag_exists != 'true'
+        env:
+          TAG: ${{ steps.version.outputs.next_tag }}
+          PREVIOUS: ${{ steps.version.outputs.latest_tag }}
+          SUBJECT: ${{ steps.version.outputs.latest_subject }}
+          NOTES: ${{ steps.version.outputs.notes }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$TAG"
+          previous="$PREVIOUS"
+          subject="$SUBJECT"
+          notes="$NOTES"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          {
+            printf '%s\n' "$tag: automated release"
+            if [ -n "$previous" ]; then
+              printf '\n%s\n' "Changes since $previous"
+            else
+              printf '\n%s\n' "Initial release"
+            fi
+            printf '\n%s\n' "$notes"
+            printf '\n%s\n' "Head commit: $subject"
+          } > tag-message.txt
+
+          git tag -a "$tag" -F tag-message.txt
+          git push origin "$tag"
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.next_tag != ''
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
+        with:
+          tag_name: ${{ steps.version.outputs.next_tag }}
+          name: "${{ steps.version.outputs.next_tag }} - ${{ steps.version.outputs.latest_subject }}"
+          body: |
+            ## What's Included
+            ${{ steps.version.outputs.notes }}

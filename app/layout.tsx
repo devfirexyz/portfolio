@@ -1,57 +1,56 @@
-import type React from "react"
-import "./globals.css"
-import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
-import { MusicPlayer } from "@/components/blog/MusicPlayer"
+import type React from "react";
+import Script from "next/script";
+import { GeistMono } from "geist/font/mono";
+import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] })
+import Providers from "./providers";
 
 export const metadata = {
-  title: "Piyush Raj | Software Development Engineer III",
-  description: "Senior Software Engineer specializing in scalable web applications, AI integration, and frontend architecture at Angel One.",
-  keywords: "Piyush Raj, Software Engineer, Full Stack Developer, React, TypeScript, Node.js, AI, SvelteKit",
+  title: "Piyush Raj | Systems Engineer",
+  description:
+    "Portfolio of Piyush Raj: production software systems, AI-enabled products, and performance-first frontend architecture.",
+  keywords:
+    "Piyush Raj, Software Engineer, Full Stack Developer, React, TypeScript, Node.js, AI, portfolio",
   authors: [{ name: "Piyush Raj" }],
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" }
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
-    ],
+    icon: "/favicon.svg",
   },
-  openGraph: {
-    title: "Piyush Raj - Software Development Engineer III",
-    description: "Building scalable financial tech solutions with AI-powered automation",
-    url: "https://piyushraj.dev",
-    siteName: "Piyush Raj Portfolio",
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Piyush Raj - Software Development Engineer III",
-    description: "Building scalable financial tech solutions with AI-powered automation",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-}
+};
+
+const themeInitScript = `
+(() => {
+  try {
+    const stored = localStorage.getItem("portfolio-theme");
+    if (stored === "light" || stored === "dark") {
+      document.documentElement.setAttribute("data-theme", stored);
+      return;
+    }
+
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+      return;
+    }
+
+    document.documentElement.setAttribute("data-theme", "dark");
+  } catch {}
+})();
+`;
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          {children}
-          <MusicPlayer />
-        </ThemeProvider>
+      <body className={`${GeistMono.variable} min-h-screen antialiased`} suppressHydrationWarning>
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeInitScript }}
+        />
+        <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }

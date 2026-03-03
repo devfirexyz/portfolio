@@ -1,469 +1,265 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { clearPauseTimeout, schedulePauseTimeout } from "@/lib/pause-timeout";
+import { useCurrentPathname } from "@/lib/use-current-pathname";
+
+const TRACKS = [
+  "/music/space-ambient-1.mp3",
+  "/music/space-ambient-2.mp3",
+  "/music/space-ambient-3.mp3",
+];
+const EXPANDED_STORAGE_KEY = "musicPlayerExpanded";
+const VOLUME_STORAGE_KEY = "musicPlayerVolume";
+const PLAYING_STORAGE_KEY = "musicPlayerPlaying";
 
 export function MusicPlayer() {
+  const pathname = useCurrentPathname();
+  const isMusicPage = pathname === "/" || pathname.startsWith("/blog");
+
   const [isExpanded, setIsExpanded] = useState(false);
-  const [showPulse, setShowPulse] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.3); // Start at 30% volume
+  const [shouldPlay, setShouldPlay] = useState(false);
+  const [volume, setVolume] = useState(0.3);
   const [currentTrack, setCurrentTrack] = useState(0);
-  const [hasInteracted, setHasInteracted] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const pathname = usePathname();
+  const volumeFadeRef = useRef<NodeJS.Timeout | null>(null);
+  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasInteractedRef = useRef(false);
 
-  // Memoized visualizer bar heights for performance
-  const visualizerHeights = React.useMemo(
-    () => Array.from({ length: 12 }, () => Math.random() * 80 + 20),
+  const visualizerHeights = useMemo(
+    () => [28, 42, 56, 38, 64, 48, 58, 44, 62, 50, 36, 46],
     []
   );
 
-  // Enable music on homepage, blog home, and blog posts
-  const isMusicPage = pathname === "/" || pathname?.startsWith("/blog");
-
-  // Space ambient music tracks (add these files to /public/music/)
-  const tracks = [
-    "/music/space-ambient-1.mp3",
-    "/music/space-ambient-2.mp3",
-    "/music/space-ambient-3.mp3",
-  ];
-
-  // Smooth volume fade utility
-  const fadeVolume = useCallback((targetVolume: number, duration: number = 1000) => {
+  const fadeVolume = useCallback((target: number, duration = 600) => {
     if (!audioRef.current) return;
-
     const audio = audioRef.current;
-    const startVolume = audio.volume;
-    const volumeDiff = targetVolume - startVolume;
-    const steps = 50;
+    const start = audio.volume;
+    const delta = target - start;
+    const steps = 20;
     const stepDuration = duration / steps;
-    const stepSize = volumeDiff / steps;
-    let currentStep = 0;
+    const stepValue = delta / steps;
+    let step = 0;
 
-    if (fadeIntervalRef.current) {
-      clearInterval(fadeIntervalRef.current);
-    }
+    if (volumeFadeRef.current) clearInterval(volumeFadeRef.current);
 
-    fadeIntervalRef.current = setInterval(() => {
-      currentStep++;
-      if (currentStep >= steps) {
-        audio.volume = targetVolume;
-        if (fadeIntervalRef.current) {
-          clearInterval(fadeIntervalRef.current);
-        }
-      } else {
-        audio.volume = startVolume + stepSize * currentStep;
+    volumeFadeRef.current = setInterval(() => {
+      step += 1;
+      if (step >= steps) {
+        audio.volume = target;
+        if (volumeFadeRef.current) clearInterval(volumeFadeRef.current);
+        return;
       }
+      audio.volume = start + stepValue * step;
     }, stepDuration);
   }, []);
 
-  // Play audio with smooth fade in
   const playAudio = useCallback(() => {
-    if (!audioRef.current) {
-      console.log("🎵 No audio ref!");
-      return;
+    if (!audioRef.current) return;
+    clearPauseTimeout(pauseTimeoutRef);
+    audioRef.current.volume = 0;
+    const playPromise = audioRef.current.play();
+    if (playPromise) {
+      playPromise
+        .then(() => {
+          setIsPlaying(true);
+          fadeVolume(volume, 500);
+        })
+        .catch(() => {
+          setIsPlaying(false);
+        });
     }
+  }, [fadeVolume, volume]);
 
-    try {
-      console.log("🎵 Attempting to play audio...");
-      audioRef.current.volume = 0;
-
-      // Call play() synchronously without await to preserve user gesture
-      const playPromise = audioRef.current.play();
-
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("🎵 Audio playing!");
-            setIsPlaying(true);
-            fadeVolume(volume, 600); // 0.6 second fade in (faster)
-          })
-          .catch((error) => {
-            console.error("🎵 Autoplay prevented:", error);
-          });
-      }
-    } catch (error) {
-      console.error("🎵 Play error:", error);
-    }
-  }, [volume, fadeVolume]);
-
-  // Pause audio with smooth fade out
   const pauseAudio = useCallback(() => {
     if (!audioRef.current || !isPlaying) return;
+    clearPauseTimeout(pauseTimeoutRef);
+    fadeVolume(0, 300);
+    schedulePauseTimeout(pauseTimeoutRef, () => {
+      if (!audioRef.current) return;
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }, 300);
+  }, [fadeVolume, isPlaying]);
 
-    fadeVolume(0, 400); // 0.4 second fade out (faster)
-    setTimeout(() => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      }
-    }, 400);
-  }, [isPlaying, fadeVolume]);
-
-  // Handle track end - seamlessly move to next track
-  const handleTrackEnd = () => {
-    const nextTrack = (currentTrack + 1) % tracks.length;
-    setCurrentTrack(nextTrack);
-  };
-
-  // Check if user has interacted with the page (required for autoplay)
   useEffect(() => {
-    if (hasInteracted) return;
+    const savedExpanded = localStorage.getItem(EXPANDED_STORAGE_KEY);
+    const savedVolume = localStorage.getItem(VOLUME_STORAGE_KEY);
+    const savedPlaying = localStorage.getItem(PLAYING_STORAGE_KEY);
 
-    const handleInteraction = (e: Event) => {
-      console.log("🎵 User interaction detected!", e.type);
+    if (savedExpanded !== null) setIsExpanded(savedExpanded === "true");
+    if (savedVolume !== null) setVolume(Number(savedVolume));
+    if (savedPlaying !== null) {
+      setShouldPlay(savedPlaying === "true");
+    }
+  }, []);
 
-      if (!audioRef.current) {
-        console.log("🎵 No audio ref available");
-        return;
-      }
-
-      if (hasInteracted) {
-        console.log("🎵 Already interacted, skipping");
-        return;
-      }
-
-      // Mark as interacted immediately
-      setHasInteracted(true);
-
-      // Remove all listeners immediately to prevent duplicate calls
-      document.removeEventListener("pointerup", handleInteraction);
-      document.removeEventListener("click", handleInteraction);
-      document.removeEventListener("keydown", handleInteraction);
-
-      // Ensure audio element is loaded
-      if (audioRef.current.readyState === 0) {
-        console.log("🎵 Loading audio...");
-        audioRef.current.load();
-      }
-
-      // Start playing DIRECTLY within the user gesture handler
-      if (isMusicPage) {
-        console.log("🎵 Starting music immediately after interaction!");
-        console.log("🎵 Audio readyState:", audioRef.current.readyState);
-
-        try {
-          audioRef.current.volume = 0;
-
-          // Call play() synchronously without await
-          const playPromise = audioRef.current.play();
-
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => {
-                console.log("🎵 Audio playing successfully!");
-                setIsPlaying(true);
-                fadeVolume(volume, 600);
-              })
-              .catch((error) => {
-                console.error("🎵 Autoplay prevented:", error.name, error.message);
-              });
-          }
-        } catch (error) {
-          console.error("🎵 Play error:", error);
-        }
-      }
-    };
-
-    // Listen for VALID user interactions
-    // pointerup is more reliable than touchend for mobile
-    document.addEventListener("pointerup", handleInteraction, { once: true, passive: false });
-    document.addEventListener("click", handleInteraction, { once: true });
-    document.addEventListener("keydown", handleInteraction, { once: true });
-
-    return () => {
-      document.removeEventListener("pointerup", handleInteraction);
-      document.removeEventListener("click", handleInteraction);
-      document.removeEventListener("keydown", handleInteraction);
-    };
-  }, [isMusicPage, volume, fadeVolume, hasInteracted]);
-
-  // Handle navigation away from music pages
   useEffect(() => {
-    console.log("🎵 Navigation check:", { isMusicPage, isPlaying });
+    localStorage.setItem(EXPANDED_STORAGE_KEY, String(isExpanded));
+  }, [isExpanded]);
 
+  useEffect(() => {
+    localStorage.setItem(VOLUME_STORAGE_KEY, String(volume));
+    if (audioRef.current && isPlaying) {
+      fadeVolume(volume, 300);
+    }
+  }, [fadeVolume, isPlaying, volume]);
+
+  useEffect(() => {
+    localStorage.setItem(PLAYING_STORAGE_KEY, String(shouldPlay));
+  }, [shouldPlay]);
+
+  useEffect(() => {
     if (!isMusicPage && isPlaying) {
-      console.log("🎵 Pausing music (left music page)");
       pauseAudio();
     }
   }, [isMusicPage, isPlaying, pauseAudio]);
 
-  // Handle track changes
   useEffect(() => {
-    if (isPlaying && audioRef.current) {
-      audioRef.current.load();
+    if (!isPlaying || !audioRef.current) return;
+    audioRef.current.load();
+    playAudio();
+  }, [currentTrack, isPlaying, playAudio]);
+
+  useEffect(() => {
+    const onInteract = () => {
+      if (hasInteractedRef.current || !isMusicPage || !shouldPlay) return;
+      hasInteractedRef.current = true;
       playAudio();
-    }
-  }, [currentTrack]);
+    };
 
-  // Load state from localStorage
+    document.addEventListener("pointerup", onInteract, { once: true });
+    document.addEventListener("keydown", onInteract, { once: true });
+
+    return () => {
+      document.removeEventListener("pointerup", onInteract);
+      document.removeEventListener("keydown", onInteract);
+    };
+  }, [isMusicPage, playAudio, shouldPlay]);
+
   useEffect(() => {
-    const savedExpanded = localStorage.getItem("musicPlayerExpanded");
-    const savedVolume = localStorage.getItem("musicPlayerVolume");
-
-    if (savedExpanded !== null) {
-      setIsExpanded(savedExpanded === "true");
-    }
-    if (savedVolume !== null) {
-      setVolume(parseFloat(savedVolume));
-    }
+    return () => {
+      if (volumeFadeRef.current) clearInterval(volumeFadeRef.current);
+      clearPauseTimeout(pauseTimeoutRef);
+    };
   }, []);
-
-  // Save state to localStorage
-  useEffect(() => {
-    localStorage.setItem("musicPlayerExpanded", isExpanded.toString());
-  }, [isExpanded]);
-
-  useEffect(() => {
-    localStorage.setItem("musicPlayerVolume", volume.toString());
-    if (audioRef.current && isPlaying) {
-      fadeVolume(volume, 500);
-    }
-  }, [volume]);
-
-  // Hide pulsing animation after 5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowPulse(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Toggle play/pause
-  const togglePlayPause = () => {
-    if (isPlaying) {
-      pauseAudio();
-    } else {
-      playAudio();
-    }
-  };
 
   return (
     <>
-      {/* Hidden audio element */}
       <audio
         ref={audioRef}
-        src={tracks[currentTrack]}
-        onEnded={handleTrackEnd}
-        preload="metadata"
+        src={TRACKS[currentTrack]}
+        preload="none"
         playsInline
-        crossOrigin="anonymous"
+        onEnded={() => setCurrentTrack((prev) => (prev + 1) % TRACKS.length)}
       />
 
       <div className="fixed bottom-6 right-6 z-50">
-        <AnimatePresence mode="wait">
-          {!isExpanded ? (
-            // Minimized floating button
-            <motion.button
-              key="minimized"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              onClick={() => setIsExpanded(true)}
-              className="group relative w-16 h-16 bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 rounded-full shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-110"
-            >
-              {/* Pulsing ring animation */}
-              {showPulse ? (
-                <motion.span
-                  className="absolute inset-0 rounded-full bg-purple-400 opacity-20"
-                  animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0, 0.2] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", type: "tween" }}
-                />
-              ) : (
-                <motion.span
-                  className="absolute inset-0 rounded-full bg-purple-400/5"
-                  animate={{ opacity: [0.05, 0.15, 0.05] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", type: "tween" }}
-                />
-              )}
-
-              {/* Music note icon with playing animation */}
-              <div className="relative flex items-center justify-center w-full h-full">
-                <motion.svg
-                  className="w-7 h-7 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
-                  transition={{
-                    duration: 3,
-                    repeat: isPlaying ? Infinity : 0,
-                    ease: "linear"
-                  }}
-                >
-                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                </motion.svg>
+        {!isExpanded ? (
+          <button
+            type="button"
+            onClick={() => setIsExpanded(true)}
+            className="relative h-14 w-14 border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] shadow-[6px_6px_0px_0px_var(--nb-shadow-color)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)]"
+            aria-label="Open music player"
+          >
+            <div className="flex h-full w-full items-center justify-center">
+              <svg className="h-6 w-6 text-[var(--nb-foreground-inverse)]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+              </svg>
+            </div>
+          </button>
+        ) : (
+          <div className="w-[300px] overflow-hidden border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] shadow-[10px_10px_0px_0px_var(--nb-shadow-color)]">
+            <div className="flex items-center justify-between border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] p-4">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 bg-[var(--nb-accent)]" />
+                <span className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground)]">
+                  Space Ambient
+                </span>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsExpanded(false)}
+                className="border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] p-1.5 text-[var(--nb-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)]"
+                aria-label="Minimize player"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
 
-              {/* Tooltip */}
-              <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <div className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap shadow-xl">
-                  {!hasInteracted && isMusicPage ? "👆 Click to start music" : "🌌 Space Ambient"}
-                  <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                </div>
-              </div>
-            </motion.button>
-          ) : (
-            // Expanded player
-            <motion.div
-              key="expanded"
-              initial={{ scale: 0.8, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: 20 }}
-              transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
-              className="bg-gray-900 rounded-2xl shadow-2xl border border-purple-500/20 overflow-hidden"
-              style={{ width: "280px" }}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-purple-500/20">
-                <div className="flex items-center gap-2">
-                  <motion.div
-                    className="w-2 h-2 bg-purple-500 rounded-full"
-                    animate={{ opacity: isPlaying ? [0.5, 1, 0.5] : 0.3 }}
-                    transition={{ duration: 2, repeat: isPlaying ? Infinity : 0, ease: "easeInOut" }}
+            <div className="space-y-6 p-6">
+              <div className="flex h-20 items-end justify-center gap-1">
+                {visualizerHeights.map((height, index) => (
+                  <div
+                    key={index}
+                    className="w-2 bg-gradient-to-t from-[var(--nb-accent)] to-[var(--nb-surface-strong)]"
+                    style={{ height: isPlaying ? `${height}%` : "20%" }}
                   />
-                  <span className="text-white font-medium text-sm">🌌 Space Ambient</span>
-                </div>
+                ))}
+              </div>
 
-                {/* Minimize button */}
+              <div className="text-center">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
+                  Track {currentTrack + 1} of {TRACKS.length}
+                </p>
+                <p className="mt-1 text-[11px] text-[var(--nb-foreground-subtle)]">Focus soundtrack</p>
+              </div>
+
+              <div className="flex justify-center">
                 <button
-                  onClick={() => setIsExpanded(false)}
-                  className="p-1.5 hover:bg-white/10 rounded-lg transition-colors group"
-                  title="Minimize"
+                  type="button"
+                  onClick={() => {
+                    if (isPlaying) {
+                      setShouldPlay(false);
+                      pauseAudio();
+                      return;
+                    }
+                    setShouldPlay(true);
+                    playAudio();
+                  }}
+                  className="flex h-14 w-14 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] text-[var(--nb-foreground-inverse)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)]"
+                  aria-label={isPlaying ? "Pause" : "Play"}
                 >
-                  <svg
-                    className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  {isPlaying ? (
+                    <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                    </svg>
+                  ) : (
+                    <svg className="ml-1 h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  )}
                 </button>
               </div>
 
-              {/* Player Controls */}
-              <div className="p-6 space-y-6">
-                {/* Visualizer bars */}
-                <div className="flex items-end justify-center gap-1 h-20">
-                  {visualizerHeights.map((height, i) => (
-                    <motion.div
-                      key={i}
-                      className="w-2 bg-gradient-to-t from-purple-600 to-blue-500 rounded-full"
-                      animate={
-                        isPlaying
-                          ? {
-                              height: ["20%", `${height}%`, "20%"],
-                            }
-                          : { height: "20%" }
-                      }
-                      transition={{
-                        duration: 0.8 + (height / 100) * 0.4,
-                        repeat: isPlaying ? Infinity : 0,
-                        ease: "easeInOut",
-                        delay: i * 0.1,
-                        type: "tween"
-                      }}
-                    />
-                  ))}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
+                  <span>Volume</span>
+                  <span>{Math.round(volume * 100)}%</span>
                 </div>
-
-                {/* Track info */}
-                <div className="text-center">
-                  <p className="text-sm text-gray-400">
-                    Track {currentTrack + 1} of {tracks.length}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Deep space ambient music
-                  </p>
-                </div>
-
-                {/* Play/Pause button */}
-                <div className="flex justify-center">
-                  <motion.button
-                    onClick={togglePlayPause}
-                    className="w-14 h-14 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center hover:shadow-lg hover:shadow-purple-500/50 transition-all"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {isPlaying ? (
-                      <svg
-                        className="w-6 h-6 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="w-6 h-6 text-white ml-1"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    )}
-                  </motion.button>
-                </div>
-
-                {/* Volume control */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-gray-400">
-                    <span>Volume</span>
-                    <span>{Math.round(volume * 100)}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={volume}
-                    onChange={(e) => setVolume(parseFloat(e.target.value))}
-                    className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-                    style={{
-                      background: `linear-gradient(to right, rgb(147, 51, 234) 0%, rgb(147, 51, 234) ${
-                        volume * 100
-                      }%, rgb(55, 65, 81) ${volume * 100}%, rgb(55, 65, 81) 100%)`,
-                    }}
-                  />
-                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={(event) => setVolume(Number(event.target.value))}
+                  className="music-player-slider h-1 w-full cursor-pointer appearance-none rounded-lg bg-[var(--nb-surface-muted)]"
+                  style={{
+                    background: `linear-gradient(to right, var(--nb-accent) 0%, var(--nb-accent) ${
+                      volume * 100
+                    }%, var(--nb-surface-muted) ${volume * 100}%, var(--nb-surface-muted) 100%)`,
+                  }}
+                />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </div>
-
-      <style jsx>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          width: 16px;
-          height: 16px;
-          background: linear-gradient(135deg, #a855f7, #3b82f6);
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);
-        }
-
-        .slider::-moz-range-thumb {
-          width: 16px;
-          height: 16px;
-          background: linear-gradient(135deg, #a855f7, #3b82f6);
-          border-radius: 50%;
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);
-        }
-      `}</style>
     </>
   );
 }

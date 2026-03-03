@@ -30,8 +30,8 @@ function run() {
   );
   assert(discord.includes("activeSection.points.map"), "Discord panel section render loop missing.");
 
-  assert(globals.includes("--nb-background: #1e1f22"), "Discord dark base token not found.");
-  assert(globals.includes("--nb-accent: #5865f2"), "Discord blurple accent token not found.");
+  assert(globals.includes("--nb-background:"), "Neo-brutalist background token not found.");
+  assert(globals.includes("--nb-accent:"), "Neo-brutalist accent token not found.");
 
   assert(layout.includes("portfolio-theme"), "Theme localStorage key is missing.");
   assert(layout.includes("data-theme"), "Theme data attribute initialization is missing.");

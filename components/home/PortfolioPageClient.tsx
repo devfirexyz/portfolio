@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { HeroBackdrop } from "@/components/home/HeroBackdrop";
@@ -124,6 +125,7 @@ function DiscordShell({
 }
 
 export function PortfolioPageClient({ aboutMeDescription }: PortfolioPageClientProps) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -144,6 +146,10 @@ export function PortfolioPageClient({ aboutMeDescription }: PortfolioPageClientP
   const onToggleAboutMe = useCallback(() => {
     setShowAboutMe((prev) => !prev);
   }, []);
+
+  const onOpenChat = useCallback(() => {
+    router.push("/chat");
+  }, [router]);
 
   const onOpenResume = useCallback(() => {
     setIsResumeModalOpen(true);
@@ -288,7 +294,7 @@ export function PortfolioPageClient({ aboutMeDescription }: PortfolioPageClientP
                 showAboutMe={showAboutMe}
                 aboutMeDescription={aboutMeDescription}
                 onToggleAboutMe={onToggleAboutMe}
-                onOpenResume={onOpenResume}
+                onOpenChat={onOpenChat}
                 onOpenContact={onOpenContact}
               />
 

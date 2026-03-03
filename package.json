@@ -20,13 +20,16 @@
     "lint": "tsc --noEmit",
     "test": "node scripts/run-all-tests.mjs",
     "test:smoke": "node scripts/feedback-smoke-tests.mjs",
+    "test:chat": "node scripts/chat-e2e-tests.mjs",
     "test:theme": "node scripts/theme-contrast-tests.mjs",
     "test:regression": "node --experimental-strip-types --test scripts/regression-tests.mjs",
     "test:perf": "node scripts/performance-budget-tests.mjs",
     "test:feedback": "pnpm test:smoke && pnpm build"
   },
   "dependencies": {
+    "@ai-sdk/react": "^3.0.110",
     "@bprogress/next": "^3.2.12",
+    "@clerk/nextjs": "^6.39.0",
     "@emotion/is-prop-valid": "1.4.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
@@ -55,10 +58,14 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
+    "ai": "^6.0.108",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
+    "convex": "^1.32.0",
     "date-fns": "4.1.0",
+    "dexie": "^4.3.0",
+    "dexie-react-hooks": "^4.2.0",
     "embla-carousel-react": "8.5.1",
     "framer-motion": "12.29.2",
     "geist": "^1.2.0",
@@ -79,7 +86,8 @@
     "tailwindcss-animate": "^1.0.7",
     "tsparticles-engine": "2.12.0",
     "tsparticles-slim": "2.12.0",
-    "vaul": "^0.9.6"
+    "vaul": "^0.9.6",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^22",

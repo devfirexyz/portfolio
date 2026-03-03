@@ -36,6 +36,9 @@ async function runAllTests() {
   try {
     // Run original smoke tests
     await runTest("scripts/feedback-smoke-tests.mjs", "Smoke Tests");
+
+    // Run chat end-to-end tests
+    await runTest("scripts/chat-e2e-tests.mjs", "Chat E2E Tests");
     
     // Run theme contrast tests
     await runTest("scripts/theme-contrast-tests.mjs", "Theme Contrast Tests");

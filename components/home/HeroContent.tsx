@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
 
 import { NeoButton } from "@/components/neo/NeoButton";
 import { HERO_TITLE_LINES } from "@/lib/data/home-content";
@@ -7,7 +7,7 @@ interface HeroContentProps {
   showAboutMe: boolean;
   aboutMeDescription: string;
   onToggleAboutMe: () => void;
-  onOpenResume: () => void;
+  onOpenChat: () => void;
   onOpenContact: () => void;
 }
 
@@ -15,7 +15,7 @@ export function HeroContent({
   showAboutMe,
   aboutMeDescription,
   onToggleAboutMe,
-  onOpenResume,
+  onOpenChat,
   onOpenContact,
 }: HeroContentProps) {
   return (
@@ -58,12 +58,10 @@ export function HeroContent({
         <NeoButton
           size="lg"
           className="w-full sm:w-auto"
-          onClick={onOpenResume}
+          onClick={onOpenChat}
         >
-          <svg className="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-          </svg>
-          Open Resume
+          <MessageCircle className="mr-2 h-5 w-5" />
+          Chat with Me
         </NeoButton>
 
         <NeoButton

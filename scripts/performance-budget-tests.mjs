@@ -34,6 +34,14 @@ const budgets = [
     maxTbt: 200,
     maxCls: 0.1,
   },
+  {
+    route: "/chat",
+    minScore: 0.9,
+    maxFcp: 2200,
+    maxLcp: 3000,
+    maxTbt: 220,
+    maxCls: 0.1,
+  },
 ];
 
 function run(cmd, args, options = {}) {
@@ -141,8 +149,17 @@ async function ensureBuildExists() {
     return;
   }
 
-  console.log("\n📦 No build output found. Running production build for perf tests...\n");
-  await run("pnpm", ["build"], { timeout: 10 * 60 * 1000 });
+  console.log("\n📦 No stable production BUILD_ID found. Running webpack build for perf tests...\n");
+  await run("pnpm", ["build"], {
+    timeout: 10 * 60 * 1000,
+    env: {
+      NEXT_DISABLE_TURBOPACK: "1",
+    },
+  });
+
+  if (!fs.existsSync(buildIdPath)) {
+    throw new Error("Expected .next/BUILD_ID after build, but it was not created.");
+  }
 }
 
 async function runLighthouse(route) {
@@ -217,7 +234,7 @@ async function runPerformanceTests() {
 
   await ensureBuildExists();
 
-  const server = spawn("pnpm", ["exec", "next", "start", "-p", String(port)], {
+  const server = spawn("pnpm", ["exec", "next", "start", "-H", "127.0.0.1", "-p", String(port)], {
     cwd: root,
     stdio: "inherit",
     env: process.env,

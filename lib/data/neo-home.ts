@@ -129,4 +129,16 @@ export const NEO_PROJECTS: NeoProject[] = [
     status: "Live",
     href: "https://www.mygpt11.com/",
   },
+  {
+    id: "inference-agent-ui",
+    title: "Inference Agent UI Skill",
+    description:
+      "Published an installable skill on skills.sh. Build production-ready agent interfaces using the ui.inference.sh component registry and the AI SDK stream protocol.",
+    impact: "Coming soon on this portfolio itself.",
+    impactMetric: "Published",
+    stack: ["skills.sh", "Codex Skill", "Design System", "Tailwind"],
+    image: "/inference_agent_ui.png",
+    status: "Live",
+    href: "https://skills.sh/devfirexyz/ui-skills/inference-agent-ui",
+  },
 ];

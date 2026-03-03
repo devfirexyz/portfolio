@@ -19,9 +19,9 @@ export function NeoProjectsSection() {
 
     const onSelect = () => {
       setCurrentIndex(api.selectedScrollSnap());
+      setSlideCount(api.scrollSnapList().length);
     };
 
-    setSlideCount(api.scrollSnapList().length);
     onSelect();
     api.on("select", onSelect);
     api.on("reInit", onSelect);
@@ -152,6 +152,7 @@ export function NeoProjectsSection() {
                 }`}
                 onClick={() => api?.scrollTo(index)}
                 aria-label={`Go to project ${index + 1}`}
+                aria-pressed={index === currentIndex}
               />
             ))}
           </div>

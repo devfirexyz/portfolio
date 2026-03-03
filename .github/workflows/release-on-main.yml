@@ -113,11 +113,10 @@ jobs:
 
       - name: Create GitHub Release
         if: steps.version.outputs.next_tag != ''
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:
           tag_name: ${{ steps.version.outputs.next_tag }}
           name: "${{ steps.version.outputs.next_tag }} - ${{ steps.version.outputs.latest_subject }}"
           body: |
             ## What's Included
             ${{ steps.version.outputs.notes }}
-          generate_release_notes: true

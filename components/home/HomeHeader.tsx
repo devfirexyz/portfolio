@@ -11,10 +11,21 @@ interface HomeHeaderProps {
   onCloseMenu: () => void;
 }
 
+function assertUnreachable(value: never): never {
+  throw new Error(`Unsupported social icon: ${String(value)}`);
+}
+
 function SocialIcon({ icon }: { icon: (typeof SOCIAL_LINKS)[number]["icon"] }) {
-  if (icon === "github") return <Github className="h-5 w-5" />;
-  if (icon === "linkedin") return <Linkedin className="h-5 w-5" />;
-  return <Twitter className="h-5 w-5" />;
+  switch (icon) {
+    case "github":
+      return <Github className="h-5 w-5" />;
+    case "linkedin":
+      return <Linkedin className="h-5 w-5" />;
+    case "twitter":
+      return <Twitter className="h-5 w-5" />;
+    default:
+      return assertUnreachable(icon);
+  }
 }
 
 export function HomeHeader({

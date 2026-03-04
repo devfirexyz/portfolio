@@ -107,16 +107,41 @@ export async function upsertOutboxItem(input: {
   });
 }
 
-export async function listPendingOutbox(viewerScope: string): Promise<OutboxItem[]> {
-  const pending = await chatCacheDb.outbox
+export async function resetStuckSyncing(viewerScope: string): Promise<void> {
+  const stuck = await chatCacheDb.outbox
     .where("[viewerScope+syncStatus]")
-    .between([viewerScope, "pending"], [viewerScope, "syncing"])
+    .equals([viewerScope, "syncing"])
     .toArray();
 
-  return pending.sort((a, b) => a.createdAt - b.createdAt);
+  if (stuck.length > 0) {
+    const now = Date.now();
+    await chatCacheDb.outbox.bulkPut(
+      stuck.map((item) => ({ ...item, syncStatus: "pending" as const, updatedAt: now }))
+    );
+  }
 }
 
-export async function setOutboxStatus(id: string, status: OutboxSyncStatus, error?: string): Promise<void> {
+export async function listPendingOutbox(viewerScope: string): Promise<OutboxItem[]> {
+  const [pending, syncing] = await Promise.all([
+    chatCacheDb.outbox
+      .where("[viewerScope+syncStatus]")
+      .equals([viewerScope, "pending"])
+      .toArray(),
+    chatCacheDb.outbox
+      .where("[viewerScope+syncStatus]")
+      .equals([viewerScope, "syncing"])
+      .toArray(),
+  ]);
+
+  return [...pending, ...syncing].sort((a, b) => a.createdAt - b.createdAt);
+}
+
+export async function setOutboxStatus(
+  id: string,
+  status: OutboxSyncStatus,
+  viewerScope: string,
+  error?: string
+): Promise<void> {
   const now = Date.now();
   const existing = await chatCacheDb.outbox.get(id);
 
@@ -130,7 +155,7 @@ export async function setOutboxStatus(id: string, status: OutboxSyncStatus, erro
   if (status === "failed") {
     await chatCacheDb.syncState.put({
       key: "sync-state",
-      viewerScope: "global",
+      viewerScope,
       lastError: error,
       updatedAt: now,
       nextRetryAt: now + 5_000,

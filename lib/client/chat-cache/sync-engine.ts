@@ -4,8 +4,12 @@ import {
   deleteOutboxItem,
   listPendingOutbox,
   markSyncSuccess,
+  resetStuckSyncing,
   setOutboxStatus,
 } from "@/lib/client/chat-cache/repository";
+
+const MAX_RETRIES = 5;
+const BACKOFF_STEPS_MS = [15_000, 30_000, 60_000, 120_000];
 
 interface SyncAcceptedItem {
   clientMessageId: string;
@@ -46,14 +50,23 @@ interface FlushOutboxOptions {
 }
 
 export async function flushOutbox(options: FlushOutboxOptions): Promise<void> {
+  // Crash recovery: reset any items stuck in "syncing" from a previous run
+  await resetStuckSyncing(options.viewerScope);
+
   const pending = await listPendingOutbox(options.viewerScope);
   if (pending.length === 0) {
     return;
   }
 
-  const batch = pending.slice(0, 5);
+  // Filter out items that have exceeded max retries
+  const eligible = pending.filter((item) => (item.attempts ?? 0) < MAX_RETRIES);
+  if (eligible.length === 0) {
+    return;
+  }
 
-  await Promise.all(batch.map((item) => setOutboxStatus(item.id, "syncing")));
+  const batch = eligible.slice(0, 5);
+
+  await Promise.all(batch.map((item) => setOutboxStatus(item.id, "syncing", options.viewerScope)));
 
   let response: Response;
   try {
@@ -73,14 +86,16 @@ export async function flushOutbox(options: FlushOutboxOptions): Promise<void> {
     });
   } catch (error) {
     await Promise.all(
-      batch.map((item) => setOutboxStatus(item.id, "failed", String(error)))
+      batch.map((item) => setOutboxStatus(item.id, "failed", options.viewerScope, String(error)))
     );
     return;
   }
 
   if (!response.ok) {
     const message = await response.text();
-    await Promise.all(batch.map((item) => setOutboxStatus(item.id, "failed", message)));
+    await Promise.all(
+      batch.map((item) => setOutboxStatus(item.id, "failed", options.viewerScope, message))
+    );
     return;
   }
 
@@ -115,14 +130,14 @@ export async function flushOutbox(options: FlushOutboxOptions): Promise<void> {
     }
 
     if (itemResult.status === "rejected_limit") {
-      await setOutboxStatus(source.id, "blocked_by_limit", itemResult.reason);
+      await setOutboxStatus(source.id, "blocked_by_limit", options.viewerScope, itemResult.reason);
       options.onLimitReached();
       hitLimit = true;
       continue;
     }
 
     if ("reason" in itemResult) {
-      await setOutboxStatus(source.id, "failed", itemResult.reason);
+      await setOutboxStatus(source.id, "failed", options.viewerScope, itemResult.reason);
     }
   }
 
@@ -138,7 +153,9 @@ export async function flushOutbox(options: FlushOutboxOptions): Promise<void> {
     await Promise.all(
       batch
         .filter((item) => !handledIds.has(item.id))
-        .map((item) => setOutboxStatus(item.id, "blocked_by_limit", "lifetime_limit_reached"))
+        .map((item) =>
+          setOutboxStatus(item.id, "blocked_by_limit", options.viewerScope, "lifetime_limit_reached")
+        )
     );
   }
 
@@ -146,25 +163,53 @@ export async function flushOutbox(options: FlushOutboxOptions): Promise<void> {
 }
 
 export function createSyncLoop(start: () => Promise<void>) {
+  let consecutiveFailures = 0;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  function getNextDelay(): number {
+    const index = Math.min(consecutiveFailures, BACKOFF_STEPS_MS.length - 1);
+    return BACKOFF_STEPS_MS[index];
+  }
+
+  async function tick() {
+    try {
+      await start();
+      consecutiveFailures = 0;
+    } catch {
+      consecutiveFailures += 1;
+    }
+    scheduleNext();
+  }
+
+  function scheduleNext() {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      void tick();
+    }, getNextDelay());
+  }
+
   const onOnline = () => {
-    void start();
+    consecutiveFailures = 0;
+    void tick();
   };
 
   const onVisibility = () => {
     if (document.visibilityState === "visible") {
-      void start();
+      void tick();
     }
   };
 
   window.addEventListener("online", onOnline);
   document.addEventListener("visibilitychange", onVisibility);
-  const intervalId = window.setInterval(() => {
-    void start();
-  }, 15_000);
+  scheduleNext();
 
   return () => {
     window.removeEventListener("online", onOnline);
     document.removeEventListener("visibilitychange", onVisibility);
-    window.clearInterval(intervalId);
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
   };
 }

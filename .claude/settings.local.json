@@ -15,7 +15,10 @@
       "Bash(npm run lint)",
       "Bash(CI=true pnpm install:*)",
       "WebFetch(domain:localhost)",
-      "Bash(pnpm run build:*)"
+      "Bash(pnpm run build:*)",
+      "Bash(pnpm lint 2>&1 | head -80)",
+      "Bash(pnpm test 2>&1 | head -100)",
+      "Bash(pnpm test 2>&1 | tail -30)"
     ],
     "deny": [],
     "ask": []

@@ -5,5 +5,5 @@ export async function GET(request: Request) {
   const viewer = await resolveViewerIdentity(request);
   const status = await getChatStatus(viewer);
 
-  return Response.json(status);
+  return Response.json({ ...status, identityKey: viewer.identityKey });
 }

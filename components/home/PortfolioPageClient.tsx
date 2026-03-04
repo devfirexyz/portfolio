@@ -8,16 +8,14 @@ import { HeroContent } from "@/components/home/HeroContent";
 import { HomeFooter } from "@/components/home/HomeFooter";
 import { HomeHeader } from "@/components/home/HomeHeader";
 
-const ResumeModal = dynamic(() => import("@/components/ResumeModal"), {
-  loading: () => null,
-});
-
 const ContactFormModal = dynamic(
   () => import("@/components/ContactFormModal"),
   {
     loading: () => null,
   },
 );
+
+type ContactModalMode = "default" | "resume-request";
 
 function ProjectsShell() {
   return (
@@ -130,8 +128,9 @@ export function PortfolioPageClient({
   aboutMeDescription,
 }: PortfolioPageClientProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [contactModalMode, setContactModalMode] =
+    useState<ContactModalMode>("default");
   const [showAboutMe, setShowAboutMe] = useState(false);
   const [showInteractiveConsole, setShowInteractiveConsole] = useState(false);
   const [showProjects, setShowProjects] = useState(projectsSectionLoadedCache);
@@ -151,19 +150,18 @@ export function PortfolioPageClient({
   }, []);
 
   const onOpenResume = useCallback(() => {
-    setIsResumeModalOpen(true);
-  }, []);
-
-  const onCloseResume = useCallback(() => {
-    setIsResumeModalOpen(false);
+    setContactModalMode("resume-request");
+    setIsContactModalOpen(true);
   }, []);
 
   const onOpenContact = useCallback(() => {
+    setContactModalMode("default");
     setIsContactModalOpen(true);
   }, []);
 
   const onCloseContact = useCallback(() => {
     setIsContactModalOpen(false);
+    setContactModalMode("default");
   }, []);
 
   useEffect(() => {
@@ -327,8 +325,9 @@ export function PortfolioPageClient({
 
       <HomeFooter onOpenResume={onOpenResume} onOpenContact={onOpenContact} />
 
-      {isResumeModalOpen && <ResumeModal onClose={onCloseResume} />}
-      {isContactModalOpen && <ContactFormModal onClose={onCloseContact} />}
+      {isContactModalOpen && (
+        <ContactFormModal onClose={onCloseContact} mode={contactModalMode} />
+      )}
     </div>
   );
 }

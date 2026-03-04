@@ -6,7 +6,12 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { NeoButton } from "@/components/neo/NeoButton";
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import { NEO_PROJECTS } from "@/lib/data/neo-home";
 
 export function NeoProjectsSection() {
@@ -44,11 +49,12 @@ export function NeoProjectsSection() {
               Work Samples
             </p>
             <h2 className="mt-2 text-4xl font-black uppercase leading-[0.9] tracking-[-0.05em] sm:text-6xl">
-              Project Evidence
+              What am i doing ?
             </h2>
           </div>
           <p className="max-w-md text-base leading-relaxed text-[var(--nb-foreground-muted)]">
-            Selected builds with measurable outcomes, production context, and implementation details.
+            Selected builds with measurable outcomes, production context, and
+            implementation details.
           </p>
         </div>
 
@@ -111,7 +117,11 @@ export function NeoProjectsSection() {
 
                     {project.href && !project.liveUnavailable ? (
                       <NeoButton asChild size="sm" variant="ghost">
-                        <Link href={project.href} target="_blank" rel="noopener noreferrer">
+                        <Link
+                          href={project.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           Live Preview
                           <ArrowUpRight className="ml-2 h-4 w-4" />
                         </Link>

@@ -12,9 +12,12 @@ const ResumeModal = dynamic(() => import("@/components/ResumeModal"), {
   loading: () => null,
 });
 
-const ContactFormModal = dynamic(() => import("@/components/ContactFormModal"), {
-  loading: () => null,
-});
+const ContactFormModal = dynamic(
+  () => import("@/components/ContactFormModal"),
+  {
+    loading: () => null,
+  },
+);
 
 function ProjectsShell() {
   return (
@@ -30,11 +33,12 @@ function ProjectsShell() {
               Work Samples
             </p>
             <h2 className="mt-2 text-4xl font-black uppercase leading-[0.9] tracking-[-0.05em] sm:text-6xl">
-              Project Evidence
+              What am i doing ?
             </h2>
           </div>
           <p className="max-w-md text-base leading-relaxed text-[var(--nb-foreground-muted)]">
-            Selected builds with measurable outcomes, production context, and implementation details.
+            Selected builds with measurable outcomes, production context, and
+            implementation details.
           </p>
         </div>
 
@@ -67,7 +71,9 @@ function ProjectsShell() {
 
 const loadDiscordPortfolio = () => import("@/components/DiscordPortfolio");
 const loadNeoProjectsSection = () =>
-  import("@/components/home/neo/NeoProjectsSection").then((mod) => mod.NeoProjectsSection);
+  import("@/components/home/neo/NeoProjectsSection").then(
+    (mod) => mod.NeoProjectsSection,
+  );
 
 const PROJECTS_LOADED_KEY = "projectsSectionLoaded";
 let projectsSectionLoadedCache = false;
@@ -86,11 +92,7 @@ interface PortfolioPageClientProps {
   aboutMeDescription: string;
 }
 
-function DiscordShell({
-  onEnable,
-}: {
-  onEnable: () => void;
-}) {
+function DiscordShell({ onEnable }: { onEnable: () => void }) {
   return (
     <div className="flex h-full flex-col overflow-hidden bg-[var(--nb-surface)]">
       <div className="flex min-h-16 items-center justify-between border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-4">
@@ -109,7 +111,8 @@ function DiscordShell({
 
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 bg-[var(--nb-background)] p-6 text-center">
         <p className="max-w-md text-sm font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
-          Interactive console loads on demand to reduce initial JavaScript and speed up first render.
+          Interactive console loads on demand to reduce initial JavaScript and
+          speed up first render.
         </p>
         <button
           type="button"
@@ -123,7 +126,9 @@ function DiscordShell({
   );
 }
 
-export function PortfolioPageClient({ aboutMeDescription }: PortfolioPageClientProps) {
+export function PortfolioPageClient({
+  aboutMeDescription,
+}: PortfolioPageClientProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -216,17 +221,28 @@ export function PortfolioPageClient({ aboutMeDescription }: PortfolioPageClientP
 
     const onInteraction = () => {
       if (typeof window.requestIdleCallback === "function") {
-        idleId = window.requestIdleCallback(warmNonCriticalChunks, { timeout: 1800 });
+        idleId = window.requestIdleCallback(warmNonCriticalChunks, {
+          timeout: 1800,
+        });
         return;
       }
 
       timeoutId = window.setTimeout(warmNonCriticalChunks, 500);
     };
 
-    window.addEventListener("pointerdown", onInteraction, { once: true, passive: true });
+    window.addEventListener("pointerdown", onInteraction, {
+      once: true,
+      passive: true,
+    });
     window.addEventListener("keydown", onInteraction, { once: true });
-    window.addEventListener("touchstart", onInteraction, { once: true, passive: true });
-    window.addEventListener("wheel", onInteraction, { once: true, passive: true });
+    window.addEventListener("touchstart", onInteraction, {
+      once: true,
+      passive: true,
+    });
+    window.addEventListener("wheel", onInteraction, {
+      once: true,
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("pointerdown", onInteraction);
@@ -258,7 +274,7 @@ export function PortfolioPageClient({ aboutMeDescription }: PortfolioPageClientP
             enable();
           }
         },
-        { rootMargin: "240px", threshold: 0.01 }
+        { rootMargin: "240px", threshold: 0.01 },
       );
       observer.observe(sentinel);
     } else {
@@ -296,7 +312,9 @@ export function PortfolioPageClient({ aboutMeDescription }: PortfolioPageClientP
                 {showInteractiveConsole ? (
                   <DiscordPortfolio className="h-full w-full" />
                 ) : (
-                  <DiscordShell onEnable={() => setShowInteractiveConsole(true)} />
+                  <DiscordShell
+                    onEnable={() => setShowInteractiveConsole(true)}
+                  />
                 )}
               </div>
             </div>

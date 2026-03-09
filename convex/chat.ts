@@ -155,7 +155,7 @@ async function getOrCreateUser(ctx: any, args: {
 
 async function getOrCreateThreadByClientId(
   ctx: any,
-  params: { identityKey: string; clientThreadId: string; now: number }
+  params: { identityKey: string; clientThreadId: string; now: number; title?: string }
 ) {
   const existing = await ctx.db
     .query("threads")
@@ -172,6 +172,7 @@ async function getOrCreateThreadByClientId(
   const threadId = await ctx.db.insert("threads", {
     identityKey: params.identityKey,
     clientThreadId: params.clientThreadId,
+    title: params.title,
     promptCount: 0,
     createdAt: params.now,
     updatedAt: params.now,
@@ -179,6 +180,86 @@ async function getOrCreateThreadByClientId(
 
   return await ctx.db.get(threadId);
 }
+
+export const getThreads = query({
+  args: {
+    identityKey: v.string(),
+  },
+  returns: v.array(
+    v.object({
+      clientThreadId: v.string(),
+      title: v.string(),
+      promptCount: v.number(),
+      lastPreview: v.string(),
+      createdAt: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
+  handler: async (ctx, args) => {
+    const threads = await ctx.db
+      .query("threads")
+      .withIndex("by_identityKey", (q) => q.eq("identityKey", args.identityKey))
+      .collect();
+
+    const threadResults = await Promise.all(
+      threads.map(async (thread) => {
+        const lastMessage = await ctx.db
+          .query("messages")
+          .withIndex("by_thread", (q) => q.eq("threadId", thread._id))
+          .order("desc")
+          .first();
+
+        return {
+          clientThreadId: thread.clientThreadId,
+          title: thread.title ?? thread.clientThreadId.slice(0, 20),
+          promptCount: thread.promptCount,
+          lastPreview: lastMessage ? lastMessage.text.slice(0, 80).trim() : "",
+          createdAt: thread.createdAt,
+          updatedAt: thread.updatedAt,
+        };
+      })
+    );
+
+    return threadResults.sort((a, b) => b.updatedAt - a.updatedAt);
+  },
+});
+
+export const getThreadMessages = query({
+  args: {
+    identityKey: v.string(),
+    clientThreadId: v.string(),
+  },
+  returns: v.array(historyMessageValidator),
+  handler: async (ctx, args) => {
+    const thread = await ctx.db
+      .query("threads")
+      .withIndex("by_identity_clientThreadId", (q: any) =>
+        q.eq("identityKey", args.identityKey).eq("clientThreadId", args.clientThreadId)
+      )
+      .first();
+
+    if (!thread) {
+      return [];
+    }
+
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_thread", (q) => q.eq("threadId", thread._id))
+      .collect();
+
+    return messages
+      .sort((a, b) => a.createdAt - b.createdAt)
+      .map((message) => ({
+        id: String(message._id),
+        role: message.role,
+        text: message.text,
+        clientMessageId: message.clientMessageId,
+        threadClientId: thread.clientThreadId,
+        createdAt: message.createdAt,
+        model: message.model ?? null,
+      }));
+  },
+});
 
 export const getStatus = query({
   args: {
@@ -292,6 +373,7 @@ export const preparePrompt = mutation({
       identityKey: args.identityKey,
       clientThreadId: args.threadClientId,
       now: args.now,
+      title: args.prompt.trim().slice(0, 60),
     });
 
     const existingMessages = await ctx.db

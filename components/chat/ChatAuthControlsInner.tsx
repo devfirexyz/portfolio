@@ -2,17 +2,22 @@
 
 import { SignInButton, SignOutButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import { LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function ChatAuthControlsInner() {
+interface ChatAuthControlsInnerProps {
+  className?: string;
+}
+
+export function ChatAuthControlsInner({ className }: ChatAuthControlsInnerProps) {
   const { user } = useUser();
 
   return (
-    <>
+    <div className={cn("w-full", className)}>
       <SignedOut>
         <SignInButton mode="modal" forceRedirectUrl="/chat" fallbackRedirectUrl="/chat">
           <button
             type="button"
-            className="inline-flex h-10 items-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] px-3 text-xs font-black uppercase tracking-[0.12em] text-white shadow-[4px_4px_0px_0px_var(--nb-shadow-accent)]"
+            className="inline-flex h-10 w-full items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] px-3 text-xs font-black uppercase tracking-[0.12em] text-white shadow-[4px_4px_0px_0px_var(--nb-shadow-accent)]"
           >
             Log In
           </button>
@@ -20,8 +25,8 @@ export function ChatAuthControlsInner() {
       </SignedOut>
 
       <SignedIn>
-        <div className="flex items-center gap-2">
-          <div className="inline-flex h-10 items-center gap-2 border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-2 text-[11px] font-black uppercase tracking-[0.1em] text-[var(--nb-foreground)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
+        <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+          <div className="inline-flex h-10 min-w-0 items-center gap-2 border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-2 text-[11px] font-black uppercase tracking-[0.1em] text-[var(--nb-foreground)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
             {user?.imageUrl ? (
               <img
                 src={user.imageUrl}
@@ -33,12 +38,12 @@ export function ChatAuthControlsInner() {
                 A
               </span>
             )}
-            <span>Account</span>
+            <span className="truncate">Account</span>
           </div>
           <SignOutButton redirectUrl="/chat">
             <button
               type="button"
-              className="inline-flex h-10 items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-3 text-xs font-black uppercase tracking-[0.12em] text-[var(--nb-foreground)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]"
+              className="inline-flex h-10 items-center justify-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-3 text-xs font-black uppercase tracking-[0.12em] text-[var(--nb-foreground)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]"
             >
               <LogOut className="mr-1.5 h-3.5 w-3.5" />
               Log Out
@@ -46,6 +51,6 @@ export function ChatAuthControlsInner() {
           </SignOutButton>
         </div>
       </SignedIn>
-    </>
+    </div>
   );
 }

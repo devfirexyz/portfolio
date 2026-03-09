@@ -18,7 +18,9 @@
       "Bash(pnpm run build:*)",
       "Bash(pnpm lint 2>&1 | head -80)",
       "Bash(pnpm test 2>&1 | head -100)",
-      "Bash(pnpm test 2>&1 | tail -30)"
+      "Bash(pnpm test 2>&1 | tail -30)",
+      "Bash(pnpm lint 2>&1)",
+      "Bash(pnpm test:smoke 2>&1)"
     ],
     "deny": [],
     "ask": []

@@ -23,9 +23,9 @@ export function useChatStatus(guestId: string) {
   const [statusSnapshot, setStatusSnapshot] = useState<ChatStatusPayload | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
 
-  const refreshStatus = useCallback(async () => {
+  const refreshStatus = useCallback(async (): Promise<ChatStatusPayload | null> => {
     if (!guestId) {
-      return;
+      return null;
     }
     setStatusError(null);
     try {
@@ -43,17 +43,21 @@ export function useChatStatus(guestId: string) {
         Boolean(window.localStorage.getItem(guestUsedStorageKey(guestId)));
 
       if (locallyUsed) {
-        setStatusSnapshot({
+        const snapshot: ChatStatusPayload = {
           ...payload,
           canSend: false,
           reason: "guest_prompt_used",
           guestPromptUsed: true,
-        });
+        };
+        setStatusSnapshot(snapshot);
+        return snapshot;
       } else {
         setStatusSnapshot(payload);
+        return payload;
       }
     } catch (error) {
       setStatusError(error instanceof Error ? error.message : "Failed to check chat status.");
+      return null;
     }
   }, [guestId]);
 

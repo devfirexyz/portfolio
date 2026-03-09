@@ -15,7 +15,6 @@ interface ChatComposerProps {
   isDisabled: boolean;
   isSubmitting: boolean;
   lifetimeLimitReached: boolean;
-  requiresFreshThread: boolean;
   threadPromptLimitReached: boolean;
   statusError: string | null;
   chatError: Error | null;
@@ -33,7 +32,6 @@ export function ChatComposer({
   isDisabled,
   isSubmitting,
   lifetimeLimitReached,
-  requiresFreshThread,
   threadPromptLimitReached,
   statusError,
   chatError,
@@ -43,7 +41,6 @@ export function ChatComposer({
 }: ChatComposerProps) {
   const noticeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Auto-dismiss inline notices after 4 seconds
   useEffect(() => {
     if (!inlineNotice) {
       return;
@@ -51,7 +48,6 @@ export function ChatComposer({
     if (noticeTimerRef.current) {
       clearTimeout(noticeTimerRef.current);
     }
-    // Notice clearing is handled by parent — nothing to do here
     return () => {
       if (noticeTimerRef.current) {
         clearTimeout(noticeTimerRef.current);
@@ -71,15 +67,15 @@ export function ChatComposer({
   };
 
   return (
-    <div className="shrink-0 space-y-3 bg-[var(--nb-surface)] p-3 sm:p-5">
+    <div className="shrink-0 space-y-2 bg-[var(--nb-surface)] p-2.5 sm:space-y-3 sm:p-5">
       {statusError ? (
-        <p className="border-2 border-[var(--nb-border)] bg-[var(--nb-danger)] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white">
+        <p className="border-2 border-[var(--nb-border)] bg-[var(--nb-danger)] px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white sm:px-3 sm:py-2 sm:text-xs">
           Policy check failed: {statusError}
         </p>
       ) : null}
 
       {chatError ? (
-        <p className="border-2 border-[var(--nb-border)] bg-[var(--nb-danger)] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white">
+        <p className="border-2 border-[var(--nb-border)] bg-[var(--nb-danger)] px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-white sm:px-3 sm:py-2 sm:text-xs">
           Chat error: {chatError.message}
         </p>
       ) : null}
@@ -87,15 +83,15 @@ export function ChatComposer({
       {inlineNotice ? (
         <p
           aria-live="polite"
-          className="border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground)]"
+          className="border-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground)] sm:px-3 sm:py-2 sm:text-xs"
         >
           {inlineNotice}
         </p>
       ) : null}
 
       {lifetimeLimitReached ? (
-        <div className="flex flex-col gap-3 border-2 border-[var(--nb-border)] bg-[var(--nb-warning)] p-3 text-[var(--nb-border)] sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs font-black uppercase tracking-[0.12em]">
+        <div className="flex flex-col gap-2 border-2 border-[var(--nb-border)] bg-[var(--nb-warning)] p-2.5 text-[var(--nb-border)] sm:flex-row sm:items-center sm:justify-between sm:p-3">
+          <p className="text-[11px] font-black uppercase tracking-[0.12em] sm:text-xs">
             Lifetime limit reached. Continue on email.
           </p>
           <NeoButton size="sm" variant="secondary" onClick={onOpenContact}>
@@ -104,11 +100,10 @@ export function ChatComposer({
         </div>
       ) : null}
 
-      {requiresFreshThread ? (
-        <div className="flex w-full flex-col gap-3 border-2 border-[var(--nb-border)] bg-[var(--nb-warning)] p-4">
-          <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--nb-border)]">
-            You&apos;re now logged in! The guest thread is locked. Start a new chat to continue with your
-            full 30-prompt access.
+      {threadPromptLimitReached ? (
+        <div className="flex items-center justify-between gap-2 border-2 border-[var(--nb-border)] bg-[var(--nb-warning)] p-2.5 sm:p-3">
+          <p className="text-[11px] font-black uppercase tracking-[0.12em] text-[var(--nb-border)] sm:text-xs">
+            Start a new chat to continue.
           </p>
           <NeoButton size="sm" variant="secondary" onClick={onCreateNewThread}>
             New Chat
@@ -116,27 +111,16 @@ export function ChatComposer({
         </div>
       ) : null}
 
-      {threadPromptLimitReached ? (
-        <div className="flex items-center justify-between border-2 border-[var(--nb-border)] bg-[var(--nb-warning)] p-3">
-          <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--nb-border)]">
-            Thread limit reached. Create a new thread to continue.
-          </p>
-          <NeoButton size="sm" variant="secondary" onClick={onCreateNewThread}>
-            New Thread
-          </NeoButton>
-        </div>
-      ) : null}
-
       <form
         ref={formRef}
-        className="flex flex-col gap-3 border-t-2 border-[var(--nb-border)] pt-3 sm:flex-row"
+        className="flex items-end gap-2 border-t-2 border-[var(--nb-border)] pt-2.5 sm:gap-3 sm:pt-3"
         onSubmit={onSubmit}
       >
         <textarea
           id="portfolio-chat-prompt"
           name="prompt"
           aria-label="Chat prompt"
-          rows={2}
+          rows={1}
           value={composerText}
           disabled={isDisabled}
           onChange={(event) => onComposerTextChange(event.target.value)}
@@ -147,13 +131,13 @@ export function ChatComposer({
               : "Ask about experience, projects, blogs, skills…"
           }
           className={cn(
-            "w-full border-2 border-[var(--nb-border)] bg-[var(--nb-background)] p-3 text-sm text-[var(--nb-foreground)] outline-none transition-colors focus:border-[var(--nb-accent)]",
+            "min-h-11 w-full resize-y border-2 border-[var(--nb-border)] bg-[var(--nb-background)] p-2.5 text-sm text-[var(--nb-foreground)] outline-none transition-colors focus:border-[var(--nb-accent)] sm:p-3",
             isDisabled ? "cursor-not-allowed opacity-70" : ""
           )}
         />
 
-        <div className="flex shrink-0 gap-2 sm:flex-col">
-          <NeoButton type="submit" size="sm" className="w-full sm:w-auto" disabled={isDisabled}>
+        <div className="flex shrink-0 gap-2">
+          <NeoButton type="submit" size="sm" className="px-3 sm:px-4" disabled={isDisabled}>
             <SendHorizontal className="mr-1.5 h-4 w-4" />
             Send
           </NeoButton>
@@ -162,7 +146,7 @@ export function ChatComposer({
               type="button"
               size="sm"
               variant="ghost"
-              className="w-full sm:w-auto"
+              className="px-3 sm:px-4"
               onClick={onStop}
             >
               <StopCircle className="mr-1.5 h-4 w-4" />

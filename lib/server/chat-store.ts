@@ -3,6 +3,10 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
+import type { ChatThread } from "@/lib/chat-types";
+
+export type { ChatThread };
+
 export type ViewerType = "guest" | "member" | "owner";
 
 export type ChatStatusReason = "ok" | "guest_prompt_used" | "lifetime_limit_reached";
@@ -91,6 +95,7 @@ interface InMemoryThread {
   id: string;
   identityKey: string;
   clientThreadId: string;
+  title?: string;
   promptCount: number;
   createdAt: number;
   updatedAt: number;
@@ -293,7 +298,8 @@ function ensureThread(
   state: InMemoryState,
   identityKey: string,
   clientThreadId: string,
-  now: number
+  now: number,
+  title?: string
 ): InMemoryThread {
   const threadKey = toThreadKey(identityKey, clientThreadId);
   const existing = state.threadsByKey.get(threadKey);
@@ -306,6 +312,7 @@ function ensureThread(
     id: `thread_${identityKey.replace(/[^a-zA-Z0-9_-]/g, "_")}_${clientThreadId.replace(/[^a-zA-Z0-9_-]/g, "_")}`,
     identityKey,
     clientThreadId,
+    title,
     promptCount: 0,
     createdAt: now,
     updatedAt: now,
@@ -336,7 +343,7 @@ function preparePromptLocal(args: PreparePromptArgs): PreparePromptResult {
   const state = getState();
   const user = ensureUser(state, args.viewer, args.now);
   const clientThreadId = args.threadClientId ?? "default";
-  const thread = ensureThread(state, args.viewer.identityKey, clientThreadId, args.now);
+  const thread = ensureThread(state, args.viewer.identityKey, clientThreadId, args.now, args.prompt.trim().slice(0, 60));
   const messageKey = toClientMessageKey(args.viewer.identityKey, args.clientMessageId);
 
   const knownPrompt = state.processedByClientMessageKey.get(messageKey);
@@ -488,6 +495,51 @@ function persistAssistantLocal(args: PersistAssistantArgs) {
   writeStateToDisk(state);
 }
 
+function getChatThreadsLocal(viewer: ViewerIdentity): ChatThread[] {
+  const state = getState();
+  const userThreads = Array.from(state.threadsByKey.values()).filter(
+    (thread) => thread.identityKey === viewer.identityKey
+  );
+  return userThreads
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+    .map((thread) => {
+      const messages = state.messagesByThread.get(thread.id) ?? [];
+      const userMessages = messages.filter((m) => m.role === "user");
+      const title = thread.title ?? userMessages[0]?.text.trim().slice(0, 60) ?? "New Chat";
+      const lastMessage = messages.at(-1);
+      return {
+        clientThreadId: thread.clientThreadId,
+        title,
+        promptCount: thread.promptCount,
+        lastPreview: lastMessage ? lastMessage.text.trim().slice(0, 80) : "",
+        createdAt: thread.createdAt,
+        updatedAt: thread.updatedAt,
+      };
+    });
+}
+
+function getChatThreadMessagesLocal(viewer: ViewerIdentity, clientThreadId: string): ChatHistoryMessage[] {
+  const state = getState();
+  const threadKey = toThreadKey(viewer.identityKey, clientThreadId);
+  const thread = state.threadsByKey.get(threadKey);
+  if (!thread) {
+    return [];
+  }
+  const messages = state.messagesByThread.get(thread.id) ?? [];
+  return messages
+    .filter((m) => m.identityKey === viewer.identityKey)
+    .sort((a, b) => a.createdAt - b.createdAt)
+    .map((m) => ({
+      id: m.id,
+      role: m.role,
+      text: m.text,
+      clientMessageId: m.clientMessageId,
+      threadClientId: clientThreadId,
+      createdAt: m.createdAt,
+      model: m.model,
+    }));
+}
+
 function getStatusLocal(viewer: ViewerIdentity): ChatStatusSnapshot {
   const state = getState();
   const user = state.users.get(viewer.identityKey);
@@ -524,6 +576,40 @@ function getHistoryLocal(viewer: ViewerIdentity): ChatHistoryMessage[] {
       createdAt: message.createdAt,
       model: message.model,
     }));
+}
+
+async function queryConvexThreads(viewer: ViewerIdentity): Promise<ChatThread[] | null> {
+  const client = getConvexClient();
+  if (!client) {
+    return null;
+  }
+  try {
+    const result = await client.query("chat:getThreads" as any, {
+      identityKey: viewer.identityKey,
+    });
+    return result as ChatThread[];
+  } catch {
+    return null;
+  }
+}
+
+async function queryConvexThreadMessages(
+  viewer: ViewerIdentity,
+  clientThreadId: string
+): Promise<ChatHistoryMessage[] | null> {
+  const client = getConvexClient();
+  if (!client) {
+    return null;
+  }
+  try {
+    const result = await client.query("chat:getThreadMessages" as any, {
+      identityKey: viewer.identityKey,
+      clientThreadId,
+    });
+    return result as ChatHistoryMessage[];
+  } catch {
+    return null;
+  }
 }
 
 async function queryConvexStatus(viewer: ViewerIdentity): Promise<ChatStatusSnapshot | null> {
@@ -615,6 +701,25 @@ async function mutateConvexPersistAssistant(args: PersistAssistantArgs): Promise
   } catch {
     return false;
   }
+}
+
+export async function getChatThreads(viewer: ViewerIdentity): Promise<ChatThread[]> {
+  const convexThreads = await queryConvexThreads(viewer);
+  if (convexThreads) {
+    return convexThreads;
+  }
+  return getChatThreadsLocal(viewer);
+}
+
+export async function getChatThreadMessages(
+  viewer: ViewerIdentity,
+  clientThreadId: string
+): Promise<ChatHistoryMessage[]> {
+  const convexMessages = await queryConvexThreadMessages(viewer, clientThreadId);
+  if (convexMessages) {
+    return convexMessages;
+  }
+  return getChatThreadMessagesLocal(viewer, clientThreadId);
 }
 
 export async function getChatStatus(viewer: ViewerIdentity): Promise<ChatStatusSnapshot> {

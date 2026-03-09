@@ -5,7 +5,6 @@ import { Loader2, MessageSquareDashed } from "lucide-react";
 import type { UIMessage } from "ai";
 
 import { cn } from "@/lib/utils";
-import { getTextFromMessage } from "@/lib/client/chat-thread-utils";
 
 const ProjectCardsWidget = dynamic(
   () =>
@@ -57,6 +56,34 @@ interface BlogWidgetOutput {
   }>;
 }
 
+function getTextFromMessage(message: UIMessage): string {
+  const parts = Array.isArray(message.parts) ? message.parts : [];
+  const textFromParts = parts
+    .map((part) => {
+      if (part && typeof part === "object" && "type" in part && "text" in part) {
+        const typedPart = part as { type?: unknown; text?: unknown };
+        if (typedPart.type === "text" && typeof typedPart.text === "string") {
+          return typedPart.text;
+        }
+      }
+      return "";
+    })
+    .filter(Boolean)
+    .join("\n")
+    .trim();
+
+  if (textFromParts) {
+    return textFromParts;
+  }
+
+  const content = (message as { content?: unknown }).content;
+  if (typeof content === "string") {
+    return content.trim();
+  }
+
+  return "";
+}
+
 function getProjectWidgets(message: UIMessage): ProjectWidgetOutput[] {
   const parts = Array.isArray(message.parts) ? message.parts : [];
   return parts
@@ -94,11 +121,11 @@ function getBlogWidgets(message: UIMessage): BlogWidgetOutput[] {
 interface ChatMessageListProps {
   messages: UIMessage[];
   status: string;
-  outboxPendingIds: Set<string>;
+  isLoadingMessages: boolean;
   viewportRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export function ChatMessageList({ messages, status, outboxPendingIds, viewportRef }: ChatMessageListProps) {
+export function ChatMessageList({ messages, status, isLoadingMessages, viewportRef }: ChatMessageListProps) {
   const isSubmitting = status === "submitted" || status === "streaming";
   const lastMessageId = messages.at(-1)?.id;
 
@@ -108,7 +135,16 @@ export function ChatMessageList({ messages, status, outboxPendingIds, viewportRe
       className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto border-b-2 border-[var(--nb-border)] bg-[var(--nb-background)] p-3 [scrollbar-gutter:stable] sm:p-5"
     >
       <div className="space-y-4">
-        {messages.length === 0 ? (
+        {isLoadingMessages ? (
+          <div className="flex min-h-[220px] items-center justify-center">
+            <div className="inline-flex items-center border-2 border-[var(--nb-border)] bg-[var(--nb-surface)] px-4 py-3 text-xs font-bold uppercase tracking-[0.11em] text-[var(--nb-foreground-muted)] shadow-[4px_4px_0px_0px_var(--nb-shadow-color)]">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Loading messages…
+            </div>
+          </div>
+        ) : null}
+
+        {!isLoadingMessages && messages.length === 0 ? (
           <div className="flex min-h-[220px] items-center justify-center border-2 border-dashed border-[var(--nb-border-subtle)] bg-[var(--nb-surface)] p-6 text-center">
             <div>
               <MessageSquareDashed className="mx-auto mb-3 h-7 w-7 text-[var(--nb-foreground-muted)]" />
@@ -127,7 +163,6 @@ export function ChatMessageList({ messages, status, outboxPendingIds, viewportRe
           const text = getTextFromMessage(message);
           const projectWidgets = getProjectWidgets(message);
           const blogWidgets = getBlogWidgets(message);
-          const isQueued = isUser && outboxPendingIds.has(message.id);
           const showStreamingPlaceholder =
             !isUser && status === "streaming" && message.id === lastMessageId && text.length === 0;
 
@@ -169,12 +204,6 @@ export function ChatMessageList({ messages, status, outboxPendingIds, viewportRe
                   blogWidgets.map((payload, index) => (
                     <BlogCardsWidget key={`${message.id}:blogs:${index}`} items={payload.items} />
                   ))}
-
-                {isQueued ? (
-                  <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.11em] text-white/90">
-                    Queued for sync
-                  </p>
-                ) : null}
               </div>
             </article>
           );

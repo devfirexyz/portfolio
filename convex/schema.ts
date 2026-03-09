@@ -18,6 +18,7 @@ export default defineSchema({
   threads: defineTable({
     identityKey: v.string(),
     clientThreadId: v.string(),
+    title: v.optional(v.string()),
     promptCount: v.number(),
     createdAt: v.number(),
     updatedAt: v.number(),

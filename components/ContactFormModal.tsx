@@ -13,13 +13,21 @@ import { X } from "lucide-react";
 
 interface ContactFormModalProps {
   onClose: () => void;
+  mode?: "default" | "resume-request";
 }
 
-const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
+const ContactFormModal = memo(({ onClose, mode = "default" }: ContactFormModalProps) => {
+  const isResumeRequestMode = mode === "resume-request";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState(
+    isResumeRequestMode ? "Resume request" : "",
+  );
+  const [message, setMessage] = useState(
+    isResumeRequestMode
+      ? "Hi Piyush,\nI would like to request your resume.\n\nThanks."
+      : "",
+  );
   const [error, setError] = useState("");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const titleId = useId();
@@ -85,13 +93,15 @@ const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
         <div className="flex items-center justify-between border-b-2 border-[var(--nb-border)] bg-[var(--nb-surface-alt)] px-4 py-3">
           <div>
             <p className="text-[12px] font-bold uppercase tracking-[0.14em] text-[var(--nb-foreground-muted)]">
-              Contact Me
+              {isResumeRequestMode ? "Resume Access" : "Contact Me"}
             </p>
             <h2
               id={titleId}
               className="text-base font-black uppercase tracking-[0.08em] text-[var(--nb-foreground)] sm:text-lg"
             >
-              Start a Project Conversation
+              {isResumeRequestMode
+                ? "Request My Resume"
+                : "Start a Project Conversation"}
             </h2>
             <p id={descriptionId} className="sr-only">
               Press Escape to close this dialog.
@@ -109,6 +119,13 @@ const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
         </div>
 
         <form className="space-y-4 p-4 sm:p-6" onSubmit={onSubmit}>
+          {isResumeRequestMode ? (
+            <div className="border-2 border-[var(--nb-border)] bg-[var(--nb-accent)]/10 px-3 py-2 text-[13px] font-bold uppercase tracking-[0.1em] text-[var(--nb-foreground)]">
+              To get my resume, drop me a quick email and I will share the
+              latest copy.
+            </div>
+          ) : null}
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="mb-1 block text-[13px] font-bold uppercase tracking-[0.12em] text-[var(--nb-foreground-muted)]">
@@ -166,7 +183,9 @@ const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
               }}
               aria-describedby={error ? errorId : undefined}
               className="h-12 w-full border-2 border-[var(--nb-border)] bg-[var(--nb-background)] px-3 text-base text-[var(--nb-foreground)] outline-none transition-colors focus:border-[var(--nb-accent)]"
-              placeholder="What are we building?"
+              placeholder={
+                isResumeRequestMode ? "Resume request" : "What are we building?"
+              }
             />
           </label>
 
@@ -185,7 +204,11 @@ const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
               }}
               aria-describedby={error ? errorId : undefined}
               className="min-h-[150px] w-full border-2 border-[var(--nb-border)] bg-[var(--nb-background)] p-3 text-base text-[var(--nb-foreground)] outline-none transition-colors focus:border-[var(--nb-accent)]"
-              placeholder="Project scope, timeline, and goals."
+              placeholder={
+                isResumeRequestMode
+                  ? "Mention your role or context for the request."
+                  : "Project scope, timeline, and goals."
+              }
             />
           </label>
 
@@ -209,7 +232,7 @@ const ContactFormModal = memo(({ onClose }: ContactFormModalProps) => {
               disabled={isSubmitDisabled}
               className="h-12 border-2 border-[var(--nb-border)] bg-[var(--nb-accent)] px-6 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[5px_5px_0px_0px_var(--nb-shadow-color)] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_var(--nb-shadow-color)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--nb-accent)] disabled:opacity-50"
             >
-              Send Message
+              {isResumeRequestMode ? "Request Resume" : "Send Message"}
             </button>
           </div>
         </form>
